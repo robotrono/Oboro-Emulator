@@ -1,0 +1,5 @@
+//Debuff NPC for tests
+prt_are02,146,135,6	script	Dispell	402,{
+	sc_end SC_All;
+	close;
+}

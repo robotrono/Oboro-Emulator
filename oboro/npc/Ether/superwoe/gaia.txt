@@ -1,0 +1,68 @@
+// Gaia Champions Arena Script
+
+// Warps a Itemmall
+// ========================================================================
+
+// Configuración de Mapas
+// ========================================================================
+prt_are02	mapflag	nobranch
+prt_are02	mapflag	nomemo
+prt_are02	mapflag	nopenalty
+prt_are02	mapflag	noteleport
+prt_are02	mapflag	nowarpto
+
+// *****************************************************
+//                 Flag Editor
+// *****************************************************
+
+-	script	FlagEditor	-1,{
+	end;
+
+OnWhisperGlobal:
+	if( getgmlevel() < 10 )
+		end;
+
+	set .@Menu$, "";
+	for( set .@i, 1; .@i <= 60; set .@i, .@i + 1 )
+	{
+		if( getvariableofnpc(.Guild_ID,"GFlag" + .@i) > 0 )
+			set .@Menu$, .@Menu$ + getguildname(getvariableofnpc(.Guild_ID,"GFlag" + .@i));
+		
+		set .@Menu$, .@Menu$ + ":";
+	}
+	
+	mes "[Editor de Flags]";
+	mes "Selecciona la Bandera de Guild a Editar.";
+	next;
+	set .@Flag$, "GFlag" + select(.@Menu$);
+
+	set .@Menu$, "";
+	for( set .@i, 0; getvariableofnpc(.Char_ID[.@i],.@Flag$) != 0 && .@i < 127; set .@i, .@i + 1 )
+	{
+		set .@j, getvariableofnpc(.Char_Job[.@i],.@Flag$);
+		set .@Menu$, .@Menu$ + getvariableofnpc(.Char_Name$[.@i],.@Flag$) + " [" + jobname($@Classes[.@j]) + "]:";
+	}
+	
+	mes "[Editor de Flags]";
+	mes "Selecciona el personaje a remover.";
+	next;
+	set .@Index, select(.@Menu$) - 1;
+	set .@Job, getvariableofnpc(.Char_Job[.@Index],.@Flag$);
+	
+	// Guild Data Slot
+	set getvariableofnpc(.Members,.@Flag$), getvariableofnpc(.Members,.@Flag$) + 1;
+	set getvariableofnpc(.Converted,.@Flag$), getvariableofnpc(.Converted,.@Flag$) - 1;
+	set getvariableofnpc(.Jobs[.@Job],.@Flag$), getvariableofnpc(.Jobs[.@Job],.@Flag$) + 1;
+	
+	// Guild Members List
+	for( set .@i, .@Index; getvariableofnpc(.Char_ID[.@i],.@Flag$) != 0; set .@i, .@i + 1 )
+	{
+		set getvariableofnpc(.Char_ID[.@i],.@Flag$), getvariableofnpc(.Char_ID[.@i + 1],.@Flag$);
+		set getvariableofnpc(.Char_Name$[.@i],.@Flag$), getvariableofnpc(.Char_Name$[.@i + 1],.@Flag$);
+		set getvariableofnpc(.Char_Job[.@i],.@Flag$), getvariableofnpc(.Char_Job[.@i + 1],.@Flag$);
+	}
+	
+	mes "[Editor de Flags]";
+	mes "El miembro ha sido eliminado.";
+	close;
+}

@@ -1,0 +1,97 @@
+####################################
+# MAKEFILE.IN REWRITED BY ISAAC	   #
+####################################
+
+COMMON_OBJ = ../common/obj_all/core.o ../common/obj_all/socket.o ../common/obj_all/harmonycore.o ../common/obj_all/timer.o \
+	../common/obj_all/db.o ../common/obj_all/plugins.o ../common/obj_all/lock.o \
+	../common/obj_all/nullpo.o ../common/obj_all/malloc.o ../common/obj_all/showmsg.o \
+	../common/obj_all/utils.o ../common/obj_all/strlib.o ../common/obj_all/grfio.o \
+	../common/obj_all/mapindex.o ../common/obj_all/ers.o ../common/obj_all/md5calc.o \
+	../common/obj_all/random.o ../common/obj_all/des.o
+COMMON_H = $(shell ls ../common/*.h)
+
+COMMON_SQL_OBJ = ../common/obj_sql/sql.o
+COMMON_SQL_H = ../common/sql.h
+
+MT19937AR_OBJ = ../../3rdparty/mt19937ar/mt19937ar.o
+MT19937AR_H = ../../3rdparty/mt19937ar/mt19937ar.h
+MT19937AR_INCLUDE = -I../../3rdparty/mt19937ar
+
+MAP_OBJ = oboro.o map.o chrif.o clif.o pc.o status.o npc.o \
+	npc_chat.o chat.o path.o itemdb.o mob.o script.o \
+	storage.o skill.o atcommand.o harmony.o battle.o battleground.o \
+	intif.o trade.o party.o vending.o guild.o guild_castle.o guild_expcache.o pet.o \
+	log.o mail.o date.o channel.o unit.o homunculus.o mercenary.o quest.o instance.o \
+	buyingstore.o searchstore.o duel.o achievement.o region.o faction.o
+MAP_SQL_OBJ = $(MAP_OBJ:%=obj_sql/%) \
+	obj_sql/mapreg_sql.o
+MAP_H =  $(shell ls ../map/*.h)
+
+#OBORO_OBJ = obj_sql/oboro.o
+#OBORO = oboro.so
+#LOAD_OBORO = $(OBORO_OBJ) $(OBORO) -shared
+
+HAVE_MYSQL=@HAVE_MYSQL@
+ifeq ($(HAVE_MYSQL),yes)
+	SQL_DEPENDS=map-server
+else
+	SQL_DEPENDS=needs_mysql
+endif
+
+HAVE_PCRE=@HAVE_PCRE@
+ifeq ($(HAVE_PCRE),yes)
+	PCRE_CFLAGS=-DPCRE_SUPPORT @PCRE_CFLAGS@
+else
+	PCRE_CFLAGS=
+endif
+
+@SET_MAKE@
+
+# ======================================================================
+
+.PHONY : all txt sql clean help
+
+sql: $(SQL_DEPENDS)
+
+clean:
+	rm -rf *.o obj_txt obj_sql ../../map-server@EXEEXT@ ../../map-server_sql@EXEEXT@
+
+help:
+	echo "possible targets are 'server' 'all' 'clean' 'help'"
+	@echo "'server' - map server"
+	@echo "'clean' - cleans builds and objects"
+	@echo "'help'  - outputs this message"
+
+# ======================================================================
+
+
+needs_mysql:
+	@echo "MySQL not found or disabled by the configure script"
+	@exit 1
+
+# object directories
+
+obj:
+	-mkdir obj_sql
+
+# executables
+map-server: obj $(MAP_SQL_OBJ) $(COMMON_OBJ) $(COMMON_SQL_OBJ)
+	@@CC@ @LDFLAGS@ -o ../../map-server_sql@EXEEXT@ $(MAP_SQL_OBJ) $(COMMON_OBJ) $(COMMON_SQL_OBJ) oboro.so $(MT19937AR_OBJ) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@
+
+# map object files
+#obj_sql/oboro.o: $(OBORO)
+#	@echo "	[ OBO ]	$<"
+#	#@@CC@ @DEFS@ @CFLAGS@ $(MT19937AR_INCLUDE) $(PCRE_CFLAGS) @MYSQL_CFLAGS@ @CPPFLAGS@ -shared -o $(OUTPUT_OPTION) $<
+
+
+obj_sql/%.o: %.c $(MAP_H) $(COMMON_H) $(COMMON_SQL_H) $(MT19937AR_H)
+	@echo "	[ MAP ]	$<"
+	@@CC@ @DEFS@ @CFLAGS@ $(MT19937AR_INCLUDE) $(PCRE_CFLAGS) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
+
+
+# missing object files
+../common/obj_sql/%.o:
+	@$(MAKE) -C ../common sql
+
+MT19937AR_OBJ:
+	@$(MAKE) -C ../../3rdparty/mt19937ar

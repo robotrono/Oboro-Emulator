@@ -1,0 +1,95 @@
+-	script	XROPVP	-1,{
+
+OnInit:
+	setarray $PVPMaps[0],
+		"pvp_n_1-5",
+		"guild_vs2",
+		"guild_vs3";
+
+	setarray .Mensajes$[0],  
+		"Doble Kill",	"doublekill.wav",
+		"Triplekill",	"triplekill.wav",
+		"Cuadrakill",	"ultrakill.wav",
+		"Pentakill!",	"rampage.wav",
+		"Casi un Dios!","godlike.wav",
+		"Imparable",	"unstoppable.wav",
+		"Legendario",	"holyshit.wav";
+		
+	set .LVLPARAJUGAR, 99;
+end;
+
+OnPCDieEvent:
+	for(set .@i, 0; .@i < getarraysize($PvPMaps); set .@i, .@i + 1)
+	{
+		if(strcharinfo(3) == $PvPMap[.@i])
+		{
+			set Death, Death + 1;
+			if ( @RachaDeAsesinatos > .RachaMayorDeMuertes )
+				set .RachaMayorDeMuertes, @RachaDeAsesinatos;
+		}
+	}
+end; 
+
+OnPCKillEvent:
+	if ( baselevel < .LVLPARAJUGAR )
+		end;
+
+	for ( set .@i, 0; .@i < getarraysize($PVPMaps); set .@i, .@i + 1 ) 
+	{
+		if ( .@map$ == $PVPMaps[.@i] ) 
+			break;
+	}
+	if ( .@i == getarraysize($PVPMaps) ) 
+		end;
+
+	//------------------------------------------------------
+	// 	The Killed Once's code
+		attachrid (killedrid);
+	//------------------------------------------------------
+
+	if ( killerrid == getcharid(3) )
+		end;
+			
+	message strcharinfo(0),"Te ha matado "+ rid2name(killerrid);
+	message rid2name(killerrid),"Acabas de matar "+ strcharinfo(0);
+		
+	if ( @RachaDeAsesinatos >= 5 )
+	{
+		announce rid2name(killerrid) +" ha destruido la racha de "+ strcharinfo(0),16|1;
+		set @RachaDeAsesinatos,0;
+	}
+
+	//------------------------------------------------------
+	// 	The Killed Once's code
+		attachrid (killedrid);
+	//------------------------------------------------------
+		
+
+	set .@Mensaje$, " ";
+	if ( 
+		.Mensajes$[@RachaDeAsesinatos] != "" && 
+		@RachaDeAsesinatos >= 2 &&
+		@RachaDeAsesinatos <= getarraysize(.Mensajes$)
+	) 
+	{
+		set .@Mensaje$,	.Mensajes$[@RachaDeAsesinatos];
+		set .@Musica$,  .Sonido$[@RachaDeAsesinatos];
+	}
+	else
+	{
+		set .@Mensaje$, "["+@RachaDeAsesinatos+"]: En racha de asesinatos";
+		set .@Musica$,  .Sonido$[getarraysize(.Sonido$) - 1];
+	}
+
+	set @RachaDeAsesinatos, @RachaDeAsesinatos + 1;
+	set PlayersKilled, PlayersKilled + 1;
+
+	if ( .@Mensaje$ != " " ) 
+	{
+		announce strcharinfo(0) + " " + .@Mensaje$,1,0x5EB6E2;
+		soundeffectall(.@Musica$, 0, strcharinfo(3));
+	}		
+
+end;
+
+}

@@ -1,0 +1,15 @@
+//==================================================
+// dic_dun01 - El Dicastes Dungeon F1
+//==================================================
+dic_dun01,0,0,0,0	monster	One-Horn Scaraba	2083,55,0,0,0
+dic_dun01,0,0,0,0	monster	Two-Horn Scaraba	2084,55,0,0,0
+dic_dun01,0,0,0,0	monster	One-Horn Scaraba Egg	2088,20,0,0,0
+dic_dun01,0,0,0,0	monster	Two-Horn Scaraba Egg	2089,20,0,0,0
+
+//==================================================
+// dic_dun02 - El Dicastes Dungeon F2
+//==================================================
+//dic_dun02,0,0,0,0	monster	Antler Scaraba	2085,55,0,0,0
+//dic_dun02,0,0,0,0	monster	Rake Scaraba	2086,75,0,0,0
+dic_dun02,0,0,0,0	monster	Antler Scaraba Egg	2090,20,0,0,0
+dic_dun02,0,0,0,0	monster	Rake Scaraba Egg	2091,20,0,0,0

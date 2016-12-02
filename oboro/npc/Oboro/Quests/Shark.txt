@@ -1,0 +1,43 @@
+poring_w01,106,109,4	script	Shark Hat	845,{
+	mes "[^000000Shark Hat^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Shark Hat, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Shark Hat^000000]";
+		mes "^FF000070^000000 Ancient Lips"; //1054
+		mes "^FF000050^000000 Sharp Scale"; //963
+		mes "^FF000020^000000 Aquamarine"; //720
+		mes "^0000FF2000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(1054) < 70) goto L_manque;
+		if(countitem(963) < 50) goto L_manque;
+		if(countitem(720) < 20) goto L_manque;
+		if(Zeny < 2000000) goto L_manque;
+		mes "[^000000Shark Hat^000000]";
+		mes "Aquí está tu Shark Hat";
+		delitem 1054,70;
+		delitem 963,50;
+		delitem 720,20;
+		set Zeny, Zeny - 2000000;
+		getitem 5508,1;
+		close;
+
+	L_manque:
+		mes "[^000000Shark Hat^000000]";
+		mes "Te faltan: ";
+		if(countitem(1054) < 70) mes "^FF0000"+(70 - countitem(1054)) +"^000000 Ancient Lips";
+		if(countitem(963) < 50) mes "^FF0000"+(50 - countitem(963)) +"^000000 Sharp Scale";
+		if(countitem(720) < 20) mes "^FF0000"+(20 - countitem(720)) +"^000000 Aquamarine";
+		if(Zeny < 2000000) mes "^0000FF"+(2000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Shark Hat^000000]";
+		mes "Buen día";
+		close;
+}

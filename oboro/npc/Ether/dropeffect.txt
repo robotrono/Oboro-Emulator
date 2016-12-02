@@ -1,0 +1,7 @@
+-	script	dropeffect	-1,{
+	OnCommand:
+	set PC_SKILL_EFFECT_HIDE,!PC_SKILL_EFFECT_HIDE;
+	
+	dispbottom "[ Dropeffect : "+( PC_SKILL_EFFECT_HIDE ? "On" : "Off" )+" ]";
+	end;
+}

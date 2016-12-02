@@ -1,0 +1,52 @@
+valkyrie,47,82,5	script	Validador	708,{
+	if ( getgmlevel() < 10 )
+		end;
+	
+title();
+	mes "Que tal gm, que deseas hacer ?";
+	switch( select(" ^0174DF> ^000000 Ver Guilds Autorizadas : ^0174DF> ^000000 Ver guilds No autorizadas : ^0174DF> ^000000 Autorizar Guild ") ) {
+		case 3:
+			query_sql("SELECT `guild_name`,`activado` FROM `guild_woe` WHERE `activado`='0' GROUP BY `guild_name`",.@guild_name$[0],.@activado[0]);
+			set .@Menu$ , "";
+			for ( set .@i , 0; .@i < getarraysize(.@guild_name$); set .@i , .@i + 1 )
+				set .@Menu$ , .@Menu$ + " ^0174DF> ^000000 " + .@guild_name$[.@i] + "["+.@activado[.@i]+"]"+":";
+			set .@select , select(.@Menu$) - 1;
+			next;
+			mes name$;
+			mes " ";
+			mes "Quieres validar a la guild : ^0174DF " + .@guild_name$[.@select] + "^000000.";
+			if ( select (" ^0174DF> ^000000 No : ^0174DF> ^000000 Si ") == 2 ) {
+				query_sql "UPDATE `guild_woe` SET `activado`='1' WHERE `guild_name`='"+.@guild_name$[.@select]+"'";
+				mes "listo";
+			}
+			next;
+			mes name$;
+			mes " ";
+			mes " Recuerda que para activar una guild durante woe debes whispiar asi: ";
+			mes " npc:woelimit  |  reload";
+			close;
+			break;
+		case 1:
+			set .@activadas , 1;
+			break;
+		case 2:
+			set .@activadas , 0;
+			break;
+	}
+	set .@Day , select ( " - Sábado : - Domingo" );
+	if ( .@Day == 1 ) 
+		set .@Day , 6;  
+	else if ( .@Day == 2 )  
+		set .@Day , 0;
+	query_sql ( "SELECT `guild_name` FROM `guild_woe` WHERE `dia`='"+.@Day+"' AND `activado`='"+.@activadas+"'",.@guild_name$[0]);
+	for ( set .@i , 0; .@i < getarraysize(.@guild_name$); set .@i , .@i + 1 ) {
+		if ( .@Day == 0 )
+			mes "^10B2D2Guild : ^000000" + .@guild_name$[.@i];
+		else 
+			mes "^10B2D2Guild : ^000000" + .@guild_name$[.@i];
+	}
+	next;
+title();
+	mes "Recuerda configurar bien los castillos en agit_controller";
+	close;
+}

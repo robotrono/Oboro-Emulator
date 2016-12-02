@@ -1,0 +1,44 @@
+ra_temple,58,134,6	script	Red Tailed Ribbon	719,{
+	mes "[^000000Red Tailed Ribbon^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Red Tailed Ribbon, te interesa?";
+	mes "All Stats + 2, Reduce 10% damage taken from DemiHuman monster. Add a 3% chance of auto casting Level 5 Heal on the enemy when attacking.";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Red Tailed Ribbon^000000]";
+		mes "^FF00002^000000 Angel Wing"; //2254
+		mes "^FF00002^000000 Puppy Love"; //5008
+		mes "^FF00002^000000 Bone Head"; //5398
+		mes "^FF000050^000000 Crystal of Darkness"; //7799
+		close;
+
+	L_check:
+		if(countitem(2254) < 2) goto L_manque;
+		if(countitem(5008) < 2) goto L_manque;
+		if(countitem(5398) < 2) goto L_manque;
+		if(countitem(7799) < 50) goto L_manque;
+		mes "[^000000Red Tailed Ribbon^000000]";
+		mes "Aquí está tu Red Tailed Ribbon.";
+		delitem 2254,2;
+		delitem 5008,2;
+		delitem 5398,2;
+		delitem 7799,50;
+		getitem 5801,1;
+		close;
+
+	L_manque:
+		mes "[^000000Red Tailed Ribbon^000000]";
+		mes "Te faltan: ";
+		if(countitem(2254) < 2) mes "^FF0000"+(2 - countitem(2254)) +"^000000 Angel Wing";
+		if(countitem(5008) < 2) mes "^FF0000"+(2 - countitem(5008)) +"^000000 Puppy Love";
+		if(countitem(5398) < 2) mes "^FF0000"+(2 - countitem(5398)) +"^000000 Bone Head";
+		if(countitem(7799) < 50) mes "^FF0000"+(50 - countitem(7799)) +"^000000 Crystal of Darkness";
+		close;
+
+	L_partir:
+		mes "[^000000Red Tailed Ribbon^000000]";
+		mes "Disfruta de tu nuevo item, que tengas un buen día en xRO.";
+		close;
+}

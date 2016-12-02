@@ -1,0 +1,507 @@
+prontera,160,171,4	script	Antiguo Superviviente	107,{
+
+	mes name$;
+	mes " ";
+
+	if ( getmapusers("pvp_n_6-5.gat") >= 1 ) {
+		mes " Lo siento actualmente la sala esta ocupada";
+		close;
+	 }
+
+	mes "Hola muchacho, pareces un aventurero con bastante experiencia.";
+	mes "¿Te gustaría ponerte a prueba en supervivencia?";
+	next;
+	mes name$; 
+	mes " ";
+
+	if ( select ( "^10B2D2 [ > ] ^000000 Por Supuesto :^10B2D2 [ > ] ^000000 Mejor No " ) == 2 ) close;
+	if ( select ( " ^10B2D2 [ > ] ^000000 Entrar a Supervivencia : ^10B2D2 [ > ] ^000000 Ver Ranking " ) == 2 ) {
+		mes "^CC0000Ranking Supervivencia Normal^000000";
+		mes " ";
+		mes "^0000CCSupervivencia Individual:^000000";
+		mes "- "+$SPRankN01$+" ["+$SPRank01+"]";
+		mes " ";
+		mes "^0000CCSupervivencia Party:^000000";
+		mes "- "+$SPRankN02$+" ["+$SPRank02+"]";
+		mes " ";
+		mes "^0000CCSupervivencia Guild:^000000";
+		mes "- "+$SPRankN03$+" ["+$SPRank03+"]";
+		next;
+		mes "[^CC0000Ranking Supervivencia MVP^000000]";
+		mes " ";
+		mes "^0000CCSupervivencia Individual:^000000";
+		mes "- "+$SPRankN04$+" ["+$SPRank04+"]";
+		mes " ";
+		mes "^0000CCSupervivencia Party:^000000";
+		mes "- "+$SPRankN05$+" ["+$SPRank05+"]";
+		mes " ";
+		mes "^0000CCSupervivencia Guild:^000000";
+		mes "- "+$SPRankN06$+" ["+$SPRank06+"]";
+		close;
+	}
+
+	switch ( select ( "^10B2D2 [ > ] ^000000 S. Individual :^10B2D2 [ > ] ^000000 S.Party :^10B2D2 [ > ] ^000000 S.Guild" ) ) {
+		
+		case 1:
+			callfunc("tillstart");
+			set $@SuperPoint01,0;
+			warp "pvp_n_6-5.gat",99,100;
+			sleep2 3000;
+			mapannounce "pvp_n_6-5",name2$+": Tienes 30 segundos para prepararte, despues de este tiempo empezará la supervivencia.",bc_yellow;
+			sleep2 30000;
+			mapannounce "pvp_n_6-5",name2$+": Superviviente: Comenzando supervivencia.",bc_yellow;
+			sleep2 5000;
+			areamonster "pvp_n_6-5",82,117,117,82,"Zombie",1015,15,"Antiguo Superviviente::OnThisMobDeath001";
+			break;
+
+		case 2:
+			set @PartyID,getcharid(1);
+			if (getpartyleader(@PartyID) != strcharinfo(0)) {
+				mes name$; 
+				mes " ";
+				mes "Si no eres el lider de una party no puedes usar este servicio.";
+				close;
+			}
+
+			callfunc("tillstart");
+			set $@SuperPoint02,0;
+			warp "pvp_n_6-5.gat",99,100;
+			sleep2 3000;
+			atcommand "@partyrecall "+strcharinfo(1)+"";
+			sleep2 5000;
+			mapannounce "pvp_n_6-5",name2$+": Superviviente: Tienes 30 segundos para prepararte, despues de este tiempo empezará la supervivencia.",bc_yellow;
+			sleep2 30000;
+			mapannounce "pvp_n_6-5",name2$+": Superviviente: Comenzando supervivencia.",bc_yellow;
+			sleep2 5000;
+			areamonster "pvp_n_6-5",82,117,117,82,"Zombie",1015,15,"Antiguo Superviviente::OnThisMobDeath002";
+			break;
+
+		case 3:
+			set @GuildGM,getcharid(2);
+			if ( @GuildGM == 0 || strcharinfo(0) != getguildmaster( @GuildGM ) ) {
+				mes name$; 
+				mes " ";
+				mes "Si no eres el lider de una guild no puedes usar este servicio.";
+				close;
+			}
+
+			callfunc("tillstart");
+			set $@SuperPoint03,0;
+			warp "pvp_n_6-5.gat",99,100;
+			sleep2 3000;
+			atcommand "@guildrecall "+strcharinfo(2)+"";
+			sleep2 5000;
+			mapannounce "pvp_n_6-5",name2$+": Superviviente: Tienes 30 segundos para prepararte, despues de este tiempo empezará la supervivencia.",bc_yellow;
+			sleep2 30000;
+			mapannounce "pvp_n_6-5",name2$+": Superviviente: Comenzando supervivencia.",bc_yellow;
+			sleep2 5000;
+			areamonster "pvp_n_6-5",82,117,117,82,"Zombie",1015,15,"Antiguo Superviviente::OnThisMobDeath003";
+			break;
+
+	}
+	end;
+
+
+OnThisMobDeath001:
+	set $@SuperPoint01,$@SuperPoint01+1;
+	if ($@SuperPoint01 == 100) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 200) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 300) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 400) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 500) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 600) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 700) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 800)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 900)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1000) makeitem 7539                 ,rand(4,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1100) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1200) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1300) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1400) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1500) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1550) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1600) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1700) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1800) makeitem (4700+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 1900) makeitem (4701+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint01 == 2000) makeitem (4702+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	set .@LanzadorMob,rand(1,5);
+	set .@LanzadorMob,.@LanzadorMob+$@SuperPoint01;
+
+
+	if ( $@SuperPoint01 > $SPRank01 ) {
+		set $SPRank01,$@SuperPoint01;
+		set $SPRankN01$,strcharinfo(0);
+	}
+
+	set @SPDecirPuntos,rand(1,5);
+	if ( @SPDecirPuntos == 1 ) mapannounce "pvp_n_6-5","Puntos de Supervivencia: "+$@SuperPoint01+". [Record: "+$SPRank01+" por "+$SPRankN01$+"]",bc_yellow;
+
+	if (.@LanzadorMob <= 25) {areamonster "pvp_n_6-5",82,117,117,82,"Thief Bug Male",1054,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 50) {areamonster "pvp_n_6-5",82,117,117,82,"Toad",1089,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 75) {areamonster "pvp_n_6-5",82,117,117,82,"Soldier Skeleton",1028,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 100) {areamonster "pvp_n_6-5",82,117,117,82,"Rotar Zairo",1392,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}	
+	if (.@LanzadorMob <= 125) {areamonster "pvp_n_6-5",82,117,117,82,"Whisper",1179,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 150) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Baby",1686,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 175) {areamonster "pvp_n_6-5",82,117,117,82,"Myst",1151,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 200) {areamonster "pvp_n_6-5",82,117,117,82,"Fur Seal",1317,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 225) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lady",1273,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 250) {areamonster "pvp_n_6-5",82,117,117,82,"Frilldora",1119,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 275) {areamonster "pvp_n_6-5",82,117,117,82,"Mimic",1191,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 300) {areamonster "pvp_n_6-5",82,117,117,82,"Baphomet Jr.",1101,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 325) {areamonster "pvp_n_6-5",82,117,117,82,"Stone Shooter",1495,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 350) {areamonster "pvp_n_6-5",82,117,117,82,"Obeaune",1044,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 375) {areamonster "pvp_n_6-5",82,117,117,82,"Mobster",1313,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 400) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 425) {areamonster "pvp_n_6-5",82,117,117,82,"Nine Tail",1180,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 450) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 475) {areamonster "pvp_n_6-5",82,117,117,82,"Nightmare",1061,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 500) {areamonster "pvp_n_6-5",82,117,117,82,"Merman",1264,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 525) {areamonster "pvp_n_6-5",82,117,117,82,"Tamruan",1584,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 550) {areamonster "pvp_n_6-5",82,117,117,82,"Dark Frame",1260,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 575) {areamonster "pvp_n_6-5",82,117,117,82,"Gajomart",1309,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 600) {areamonster "pvp_n_6-5",82,117,117,82,"Wind Ghost",1263,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 625) {areamonster "pvp_n_6-5",82,117,117,82,"Harpy",1376,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 650) {areamonster "pvp_n_6-5",82,117,117,82,"Venomous",1621,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 675) {areamonster "pvp_n_6-5",82,117,117,82,"Sleeper",1386,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 700) {areamonster "pvp_n_6-5",82,117,117,82,"Bathory",1102,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 725) {areamonster "pvp_n_6-5",82,117,117,82,"Pest",1256,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 750) {areamonster "pvp_n_6-5",82,117,117,82,"Clock Tower Manager",1270,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 775) {areamonster "pvp_n_6-5",82,117,117,82,"Skeleton General",1290,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 800) {areamonster "pvp_n_6-5",82,117,117,82,"Teddy Bear",1622,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 825) {areamonster "pvp_n_6-5",82,117,117,82,"Owl Duke",1320,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 850) {areamonster "pvp_n_6-5",82,117,117,82,"Injustice",1257,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 875) {areamonster "pvp_n_6-5",82,117,117,82,"Evil Cloud Hermit",1412,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 900) {areamonster "pvp_n_6-5",82,117,117,82,"Gargoyle",1253,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 925) {areamonster "pvp_n_6-5",82,117,117,82,"Galion",1783,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 950) {areamonster "pvp_n_6-5",82,117,117,82,"Assaulter",1315,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 975) {areamonster "pvp_n_6-5",82,117,117,82,"Garm Baby",1515,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1000) {areamonster "pvp_n_6-5",82,117,117,82,"Diabolic",1382,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1025) {areamonster "pvp_n_6-5",82,117,117,82,"Snowier",1775,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1050) {areamonster "pvp_n_6-5",82,117,117,82,"Ancient Mimic",1699,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1075) {areamonster "pvp_n_6-5",82,117,117,82,"Ungoliant",1618,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1100) {areamonster "pvp_n_6-5",82,117,117,82,"Dullahan",1504,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1125) {areamonster "pvp_n_6-5",82,117,117,82,"Ice Titan",1777,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1150) {areamonster "pvp_n_6-5",82,117,117,82,"Flame Skull",1869,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1175) {areamonster "pvp_n_6-5",82,117,117,82,"Retribution",1702,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1200) {areamonster "pvp_n_6-5",82,117,117,82,"Seeker",1774,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1225) {areamonster "pvp_n_6-5",82,117,117,82,"Archangeling",1388,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1250) {areamonster "pvp_n_6-5",82,117,117,82,"Imp",1837,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1275) {areamonster "pvp_n_6-5",82,117,117,82,"Thanatos Odium",1704,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1300) {areamonster "pvp_n_6-5",82,117,117,82,"Executioner",1205,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1325) {areamonster "pvp_n_6-5",82,117,117,82,"Zombie Slaughter",1864,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1350) {areamonster "pvp_n_6-5",82,117,117,82,"Hydrolancer",1720,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1375) {areamonster "pvp_n_6-5",82,117,117,82,"Acidus",1713,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1400) {areamonster "pvp_n_6-5",82,117,117,82,"Banshee",1867,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1425) {areamonster "pvp_n_6-5",82,117,117,82,"Skeggiold",1755,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1450) {areamonster "pvp_n_6-5",82,117,117,82,"Tirfing",1204,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1475) {areamonster "pvp_n_6-5",82,117,117,82,"Bloody Knight",1268,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1500) {areamonster "pvp_n_6-5",82,117,117,82,"Mysteltainn",1203,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1525) {areamonster "pvp_n_6-5",82,117,117,82,"Kasa",1833,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1550) {areamonster "pvp_n_6-5",82,117,117,82,"Maya Purple",1289,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1575) {areamonster "pvp_n_6-5",82,117,117,82,"Salamander",1831,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1600) {areamonster "pvp_n_6-5",82,117,117,82,"Necromancer",1870,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1625) {areamonster "pvp_n_6-5",82,117,117,82,"Magaleta",1637,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1650) {areamonster "pvp_n_6-5",82,117,117,82,"Eddga",1115,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1675) {areamonster "pvp_n_6-5",82,117,117,82,"Phreeoni",1159,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1700) {areamonster "pvp_n_6-5",82,117,117,82,"Moonlight Flower",1150,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1725) {areamonster "pvp_n_6-5",82,117,117,82,"Harword",1636,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1750) {areamonster "pvp_n_6-5",82,117,117,82,"Dracula",1389,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1775) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Hero",1087,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1800) {areamonster "pvp_n_6-5",82,117,117,82,"Doppelganger",1046,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1825) {areamonster "pvp_n_6-5",82,117,117,82,"Maya",1147,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1850) {areamonster "pvp_n_6-5",82,117,117,82,"Osiris",1038,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1875) {areamonster "pvp_n_6-5",82,117,117,82,"Pharaoh",1157,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1900) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lord",1190,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1925) {areamonster "pvp_n_6-5",82,117,117,82,"Knight of Windstorm",1251,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1950) {areamonster "pvp_n_6-5",82,117,117,82,"Bacsojin",1630,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 1975) {areamonster "pvp_n_6-5",82,117,117,82,"RSX 0806",1623,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2000) {areamonster "pvp_n_6-5",82,117,117,82,"Tao Gunka",1583,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2025) {areamonster "pvp_n_6-5",82,117,117,82,"Garm",1252,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2050) {areamonster "pvp_n_6-5",82,117,117,82,"Atroce",1785,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2075) {areamonster "pvp_n_6-5",82,117,117,82,"Kiel D-01",1734,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2100) {areamonster "pvp_n_6-5",82,117,117,82,"Ktullanux",1779,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2125) {areamonster "pvp_n_6-5",82,117,117,82,"Vesper",1685,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob <= 2150) {areamonster "pvp_n_6-5",82,117,117,82,"Detale",1719,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+	if (.@LanzadorMob >= 2175) {areamonster "pvp_n_6-5",82,117,117,82,"	ifrit",1832,1,"Antiguo Superviviente::OnThisMobDeath001"; end;}
+end;
+
+
+OnThisMobDeath002:
+	set $@SuperPoint02,$@SuperPoint02+1;
+	if ($@SuperPoint02 == 100) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 200) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 300) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 400) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 500) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 600) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 700) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 800)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 900)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1000) makeitem 7539                 ,rand(4,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1100) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1200) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1300) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1400) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1500) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1550) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1600) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1700) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1800) makeitem (4700+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 1900) makeitem (4701+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint02 == 2000) makeitem (4702+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	
+	set .@LanzadorMob,rand(1,5);
+	set .@LanzadorMob,.@LanzadorMob+$@SuperPoint02;
+
+	if ($@SuperPoint02 > $SPRank02){
+		set $SPRank02,$@SuperPoint02;
+		set $SPRankN02$,strcharinfo(1);
+	}
+
+	set @SPDecirPuntos,rand(1,5);
+	if (@SPDecirPuntos == 1) mapannounce "pvp_n_6-5","Puntos de Supervivencia: "+$@SuperPoint02+". [Record: "+$SPRank02+" por "+$SPRankN02$+"]",bc_yellow;
+
+	if (.@LanzadorMob <= 25) {areamonster "pvp_n_6-5",82,117,117,82,"Thief Bug Male",1054,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 50) {areamonster "pvp_n_6-5",82,117,117,82,"Toad",1089,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 75) {areamonster "pvp_n_6-5",82,117,117,82,"Soldier Skeleton",1028,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 100) {areamonster "pvp_n_6-5",82,117,117,82,"Rotar Zairo",1392,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 125) {areamonster "pvp_n_6-5",82,117,117,82,"Whisper",1179,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 150) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Baby",1686,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 175) {areamonster "pvp_n_6-5",82,117,117,82,"Myst",1151,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 200) {areamonster "pvp_n_6-5",82,117,117,82,"Fur Seal",1317,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 225) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lady",1273,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 250) {areamonster "pvp_n_6-5",82,117,117,82,"Frilldora",1119,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 275) {areamonster "pvp_n_6-5",82,117,117,82,"Mimic",1191,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 300) {areamonster "pvp_n_6-5",82,117,117,82,"Baphomet Jr.",1101,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 325) {areamonster "pvp_n_6-5",82,117,117,82,"Stone Shooter",1495,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 350) {areamonster "pvp_n_6-5",82,117,117,82,"Obeaune",1044,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 375) {areamonster "pvp_n_6-5",82,117,117,82,"Mobster",1313,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 400) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 425) {areamonster "pvp_n_6-5",82,117,117,82,"Nine Tail",1180,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 450) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 475) {areamonster "pvp_n_6-5",82,117,117,82,"Nightmare",1061,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 500) {areamonster "pvp_n_6-5",82,117,117,82,"Merman",1264,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 525) {areamonster "pvp_n_6-5",82,117,117,82,"Tamruan",1584,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 550) {areamonster "pvp_n_6-5",82,117,117,82,"Dark Frame",1260,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 575) {areamonster "pvp_n_6-5",82,117,117,82,"Gajomart",1309,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 600) {areamonster "pvp_n_6-5",82,117,117,82,"Wind Ghost",1263,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 625) {areamonster "pvp_n_6-5",82,117,117,82,"Harpy",1376,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 650) {areamonster "pvp_n_6-5",82,117,117,82,"Venomous",1621,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 675) {areamonster "pvp_n_6-5",82,117,117,82,"Sleeper",1386,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 700) {areamonster "pvp_n_6-5",82,117,117,82,"Bathory",1102,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 725) {areamonster "pvp_n_6-5",82,117,117,82,"Pest",1256,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 750) {areamonster "pvp_n_6-5",82,117,117,82,"Clock Tower Manager",1270,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 775) {areamonster "pvp_n_6-5",82,117,117,82,"Skeleton General",1290,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 800) {areamonster "pvp_n_6-5",82,117,117,82,"Teddy Bear",1622,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 825) {areamonster "pvp_n_6-5",82,117,117,82,"Owl Duke",1320,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 850) {areamonster "pvp_n_6-5",82,117,117,82,"Injustice",1257,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 875) {areamonster "pvp_n_6-5",82,117,117,82,"Evil Cloud Hermit",1412,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 900) {areamonster "pvp_n_6-5",82,117,117,82,"Gargoyle",1253,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 925) {areamonster "pvp_n_6-5",82,117,117,82,"Galion",1783,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 950) {areamonster "pvp_n_6-5",82,117,117,82,"Assaulter",1315,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 975) {areamonster "pvp_n_6-5",82,117,117,82,"Garm Baby",1515,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1000) {areamonster "pvp_n_6-5",82,117,117,82,"Diabolic",1382,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1025) {areamonster "pvp_n_6-5",82,117,117,82,"Snowier",1775,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1050) {areamonster "pvp_n_6-5",82,117,117,82,"Ancient Mimic",1699,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1075) {areamonster "pvp_n_6-5",82,117,117,82,"Ungoliant",1618,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1100) {areamonster "pvp_n_6-5",82,117,117,82,"Dullahan",1504,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1125) {areamonster "pvp_n_6-5",82,117,117,82,"Ice Titan",1777,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1150) {areamonster "pvp_n_6-5",82,117,117,82,"Flame Skull",1869,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1175) {areamonster "pvp_n_6-5",82,117,117,82,"Retribution",1702,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1200) {areamonster "pvp_n_6-5",82,117,117,82,"Seeker",1774,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1225) {areamonster "pvp_n_6-5",82,117,117,82,"Archangeling",1388,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1250) {areamonster "pvp_n_6-5",82,117,117,82,"Imp",1837,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1275) {areamonster "pvp_n_6-5",82,117,117,82,"Thanatos Odium",1704,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1300) {areamonster "pvp_n_6-5",82,117,117,82,"Executioner",1205,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1325) {areamonster "pvp_n_6-5",82,117,117,82,"Zombie Slaughter",1864,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1350) {areamonster "pvp_n_6-5",82,117,117,82,"Hydrolancer",1720,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1375) {areamonster "pvp_n_6-5",82,117,117,82,"Acidus",1713,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1400) {areamonster "pvp_n_6-5",82,117,117,82,"Banshee",1867,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1425) {areamonster "pvp_n_6-5",82,117,117,82,"Skeggiold",1755,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1450) {areamonster "pvp_n_6-5",82,117,117,82,"Tirfing",1204,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1475) {areamonster "pvp_n_6-5",82,117,117,82,"Bloody Knight",1268,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1500) {areamonster "pvp_n_6-5",82,117,117,82,"Mysteltainn",1203,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1525) {areamonster "pvp_n_6-5",82,117,117,82,"Kasa",1833,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1550) {areamonster "pvp_n_6-5",82,117,117,82,"Maya Purple",1289,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1575) {areamonster "pvp_n_6-5",82,117,117,82,"Salamander",1831,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1600) {areamonster "pvp_n_6-5",82,117,117,82,"Necromancer",1870,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1625) {areamonster "pvp_n_6-5",82,117,117,82,"Magaleta",1637,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1650) {areamonster "pvp_n_6-5",82,117,117,82,"Eddga",1115,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1675) {areamonster "pvp_n_6-5",82,117,117,82,"Phreeoni",1159,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1700) {areamonster "pvp_n_6-5",82,117,117,82,"Moonlight Flower",1150,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1725) {areamonster "pvp_n_6-5",82,117,117,82,"Harword",1636,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1750) {areamonster "pvp_n_6-5",82,117,117,82,"Dracula",1389,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1775) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Hero",1087,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1800) {areamonster "pvp_n_6-5",82,117,117,82,"Doppelganger",1046,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1825) {areamonster "pvp_n_6-5",82,117,117,82,"Maya",1147,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1850) {areamonster "pvp_n_6-5",82,117,117,82,"Osiris",1038,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1875) {areamonster "pvp_n_6-5",82,117,117,82,"Pharaoh",1157,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1900) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lord",1190,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1925) {areamonster "pvp_n_6-5",82,117,117,82,"Knight of Windstorm",1251,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1950) {areamonster "pvp_n_6-5",82,117,117,82,"Bacsojin",1630,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 1975) {areamonster "pvp_n_6-5",82,117,117,82,"RSX 0806",1623,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2000) {areamonster "pvp_n_6-5",82,117,117,82,"Tao Gunka",1583,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2025) {areamonster "pvp_n_6-5",82,117,117,82,"Garm",1252,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2050) {areamonster "pvp_n_6-5",82,117,117,82,"Atroce",1785,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2075) {areamonster "pvp_n_6-5",82,117,117,82,"Kiel D-01",1734,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2100) {areamonster "pvp_n_6-5",82,117,117,82,"Ktullanux",1779,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2125) {areamonster "pvp_n_6-5",82,117,117,82,"Vesper",1685,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob <= 2150) {areamonster "pvp_n_6-5",82,117,117,82,"Detale",1719,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+	if (.@LanzadorMob >= 2175) {areamonster "pvp_n_6-5",82,117,117,82,"	ifrit",1832,1,"Antiguo Superviviente::OnThisMobDeath002"; end;}
+end;
+
+
+OnThisMobDeath003:
+set $@SuperPoint03,$@SuperPoint03+1;
+	if ($@SuperPoint03 == 100) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 200) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 300) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 400) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 500) makeitem rand(12041,12070)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 600) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 700) makeitem rand(12071,12100)     ,rand(1,3) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 800)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 900)  makeitem 12103                ,rand(4,10),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1000) makeitem 7539                 ,rand(4,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1100) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1200) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1300) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1400) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1500) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1550) makeitem 7539                 ,rand(9,15),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1600) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1700) makeitem 7539                 ,rand(9,20),"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1800) makeitem (4700+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 1900) makeitem (4701+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+	if ($@SuperPoint03 == 2000) makeitem (4702+(rand(6) * 10)),rand(1,1) ,"pvp_n_6-5",rand(80,110),rand(80,110);
+
+	set .@LanzadorMob,rand(1,5);
+	set .@LanzadorMob,.@LanzadorMob+$@SuperPoint03;
+
+	if ($@SuperPoint03 > $SPRank03){
+		set $SPRank03,$@SuperPoint03;
+		set $SPRankN03$,strcharinfo(2);
+	}
+
+	set @SPDecirPuntos,rand(1,5);
+	if (@SPDecirPuntos == 1) mapannounce "pvp_n_6-5","Puntos de Supervivencia: "+$@SuperPoint03+". [Record: "+$SPRank03+" por "+$SPRankN03$+"]",bc_yellow;
+
+	if (.@LanzadorMob <= 25) {areamonster "pvp_n_6-5",82,117,117,82,"Thief Bug Male",1054,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 50) {areamonster "pvp_n_6-5",82,117,117,82,"Toad",1089,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 75) {areamonster "pvp_n_6-5",82,117,117,82,"Soldier Skeleton",1028,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 100) {areamonster "pvp_n_6-5",82,117,117,82,"Rotar Zairo",1392,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 125) {areamonster "pvp_n_6-5",82,117,117,82,"Whisper",1179,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 150) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Baby",1686,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 175) {areamonster "pvp_n_6-5",82,117,117,82,"Myst",1151,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 200) {areamonster "pvp_n_6-5",82,117,117,82,"Fur Seal",1317,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 225) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lady",1273,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 250) {areamonster "pvp_n_6-5",82,117,117,82,"Frilldora",1119,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 275) {areamonster "pvp_n_6-5",82,117,117,82,"Mimic",1191,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 300) {areamonster "pvp_n_6-5",82,117,117,82,"Baphomet Jr.",1101,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 325) {areamonster "pvp_n_6-5",82,117,117,82,"Stone Shooter",1495,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 350) {areamonster "pvp_n_6-5",82,117,117,82,"Obeaune",1044,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 375) {areamonster "pvp_n_6-5",82,117,117,82,"Mobster",1313,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 400) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 425) {areamonster "pvp_n_6-5",82,117,117,82,"Nine Tail",1180,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 450) {areamonster "pvp_n_6-5",82,117,117,82,"Baby Leopard",1415,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 475) {areamonster "pvp_n_6-5",82,117,117,82,"Nightmare",1061,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 500) {areamonster "pvp_n_6-5",82,117,117,82,"Merman",1264,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 525) {areamonster "pvp_n_6-5",82,117,117,82,"Tamruan",1584,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 550) {areamonster "pvp_n_6-5",82,117,117,82,"Dark Frame",1260,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 575) {areamonster "pvp_n_6-5",82,117,117,82,"Gajomart",1309,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 600) {areamonster "pvp_n_6-5",82,117,117,82,"Wind Ghost",1263,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 625) {areamonster "pvp_n_6-5",82,117,117,82,"Harpy",1376,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 650) {areamonster "pvp_n_6-5",82,117,117,82,"Venomous",1621,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 675) {areamonster "pvp_n_6-5",82,117,117,82,"Sleeper",1386,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 700) {areamonster "pvp_n_6-5",82,117,117,82,"Bathory",1102,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 725) {areamonster "pvp_n_6-5",82,117,117,82,"Pest",1256,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 750) {areamonster "pvp_n_6-5",82,117,117,82,"Clock Tower Manager",1270,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 775) {areamonster "pvp_n_6-5",82,117,117,82,"Skeleton General",1290,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 800) {areamonster "pvp_n_6-5",82,117,117,82,"Teddy Bear",1622,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 825) {areamonster "pvp_n_6-5",82,117,117,82,"Owl Duke",1320,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 850) {areamonster "pvp_n_6-5",82,117,117,82,"Injustice",1257,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 875) {areamonster "pvp_n_6-5",82,117,117,82,"Evil Cloud Hermit",1412,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 900) {areamonster "pvp_n_6-5",82,117,117,82,"Gargoyle",1253,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 925) {areamonster "pvp_n_6-5",82,117,117,82,"Galion",1783,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 950) {areamonster "pvp_n_6-5",82,117,117,82,"Assaulter",1315,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 975) {areamonster "pvp_n_6-5",82,117,117,82,"Garm Baby",1515,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1000) {areamonster "pvp_n_6-5",82,117,117,82,"Diabolic",1382,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1025) {areamonster "pvp_n_6-5",82,117,117,82,"Snowier",1775,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1050) {areamonster "pvp_n_6-5",82,117,117,82,"Ancient Mimic",1699,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1075) {areamonster "pvp_n_6-5",82,117,117,82,"Ungoliant",1618,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1100) {areamonster "pvp_n_6-5",82,117,117,82,"Dullahan",1504,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1125) {areamonster "pvp_n_6-5",82,117,117,82,"Ice Titan",1777,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1150) {areamonster "pvp_n_6-5",82,117,117,82,"Flame Skull",1869,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1175) {areamonster "pvp_n_6-5",82,117,117,82,"Retribution",1702,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1200) {areamonster "pvp_n_6-5",82,117,117,82,"Seeker",1774,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1225) {areamonster "pvp_n_6-5",82,117,117,82,"Archangeling",1388,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1250) {areamonster "pvp_n_6-5",82,117,117,82,"Imp",1837,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1275) {areamonster "pvp_n_6-5",82,117,117,82,"Thanatos Odium",1704,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1300) {areamonster "pvp_n_6-5",82,117,117,82,"Executioner",1205,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1325) {areamonster "pvp_n_6-5",82,117,117,82,"Zombie Slaughter",1864,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1350) {areamonster "pvp_n_6-5",82,117,117,82,"Hydrolancer",1720,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1375) {areamonster "pvp_n_6-5",82,117,117,82,"Acidus",1713,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1400) {areamonster "pvp_n_6-5",82,117,117,82,"Banshee",1867,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1425) {areamonster "pvp_n_6-5",82,117,117,82,"Skeggiold",1755,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1450) {areamonster "pvp_n_6-5",82,117,117,82,"Tirfing",1204,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1475) {areamonster "pvp_n_6-5",82,117,117,82,"Bloody Knight",1268,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1500) {areamonster "pvp_n_6-5",82,117,117,82,"Mysteltainn",1203,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1525) {areamonster "pvp_n_6-5",82,117,117,82,"Kasa",1833,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1550) {areamonster "pvp_n_6-5",82,117,117,82,"Maya Purple",1289,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1575) {areamonster "pvp_n_6-5",82,117,117,82,"Salamander",1831,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1600) {areamonster "pvp_n_6-5",82,117,117,82,"Necromancer",1870,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1625) {areamonster "pvp_n_6-5",82,117,117,82,"Magaleta",1637,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1650) {areamonster "pvp_n_6-5",82,117,117,82,"Eddga",1115,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1675) {areamonster "pvp_n_6-5",82,117,117,82,"Phreeoni",1159,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1700) {areamonster "pvp_n_6-5",82,117,117,82,"Moonlight Flower",1150,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1725) {areamonster "pvp_n_6-5",82,117,117,82,"Harword",1636,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1750) {areamonster "pvp_n_6-5",82,117,117,82,"Dracula",1389,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1775) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Hero",1087,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1800) {areamonster "pvp_n_6-5",82,117,117,82,"Doppelganger",1046,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1825) {areamonster "pvp_n_6-5",82,117,117,82,"Maya",1147,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1850) {areamonster "pvp_n_6-5",82,117,117,82,"Osiris",1038,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1875) {areamonster "pvp_n_6-5",82,117,117,82,"Pharaoh",1157,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1900) {areamonster "pvp_n_6-5",82,117,117,82,"Orc Lord",1190,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1925) {areamonster "pvp_n_6-5",82,117,117,82,"Knight of Windstorm",1251,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1950) {areamonster "pvp_n_6-5",82,117,117,82,"Bacsojin",1630,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 1975) {areamonster "pvp_n_6-5",82,117,117,82,"RSX 0806",1623,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2000) {areamonster "pvp_n_6-5",82,117,117,82,"Tao Gunka",1583,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2025) {areamonster "pvp_n_6-5",82,117,117,82,"Garm",1252,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2050) {areamonster "pvp_n_6-5",82,117,117,82,"Atroce",1785,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2075) {areamonster "pvp_n_6-5",82,117,117,82,"Kiel D-01",1734,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2100) {areamonster "pvp_n_6-5",82,117,117,82,"Ktullanux",1779,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2125) {areamonster "pvp_n_6-5",82,117,117,82,"Vesper",1685,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob <= 2150) {areamonster "pvp_n_6-5",82,117,117,82,"Detale",1719,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+	if (.@LanzadorMob >= 2175) {areamonster "pvp_n_6-5",82,117,117,82,"	ifrit",1832,1,"Antiguo Superviviente::OnThisMobDeath003"; end;}
+end;
+
+}
+
+function	script	tillstart	{
+
+	if ( getmapusers("pvp_n_6-5.gat") >= 1 ) {
+		mes " Lo siento actualmente la sala esta ocupada";
+		close;
+	 }
+
+	if ( #CASHPOINTS < 2000 ) {
+		mes name$;
+		mes " ";
+		mes "El costo de inscripcion es de 2000;";
+		close;
+	}
+	set #CASHPOINTS , #CASHPOINTS - 2000;
+	setcell "pvp_n_6-5",70,101,79,98,cell_walkable,0;
+	setcell "pvp_n_6-5",80,119,86,112,cell_walkable,0;
+	setcell "pvp_n_6-5",98,131,101,120,cell_walkable,0;
+	setcell "pvp_n_6-5",131,101,120,98,cell_walkable,0;
+	setcell "pvp_n_6-5",101,67,98,71,cell_walkable,0;
+	setcell "pvp_n_6-5",80,80,87,87,cell_walkable,0;
+	setcell "pvp_n_6-5",119,80,112,86,cell_walkable,0;
+	setcell "pvp_n_6-5",119,119,113,112,cell_walkable,0;
+	killmonster "pvp_n_6-5","Antiguo Superviviente::OnThisMobDeath001";
+	killmonster "pvp_n_6-5","Antiguo Superviviente::OnThisMobDeath002";
+	killmonster "pvp_n_6-5","Antiguo Superviviente::OnThisMobDeath003";
+	return 0;
+}

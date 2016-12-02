@@ -1,0 +1,96 @@
+// Healer By iSaaC ===========================================
+prontera,148,192,5	script	Healer::Buffer	475,10,10,{
+OnTouch:
+	if (readparam(5) == 0 )
+		atcommand "@alive";
+	
+	sc_start 32,  240000, 10;
+	sc_start 30, 240000, 10;
+	percentheal 105,105;
+
+	repairall;
+
+	getinventorylist;
+	set @identify, 0;
+	for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+		if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+	}
+	if (@identify == 0) end;	
+	getinventorylist;
+	set @identified, 0;
+	for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+		if (@inventorylist_identify[@i] == 0) {
+			if ( zeny > 100 ) set Zeny, Zeny - 100;		
+			delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+			getitem @inventorylist_id[@i],1;
+			set @identified, @identified + 1;
+		}
+	}
+	end;
+}
+
+
+morocc,164,92,4	duplicate(Buffer)	Healer#02	532,5,5
+payon,176,107,4	duplicate(Buffer)	Healer#03	532,5,5
+payon,164,229,4	duplicate(Buffer)	Healer#04	532,5,5
+geffen,115,70,5	duplicate(Buffer)	Healer#05	532,5,5
+amatsu,222,234,6	duplicate(Buffer)	Healer#06	532,5,5
+gonryun,153,120,6	duplicate(Buffer)	Healer#07	532,5,5
+umbala,149,161,3	duplicate(Buffer)	Healer#08	532,5,5
+rachel,107,136,5	duplicate(Buffer)	Healer#09	532,5,5
+izlude,123,142,5	duplicate(Buffer)	Healer#10	532,5,5
+aldebaran,145,122,3	duplicate(Buffer)	Healer#11	532,5,5
+xmas,153,133,4	duplicate(Buffer)	Healer#12	532,5,5
+comodo,190,153,4	duplicate(Buffer)	Healer#13	532,5,5
+ayothaya,201,190,6	duplicate(Buffer)	Healer#14	532,5,5
+hugel,91,149,5	duplicate(Buffer)	Healer#15	532,5,5
+moscovia,228,195,4	duplicate(Buffer)	Healer#16	532,5,5
+dicastes01,194,192,6	duplicate(Buffer)	Healer#17	532,5,5
+arena_4,143,105,5	duplicate(Buffer)	Healer BG#18	532,5,5
+brasilis,203,220,4	duplicate(Buffer)	Healer#19	532,5,5
+splendide,195,151,5	duplicate(Buffer)	Healer#20	532,5,5
+mid_camp,213,239,5	duplicate(Buffer)	Healer#21	532,5,5
+new_1-1,51,114,6	duplicate(Buffer)	Healer#22	532,5,5
+manuk,273,199,4	duplicate(Buffer)	Healer#23	532,5,5
+lighthalzen,166,94,4	duplicate(Buffer)	Healer#24	532,5,5
+louyang,220,109,4	duplicate(Buffer)	Healer#25	532,5,5
+alberta,113,60,6	duplicate(Buffer)	Healer#26	532,5,5
+yuno,155,198,6	duplicate(Buffer)	Healer#27	532,5,5
+dewata,198,183,6	duplicate(Buffer)	Healer#28	532,5,5
+Hyrule,131,189,6	duplicate(Buffer)	Healer#29	532,5,5
+veins,209,128,6	duplicate(Buffer)	Healer#30	532,5,5
+
+//Healer en DeadBranch Room
+//1@dbroom,12,185,5	duplicate(Buffer)	Healer#30	532,5,5
+// GR Rooms Healer
+gr_1,50,65,6	duplicate(Buffer)	Healer#31	532,5,5
+gr_2,50,65,6	duplicate(Buffer)	Healer#32	532,5,5
+gr_3,50,65,6	duplicate(Buffer)	Healer#33	532,5,5
+gr_4,50,65,6	duplicate(Buffer)	Healer#34	532,5,5
+gr_5,50,65,6	duplicate(Buffer)	Healer#35	532,5,5
+gr_6,50,65,6	duplicate(Buffer)	Healer#36	532,5,5
+gr_7,50,65,6	duplicate(Buffer)	Healer#37	532,5,5
+gr_8,50,65,6	duplicate(Buffer)	Healer#38	532,5,5
+gr_9,50,65,6	duplicate(Buffer)	Healer#39	532,5,5
+gr_10,50,65,6	duplicate(Buffer)	Healer#40	532,5,5
+gr_11,50,65,6	duplicate(Buffer)	Healer#41	532,5,5
+gr_12,50,65,6	duplicate(Buffer)	Healer#42	532,5,5
+gr_13,50,65,6	duplicate(Buffer)	Healer#43	532,5,5
+gr_14,50,65,6	duplicate(Buffer)	Healer#44	532,5,5
+gr_15,50,65,6	duplicate(Buffer)	Healer#45	532,5,5
+gr_16,50,65,6	duplicate(Buffer)	Healer#46	532,5,5
+gr_17,50,65,6	duplicate(Buffer)	Healer#47	532,5,5
+gr_18,50,65,6	duplicate(Buffer)	Healer#48	532,5,5
+gr_19,50,65,6	duplicate(Buffer)	Healer#49	532,5,5
+gr_20,50,65,6	duplicate(Buffer)	Healer#50	532,5,5
+gr_21,50,65,6	duplicate(Buffer)	Healer#51	532,5,5
+gr_22,50,65,6	duplicate(Buffer)	Healer#52	532,5,5
+gr_23,50,65,6	duplicate(Buffer)	Healer#53	532,5,5
+gr_24,50,65,6	duplicate(Buffer)	Healer#54	532,5,5
+gr_25,50,65,6	duplicate(Buffer)	Healer#55	532,5,5
+gr_26,50,65,6	duplicate(Buffer)	Healer#56	532,5,5
+gr_27,50,65,6	duplicate(Buffer)	Healer#57	532,5,5
+gr_28,50,65,6	duplicate(Buffer)	Healer#58	532,5,5
+gr_29,50,65,6	duplicate(Buffer)	Healer#59	532,5,5
+gr_30,50,65,6	duplicate(Buffer)	Healer#60	532,5,5
+core,152,169,4	duplicate(Buffer)	Healer#61	532,5,5

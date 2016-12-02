@@ -1,0 +1,83 @@
+//===== eAthena Script =======================================
+//= Heal Npc
+//===== By: ==================================================
+//= Lotsa People (1.x)
+//===== Current Version: =====================================
+//= 3.1
+//===== Compatible With: =====================================
+//= eAthena 0.1+;
+//===== Description: =========================================
+//= Healer NPC Which Heals For Free
+//===== Additional Comments: =================================
+//= 2.0 Duplicates And Changed A Bit you can replace this script file by 
+//= heal_payment.txt if you want that players have to pay their healings. [Darkchild]
+//= 3.0 Changed and edited the script added other warp points of maps. [massdriller]
+//= 3.1 Optimized for the greater good. [Kisuka]
+//============================================================
+
+prt_are02,146,157,6	script	Healer	501,5,5,{
+OnTouch:
+	percentheal 105,105; 
+	repairall;
+	sc_start SC_MAGNIFICAT,600000,5;
+	sc_start 32,  240000, 10;  // Increase Agi
+	sc_start 30, 240000, 10; // Blessing
+
+	switch ( basejob ) {
+	  case Job_Alchemist:    set .@spirit, 445; break;
+	  case Job_Monk:     set .@spirit, 447; break;
+	  case Job_Star_Gladiator:  set .@spirit, 448; break;
+	  case Job_Sage:     set .@spirit, 449; break;	
+	  case Job_Crusader:    set .@spirit, 450; break;
+	  case Job_SuperNovice:   set .@spirit, 451; break;
+	  case Job_Knight:    set .@spirit, 452; break;
+	  case Job_Wizard:    set .@spirit, 453; break;
+	  case Job_Priest:    set .@spirit, 454; break;
+	  case Job_Bard: case Job_Dancer: set .@spirit, 455; break;
+	  case Job_Rogue:     set .@spirit, 456; break;
+	  case Job_Assassin:    set .@spirit, 457; break;
+	  case Job_Blacksmith:   set .@spirit, 458; break;
+	  case Job_Hunter:    set .@spirit, 460; break;
+	  case Job_Soul_Linker:   set .@spirit, 461; break;
+	  default:
+	   if ( upper == 1 && baselevel < 70 )
+	    set .@spirit, 494;
+	}
+	if ( .@spirit ) {
+	  sc_start4 sc_spirit, 360000, 5, .@spirit,0,0;
+	  skilleffect .@spirit, 5;
+	}
+end;
+}
+
+// GR Rooms Healer
+gr_1,50,65,6	duplicate(Healer)	Healer#31	501,5,5
+gr_2,50,65,6	duplicate(Healer)	Healer#32	501,5,5
+gr_3,50,65,6	duplicate(Healer)	Healer#33	501,5,5
+gr_4,50,65,6	duplicate(Healer)	Healer#34	501,5,5
+gr_5,50,65,6	duplicate(Healer)	Healer#35	501,5,5
+gr_6,50,65,6	duplicate(Healer)	Healer#36	501,5,5
+gr_7,50,65,6	duplicate(Healer)	Healer#37	501,5,5
+gr_8,50,65,6	duplicate(Healer)	Healer#38	501,5,5
+gr_9,50,65,6	duplicate(Healer)	Healer#39	501,5,5
+gr_10,50,65,6	duplicate(Healer)	Healer#40	501,5,5
+gr_11,50,65,6	duplicate(Healer)	Healer#41	501,5,5
+gr_12,50,65,6	duplicate(Healer)	Healer#42	501,5,5
+gr_13,50,65,6	duplicate(Healer)	Healer#43	501,5,5
+gr_14,50,65,6	duplicate(Healer)	Healer#44	501,5,5
+gr_15,50,65,6	duplicate(Healer)	Healer#45	501,5,5
+gr_16,50,65,6	duplicate(Healer)	Healer#46	501,5,5
+gr_17,50,65,6	duplicate(Healer)	Healer#47	501,5,5
+gr_18,50,65,6	duplicate(Healer)	Healer#48	501,5,5
+gr_19,50,65,6	duplicate(Healer)	Healer#49	501,5,5
+gr_20,50,65,6	duplicate(Healer)	Healer#50	501,5,5
+gr_21,50,65,6	duplicate(Healer)	Healer#51	501,5,5
+gr_22,50,65,6	duplicate(Healer)	Healer#52	501,5,5
+gr_23,50,65,6	duplicate(Healer)	Healer#53	501,5,5
+gr_24,50,65,6	duplicate(Healer)	Healer#54	501,5,5
+gr_25,50,65,6	duplicate(Healer)	Healer#55	501,5,5
+gr_26,50,65,6	duplicate(Healer)	Healer#56	501,5,5
+gr_27,50,65,6	duplicate(Healer)	Healer#57	501,5,5
+gr_28,50,65,6	duplicate(Healer)	Healer#58	501,5,5
+gr_29,50,65,6	duplicate(Healer)	Healer#59	501,5,5
+gr_30,50,65,6	duplicate(Healer)	Healer#60	501,5,5

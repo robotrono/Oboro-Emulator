@@ -1,0 +1,427 @@
+itemmall,191,76,3	script	Donation Assistant::DonGirl	757,{
+	cutin "nines01",2;
+	goto L_Main;
+OnInit:
+	set $@table_balance$,"donaciones";
+	set $@table_items$,"donaciones_items";
+	//debugmes "[ Donation NPC ] SQL Listo, usando configuracion SQL.";
+	//debugmes "[ Donation NPC ] Revisando/Instalando databases";
+	callfunc "InstallDatabase";
+	end;
+
+L_Main:
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "Buenos días, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Soy el NPC encargado de entregar las donaciones de EasyRO, ¿En qué puedo ayudarte?";
+	next;
+	if (getgmlevel() >= 90) {
+		set @menu,callfunc("GMMenu");
+	} else {
+		set @menu,callfunc("UserMenu");
+	}
+	switch (@menu) {
+	case 1: // Adquirir items
+		callfunc "RetrieveDonatedItems";
+		goto L_Main;
+	case 2: // Agregar Donacion
+		if (getgmlevel() >= 90) {
+			callfunc "AddDonationItem";
+		}
+		goto L_Main;
+	case 3: // Remover Donaticion
+		if (getgmlevel() >= 90) {
+			callfunc "RemoveDonationItem";
+		}
+		goto L_Main;
+	case 4: // ReInstall Database
+		if (getgmlevel() >= 90) {
+			callfunc "ReInstallDatabase";
+		}
+		goto L_Main;
+	case 5: // Ver Donaciones
+		if (getgmlevel() >= 90) {
+			callfunc "ViewDonations";
+		}
+		goto L_Main;
+	}
+	end;
+	
+OnBuyItem:
+	for (set .@i,0; .@i < getarraysize(@bought_nameid); set .@i,.@i+1) {
+		if (@bought_quantity[@i] <= 0) {
+			//debugmes "[Donation NPC] Shop tried selling <= 0 of item to charid "+getcharid(0)+" ("+@bought_nameid[@i]+")";
+			dispbottom "[Donation Shop] You tried buying <= 0 of a item... closing shop sequence";
+			close;
+		}
+		set @cost,callfunc("NameID2Price",@bought_nameid[.@i]);
+		if ((@cost*@bought_quantity[.@i]) > callfunc("GetBalance",getcharid(3))) {
+			dispbottom "[Donation Shop] Your current balance ("+callfunc("GetBalance",getcharid(3))+") is not enough to buy the item(s) you wanted.";
+		} else {
+			callfunc "RemoveBalanceSub",@cost*@bought_quantity[.@i],getcharid(3);
+			getitem @bought_nameid[.@i],@bought_quantity[.@i];
+			dispbottom "[Donation Shop] You bought "+@bought_quantity[.@i]+" "+getitemname(@bought_nameid[.@i])+"'s for "+@cost*@bought_quantity[.@i]+" Vice Points!";
+		}		
+	}
+	deletearray @bought_nameid[0],getarraysize(@bought_nameid);
+	deletearray @bought_quantity[0],getarraysize(@bought_quantity);
+	close;
+}
+
+function	script	UserMenu	{
+	return select("^6A07A9Recoger items de donación.^000000");
+}
+
+function	script	GMMenu	{
+	L_Main:
+	switch(select("^009933Administrar Donaciones^000000","^0033FFAdministrar NPC^000000")) {
+	case 1:
+		switch(select("^009900Agregar Donación^000000","^FF0000Remover Donación^000000","^0099FFVer Donaciones^000000","Regresar")) {
+		case 1:
+			return 2;
+		case 2:
+			return 3;
+		case 3:
+			return 5;
+		default:
+			goto L_Main;
+		}
+	case 2:
+		switch(select("^FF6600Menu Normal^000000","^FF3300(Re)Instalar database^000000","Regresar")) {
+		case 1:
+			return callfunc("UserMenu");
+		case 2:
+			return 4;
+		default:
+			goto L_Main;
+		}
+	}
+}
+
+function	script	NameID2Price	{
+	if ($useSQL) {
+		query_sql "SELECT `price` FROM `"+$@table_shop$+"` WHERE `item_id`='"+escape_sql(getarg(0))+"'",@price;
+		if (getarraysize(@price) >= 1) {
+			return @price[0];
+		} else {
+			return -1;
+		}
+	} else {
+		for (set .@i,0; .@i < getarraysize($don_shop_item_id); set .@i,.@i+1) {
+			if ($don_shop_item_id[.@i] == getarg(0)) {
+				return $don_shop_item_price[.@i];
+			}
+		}
+		return -1;
+	}
+	return;
+}
+
+function	script	GetBalance	{
+	if ($useSQL) {
+		query_sql "SELECT `balance` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"'",@balance;
+		return @balance[0];
+	} else {
+		return getd("$don_balance_"+getarg(0));
+	}
+	return;
+}
+	
+function	script	AddDonationItem	{
+L_Input:
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "^0099001.-^000000 Coloca el ^FF0000id de Cuenta^000000.";
+	input @aid;
+	mes "^0099002.-^000000 Coloca ^FF0000Item ID^000000 del item.";
+	input @itemid;
+	mes "^0099003.-^000000 Y por ultimo la ^FF0000cantidad^000000 de items.";
+	input @amount;
+	next;
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "Verifica si esta ^FF0000correcto^000000.";
+	mes "Account ID: ^FF0000"+@aid+"^000000.";
+	mes "Item: ^FF0000"+@itemid+"^000000(^FF0000"+getitemname(@itemid)+"^000000).";
+	mes "Cantidad: ^FF0000"+@amount+"^000000.";
+	next;
+	menu "Si, Correcto",-,"No, Colocar de nuevo todo",L_Input,"No, Regresame al menu de GM",L_Back;
+	callfunc "AddDonationItemSub",@aid,@itemid,@amount;
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 "; 
+	mes "Todo Listo. La persona con la cuenta ^FF0000"+@aid+"^000000 ya puede pasar por su ^FF0000"+getitemname(@itemid)+"(s)^000000.";
+	next;
+L_Back:
+	return;
+}
+
+function	script	RemoveDonationItem	{
+L_Input:
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "^0099001.-^000000 Coloca el ^FF0000id de Cuenta^000000.";
+	input @aid;
+	mes "^0099002.-^000000 Coloca ^FF0000Item ID^000000 del item.";
+	input @itemid;
+	mes "^0099003.-^000000 Y por ultimo la ^FF0000cantidad^000000 de items.";
+	input @amount;
+	next;
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "Verifica si esta ^FF0000correcto^000000.";
+	mes "Account ID: ^FF0000"+@aid+"^000000.";
+	mes "Item: ^FF0000"+@itemid+"^000000(^FF0000"+getitemname(@itemid)+"^000000).";
+	if (@amount > 0) mes "Cantidad: ^FF0000"+@amount+"^000000.";
+	if (@amount == 0) mes "Cantidad: ^FF0000TODOS^000000.";
+	next;
+	menu "Si, Correcto",-,"No, Colocar de nuevo todo",L_Input,"No, Regresame al menu de GM",L_Back;
+	callfunc "RemoveDonationItemSub",@aid,@itemid,@amount;
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 "; 
+	mes "Todo Listo.";
+	next;
+L_Back:
+	return;
+}
+
+function	script	AddDonationItemSub	{
+	//if ($useSQL) {
+		// Check if there is a main entry, if not, lets make one.
+		query_sql "SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"'",@donid;
+		if (getarraysize(@donid) == 1) {
+			query_sql "INSERT INTO `"+$@table_items$+"` (`donation_id`,`item_id`,`amount`) VALUES ('"+@donid[0]+"','"+getarg(1)+"','"+getarg(2)+"')";
+		} else {
+			query_sql "DELETE FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"'"; //duplicate removal
+			query_sql "INSERT INTO `"+$@table_balance$+"` (`account_id`,`balance`) VALUES ('"+getarg(0)+"','0')";
+			query_sql "INSERT INTO `"+$@table_items$+"` (`donation_id`,`item_id`,`amount`) VALUES ((SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"'),'"+getarg(1)+"','"+getarg(2)+"')";
+		}
+		deletearray @donid[0],getarraysize(@donid);
+	//}
+	return;
+}
+
+function	script	RemoveDonationItemSub	{
+//	if ($useSQL) {
+		if (getarg(2) == 0) {
+			query_sql "DELETE FROM `"+$@table_items$+"` WHERE `donation_id`=(SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"') && `item_id`='"+getarg(1)+"'";
+		} else {
+			query_sql "DELETE FROM `"+$@table_items$+"` WHERE `donation_id`=(SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"') && `item_id`='"+getarg(1)+"' && `amount`='"+getarg(2)+"'";
+		}
+//	}
+	return;
+}
+
+function	script	DecreaseDonationItem	{
+//	if ($useSQL) {
+		query_sql "UPDATE `"+$@table_items$+"` SET `amount`=`amount`-'"+getarg(3)+"' WHERE `donation_id`=(SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getarg(0)+"') && `item_id`='"+getarg(1)+"'";
+//	} else {
+//		for (set .@i,0; .@i < getarraysize(getd("$don_item_ids_"+getarg(0))); set .@i,.@i+1) {
+//			if (getd("$don_item_ids_"+getarg(0)+"["+.@i+"]") == getarg(1)) {
+//				if (getd("$don_amount_"+getarg(0)+"["+.@i+"]") == getarg(2)) {
+//					set getd("$don_amount_"+getarg(0)+"["+.@i+"]"),getd("$don_amount_"+getarg(0)+"["+.@i+"]")-getarg(3);
+//					break;
+//				}
+//			}
+//		}
+//	}
+	return;
+}
+
+function	script	RetrieveDonatedItems	{
+//	if ($useSQL) {
+		query_sql "SELECT `item_id`,`amount` FROM `"+$@table_items$+"` WHERE `donation_id`=(SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+getcharid(3)+"')",@itemid,@amount;
+//	} else {
+//		copyarray @itemid[0],getd("$don_item_ids_"+getcharid(3)+"[0]"),getarraysize(getd("$don_item_ids_"+getcharid(3)));
+//		copyarray @amount[0],getd("$don_amount_"+getcharid(3)+"[0]"),getarraysize(getd("$don_amount_"+getcharid(3)));
+//	}
+	if (getarraysize(@itemid) < 1) {
+		mes "^6A07A9[ Donation Assistant ]^000000";
+		mes "No hay items para ti actualmente.";
+		mes "Si donaste y pasaron más de ^CC330024 Horas^000000 de espera, contacta al admin por e-mail en: ^CC3300staff@x-ro.net^000000, que pases un buen día en EasyRO.";
+		next;
+	} else {
+		for (set @i,0; @i < getarraysize(@itemid); set @i,@i+1) {
+			if (checkweight(@itemid[@i],@amount[@i])) {
+				getitem @itemid[@i],@amount[@i];
+				callfunc "RemoveDonationItemSub",getcharid(3),@itemid[@i],@amount[@i];
+			} else {
+				mes "^6A07A9[ Donation Assistant ]^000000";
+				mes "                 ";
+				mes "No tienes espacio suficiente para estos items:";
+				mes "^FF0000"+@amount[@i]+" "+getitemname(@itemid[@i])+"(s)^000000";
+				mes "Regresa mas tarde cuando tengas mas espacio en tu inventario.";
+				next;
+				menu "Continuar con otras donaciones.",L_Cont,"Dame lo suficiente que pueda cargar.",-,"Regrésame al menú.",L_Back;
+				set @j,0;
+				while (checkweight(@itemid[@i],(@j+1)) && @j < @amount[@i]) {
+					set @j,@j+1;
+				}
+				getitem @itemid[@i],@j;
+				callfunc "DecreaseDonationItem",getcharid(3),@itemid[@i],@amount[@i],@j;
+			}
+		}
+	}
+L_Back:
+	deletearray @itemid[0],getarraysize(@itemid);
+	deletearray @amount[0],getarraysize(@amount);
+	return;
+}
+
+function	script	ViewDonations	{
+	deletearray @itemid[0],getarraysize(@itemid);
+	deletearray @amount[0],getarraysize(@amount);
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "Te mostraré todas las donaciones de la cuenta que me pides.";
+	next;
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "Ahora, ¿Cual ^FF0000Account id^000000 es la que quieres ver?";
+L_Input:
+	input @aid;
+	next;
+L_Reload:
+	deletearray @itemid[0],getarraysize(@itemid);
+	deletearray @amount[0],getarraysize(@amount);
+//	if ($useSQL) {
+		query_sql "SELECT `item_id`,`amount` FROM `"+$@table_items$+"` WHERE `donation_id`=(SELECT `donation_id` FROM `"+$@table_balance$+"` WHERE `account_id`='"+@aid+"')",@itemid,@amount;
+//	} else {
+//		copyarray @itemid[0],getd("$don_item_ids_"+@aid+"[0]"),getarraysize(getd("$don_item_ids_"+@aid));
+//		copyarray @amount[0],getd("$don_amount_"+@aid+"[0]"),getarraysize(getd("$don_amount_"+@aid));
+//	}
+	for (set @i,0; @i < getarraysize(@itemid); set @i,@i+5) {
+		mes (@i+1)+": "+getitemname(@itemid[@i])+"("+@itemid[@i]+") * "+@amount[@i];
+		if (@i+1 < getarraysize(@itemid)) mes (@i+2)+": "+getitemname(@itemid[@i+1])+"("+@itemid[@i+1]+") * "+@amount[@i+1];
+		if (@i+2 < getarraysize(@itemid)) mes (@i+3)+": "+getitemname(@itemid[@i+2])+"("+@itemid[@i+2]+") * "+@amount[@i+2];
+		if (@i+3 < getarraysize(@itemid)) mes (@i+4)+": "+getitemname(@itemid[@i+3])+"("+@itemid[@i+3]+") * "+@amount[@i+3];
+		if (@i+4 < getarraysize(@itemid)) mes (@i+5)+": "+getitemname(@itemid[@i+4])+"("+@itemid[@i+4]+") * "+@amount[@i+4];
+		switch(select("Editar Donacion","Borrar Donacion","Siguiente")) {
+		case 1:
+			mes "Coloca el numero de donacion que quieres editar:";
+			input @id;
+			next;
+			mes "^6A07A9[ Donation Assistant ]^000000";
+			mes "                 ";
+			mes "Donacion "+@id+": "+getitemname(@itemid[@id-1])+" * "+@amount[@id-1];
+			mes "                 ";
+			mes "Que quieres editar?";
+			next;
+			switch(select("Item ID","Cantidad","Nada, Siguiente","Nada, Actualiza la lista","Nada, Regresar al menu de GM")) {
+			case 1:
+				mes "^6A07A9[ Donation Assistant ]^000000";
+				mes "                 ";
+				mes "Coloca el nuevo Item ID para reemplazar el actual:";
+				next;
+			L_Edit_Input:
+				input @iid;
+				if (getitemname(@iid) == "null") {
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Item ID Ilegal.";
+					next;
+				} else {
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Lo siguiente es correcto?";
+					mes "Nuevo item: ^FF0000"+getitemname(@iid)+"^000000.";
+					next;
+					menu "Si",-,"No",L_Edit_Input,"Regresar al Menu de GM",L_Back;
+//					if ($useSQL) {
+						query_sql "UPDATE `"+$@table_items$+"` SET `item_id`='"+@iid+"' WHERE `item_id`='"+@itemid[@id-1]+"'";
+//					} else {
+//						set getd("$don_item_ids_"+@aid+"["+(@id-1)+"]"),@iid;
+//					}
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Listo, Las entradas de donacion se han actualizado";
+					next;
+				}
+				menu "Actualizar Lista de Donaciones",L_Reload,"Abrir lista de otra cuenta",L_Input,"Regresar al menu de GM",L_Back;
+				end;
+			case 2:
+				mes "^6A07A9[ Donation Assistant ]^000000";
+				mes "                 ";
+				mes "Coloca la nueva cantidad:";
+				next;
+			L_Amount_Input:
+				input @am;
+				if (@am <= 0) {
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Colocaste una cantidad incorrecta, No cambiaste la cantidad.";
+					next;
+				} else {
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Lo Siguiente es correcto?";
+					mes "                 ";
+					mes "Cambiar cantidad a ^FF0000"+@am;
+					next;
+					menu "Si",-,"No",L_Amount_Input,"Regresar al menu de GM",L_Back;
+//					if ($useSQL) {
+						query_sql "UPDATE `"+$@table_items$+"` SET `amount`='"+@am+"' WHERE `amount`='"+@amount[@id-1]+"'";
+//					} else {
+//						set getd("$don_amount_"+@aid+"["+(@id-1)+"]"),@am;
+//					}
+					mes "^6A07A9[ Donation Assistant ]^000000";
+					mes "                 ";
+					mes "Cantidad actualizada!";
+					next;
+				}
+				menu "Actualizar Lista de Donaciones",L_Reload,"Abrir lista de otra cuenta",L_Input,"Regresar al menu de GM",L_Back;
+				end;
+			case 3:
+				next;
+				break;
+			case 4:
+				next;
+				goto L_Reload;
+			case 5:
+				next;
+				goto L_Back;
+			}
+			break;
+		case 2:
+			mes "Coloca ^FF0000numero^000000 de la donacion que quieres eliminar:";
+			input @id;
+			next;
+			callfunc "RemoveDonationItemSub",@aid,@itemid[@id-1],0;
+			mes "^6A07A9[ Donation Assistant ]^000000";
+			mes "                 ";
+			mes "Donacion eliminada";
+			next;
+			menu "Actualizar Lista de Donaciones",L_Reload,"Abrir lista de otra cuenta",L_Input,"Regresar al menu de GM",L_Back;
+			end;
+		case 3:
+			next;
+			
+		}
+	}
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "                 ";
+	mes "Esas fueron las donaciones para esa cuenta.";
+	next;
+	menu "Regresar al menu de GM",-,"Abrir lista de otra cuenta",L_Input;
+L_Back:
+	return;
+}
+
+function	script	ReInstallDatabase	{
+	mes "^6A07A9[ Donation Assistant ]^000000";
+	mes "     ";
+	mes "^FF0000[ PELIGRO ]^000000: ESTO BORRARA EL DATA DE DONACION ACTUAL, ESTAS SEGURO DE CONTINUAR? ^FF0000[PELIGRO]^000000";
+	menu "No",L_Back,"Si",-;
+	query_sql "DROP TABLE IF EXISTS `"+$@table_balance$+"`";
+	query_sql "CREATE TABLE IF NOT EXISTS `"+$@table_balance$+"` (`donation_id` int(10) unsigned NOT NULL auto_increment,`account_id` int(10) unsigned NOT NULL,`balance` int(10) unsigned NOT NULL default '0',PRIMARY KEY (`donation_id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+	query_sql "DROP TABLE IF EXISTS `"+$@table_items$+"`";
+	query_sql "CREATE TABLE IF NOT EXISTS `"+$@table_items$+"` (`donation_id` int(10) unsigned NOT NULL,`item_id` int(10) unsigned NOT NULL,`amount` int(10) unsigned NOT NULL default '1',PRIMARY KEY (`donation_id`,`item_id`,`amount`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+	//debugmes "[ Donation NPC ] SQL database ReInstalled";
+L_Back:
+	return;
+}
+
+function	script	InstallDatabase	{
+	query_sql "CREATE TABLE IF NOT EXISTS `"+$@table_balance$+"` (`donation_id` int(10) unsigned NOT NULL auto_increment,`account_id` int(10) unsigned NOT NULL,`balance` int(10) unsigned NOT NULL default '0',PRIMARY KEY (`donation_id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+	query_sql "CREATE TABLE IF NOT EXISTS `"+$@table_items$+"` (`donation_id` int(10) unsigned NOT NULL,`item_id` int(10) unsigned NOT NULL,`amount` int(10) unsigned NOT NULL default '1',PRIMARY KEY (`donation_id`,`item_id`,`amount`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+	//debugmes "[ Donation NPC ] SQL database installed";
+	return;
+}

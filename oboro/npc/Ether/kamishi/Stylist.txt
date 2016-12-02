@@ -1,0 +1,259 @@
+//===== rAthena Script =======================================
+//= Race Master Script
+//===== By: ==================================================
+//= KamiShi
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= *Athena SVN
+//===== Description: =========================================
+//= Stylist
+//= Supports human colors and races colors. If you don't have races 
+//= it will only show human options.
+//= Save slots (1,2,3) paletteSaveSlot1, paletteSaveSlot2, paletteSaveSlot3.
+
+function	script	resetSavedSets	{
+	set paletteClothesSlot1, $RacePals[race_id*4+2];
+	set paletteHairSlot1, $RacePals[race_id*4];
+	set paletteClothesSlot2,$RacePals[race_id*4+2];
+	set paletteHairSlot2,$RacePals[race_id*4];
+	set paletteClothesSlot3,$RacePals[race_id*4+2];
+	set	paletteHairSlot3,$RacePals[race_id*4];
+	return;
+}
+
+
+prontera,169,179,5	script	Stylist#s1-1::Stylist	894,{
+	callsub RaceDye,$RacePals[race_id*4],$RacePals[race_id*4+1],$RacePals[race_id*4+2],$RacePals[race_id*4+3];
+	
+RaceDye:
+	mes "[^FF8000Stylist^000000]";
+	mes "You are currently wearing:";
+	mes "^000000Cloth color: ^0000FF"+callfunc("getlook2",7);
+	mes "^000000Hair color: ^0000FF"+callfunc("getlook2",6);
+	mes "^000000Hair style: ^0000FF"+getlook(1);
+	next;
+	mes "[^FF8000Stylist^000000]";
+	mes "What would you like to change?";
+	next;
+	switch(select("Clothes color:Hair color:Hair style:Saved Dyes"))
+	{
+		case 1:
+			mes "[^FF8000Stylist^000000]";
+			
+			if (race_id){
+				mes "Choose a style to begin from between ^0000FF"+(getarg(2)%32)+" and "+(getarg(3)%32)+"^000000.";
+			}else{
+				mes "Choose a style to begin from between ^0000FF"+getarg(2)+" and "+getarg(3)+"^000000.";
+			}
+			
+			if (getarg(3) == 693) {
+			
+				set @d,4;
+				
+				mes "Ro Basic Unicolor : "+(@d)+" - "+(@d+32*1);
+				mes "Ro Basic Analogic : "+(@d+32*1)+" - "+(@d+32*2);
+				mes "Ro Basic Complementary : "+(@d+32*2)+" - "+(@d+32*3);
+				
+				mes "Dark Unicolor : "+(@d+32*3)+" - "+(@d+32*4);
+				mes "Light Unicolor : "+(@d+32*4)+" - "+(@d+32*5);
+				mes "Gold Autumn : "+(@d+32*5)+" - "+(@d+32*6);
+				mes "Dark Gold : "+(@d+32*6)+" - "+(@d+32*7);
+				mes "BadBoys: "+(@d+32*7)+" - "+(@d+32*8);
+				
+				mes "Dark Analogic : "+(@d+32*8)+" - "+(@d+32*9);
+				mes "Light Analogic : "+(@d+32*9)+" - "+(@d+32*10);
+				mes "Gold : "+(@d+32*10)+" - "+(@d+32*11);
+				mes "Silver : "+(@d+32*11)+" - "+(@d+32*12);
+				
+				mes "Dark Complementary : "+(@d+32*12)+" - "+(@d+32*13);
+				mes "Light Complementary : "+(@d+32*13)+" - "+(@d+32*14);
+				mes "Passion Red : "+(@d+32*14)+" - "+(@d+32*15);
+				mes "Full Mix : "+(@d+32*15)+" - "+(@d+32*16);
+				
+				mes "Paradize : "+(@d+32*16)+" - "+(@d+32*17);
+				mes "Snow : "+(@d+32*17)+" - "+(@d+32*18);
+				mes "Dark Neon : "+(@d+32*18)+" - "+(@d+32*19);
+				mes "Black And White : "+(@d+32*19)+" - "+(@d+32*20);
+				
+				mes "Random : "+(@d+32*20)+" - "+(@d+690);
+			}
+			
+			chose1:
+			input (.@style, getarg(2), getarg(3));
+			if(.@style < getarg(2) || .@style >= getarg(3))
+			{
+				mes "Style chosen is out of range.";
+				goto chose1;
+			}
+			
+			browse1:
+			callfunc("setlook2", 7, .@style);
+			dispbottom "This is style number "+.@style+".";
+			switch(select("Next:Previous:I Like It!:[Save clothes]")){
+				
+				case 1:
+					set .@style, .@style+1;
+					if (.@style >= getarg(3)) set .@style, getarg(2);
+					goto browse1;
+					
+				case 2:
+					set .@style, .@style-1;
+					if (.@style <= getarg(2)) set .@style, getarg(3)-1;
+					goto browse1;
+				
+				case 3:
+					next;
+					mes "[^FF8000Stylist^000000]";
+					mes "Perfect ! I am glad you found a style that fits you!";
+					close;
+				
+				case 4:
+					switch(select("Set 1:Set 2:Set 3")){
+						
+						case 1:
+							set paletteClothesSlot1, .@style;
+							break;
+							
+						case 2:
+							set paletteClothesSlot2, .@style;
+							break;
+							
+						case 3:
+							set paletteClothesSlot3, .@style;
+							break;
+
+					}
+					mes "Your style has been saved!";
+					goto browse1;
+					
+			}
+			
+			close;
+
+		case 2:
+			mes "[^FF8000Stylist^000000]";
+			mes "Choose a style to begin from between ^0000FF"+getarg(0)+" and "+getarg(1)+"^000000.";
+			chose2:
+			input (.@style, getarg(0), getarg(1));
+			if(.@style < getarg(0) || .@style >= getarg(1))
+			{
+				mes "Style chosen is out of range.";
+				goto chose2;
+			}
+			
+			browse2:
+			callfunc("setlook2",6,.@style);
+			dispbottom "This is style number "+.@style+".";
+			
+			switch(select("Next:Previous:I Like It!:[Save dye]")){
+				
+				case 1:
+					set .@style, .@style+1;
+					if (.@style >= getarg(1)) set .@style, getarg(0);
+					goto browse2;
+					
+				case 2:
+					set .@style, .@style-1;
+					if (.@style <= getarg(0)) set .@style, getarg(1)-1;
+					goto browse2;
+				
+				case 3:
+					next;
+					mes "[^FF8000Stylist^000000]";
+					mes "Perfect ! I am glad you found a style that fits you!";
+					close;
+					
+				case 4:
+					switch(select("Set 1:Set 2:Set 3")){
+						
+						case 1:
+							set paletteHairSlot1, .@style;
+							break;
+							
+						case 2:
+							set paletteHairSlot2, .@style;
+							break;
+							
+						case 3:
+							set paletteHairSlot3, .@style;
+							break;
+
+					}
+					mes "Your style has been saved!";
+					goto browse2;
+			}
+			
+			close;
+
+		case 3:
+			mes "[^FF8000Stylist^000000]";
+			mes "Choose a style to begin from between ^0000FF0 and 65^000000.";
+			set .@maxH, 65;
+			chose3:
+			input .@style;
+			if(.@style < 0 || .@style > .@maxH)
+			{
+				mes "Style chosen is out of range.";
+				goto chose3;
+			}
+			
+			browse3:
+			setlook 1,.@style;
+			dispbottom "This is style number "+.@style+".";
+			
+			switch(select("Next:Previous:I Like It!")){
+				
+				case 1:
+					set .@style, .@style+1;
+					if (.@style > .@maxH) set .@style, 0;
+					goto browse3;
+					
+				case 2:
+					set .@style, .@style-1;
+					if (.@style <= 0) set .@style, .@maxH;
+					goto browse3;
+				
+				case 3:
+					next;
+					mes "[^FF8000Stylist^000000]";
+					mes "Perfect ! I am glad you found a style that fits you!";
+					close;
+			}
+			
+			close;
+			
+		case 4:
+			mes "[^FF8000Stylist^000000]";
+			mes "Here are the color sets you saved:";
+			mes "Which one do you want to wear ?";
+			mes "Slot 1 : "+paletteClothesSlot1+", "+paletteHairSlot1+"";
+			mes "Slot 2 : "+paletteClothesSlot2+", "+paletteHairSlot2+"";
+			mes "Slot 3 : "+paletteClothesSlot3+", "+paletteHairSlot3+"";
+			next;
+			switch(select("Set 1:Set 2:Set 3")){
+				case 1:
+					callfunc("setlook2", 7, paletteClothesSlot1);
+					callfunc("setlook2", 6, paletteHairSlot1);
+					break;
+					
+				case 2:
+					callfunc("setlook2", 7, paletteClothesSlot2);
+					callfunc("setlook2", 6, paletteHairSlot2);
+					break;
+					
+				case 3:
+					callfunc("setlook2", 7, paletteClothesSlot3);
+					callfunc("setlook2", 6, paletteHairSlot3);
+					break;
+
+			}
+			mes "[^FF8000Stylist^000000]";
+			mes "Here is the set that you like! See you later!";
+			close;
+			
+	}
+	
+
+
+}

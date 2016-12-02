@@ -1,0 +1,80 @@
+Condensed White Potion,547,300,0
+Mastela Fruit,522,100,0
+Light White Potion,11501,100,0
+Light Blue Potion,11502,100,0
+Blue Potion,505,100,0
+Royal Jelly,526,100,0
+Mega Resist Potion,12299,80,0
+Speed Potion,12016,80,0
+Authoritative Badge,662,80,0
+Daehwandan,12274,70,0
+Berserk Potion,657,70,0
+Awakening Potion,656,70,0
+Concentraton Potion,645,50,0
+Cobweb,1025,70,0
+Aloevera,606,70,0
+Abravive,14536,70,0
+Blue Gemstone,717,200,0
+Yellow Gemstone,715,200,0
+Red Gemstone,716,200,0
+Bottle Grenade,7135,200,0
+Acid Bottle,7136,200,0
+Glistening Coat,7139,70,0
+Crystal Fragment,7321,70,0
+Box of Drowsiness,12031,30,0
+Box of Gloom,12029,30,0
+Box of Thunder,12028,30,0
+Box of Sunlight,12033,30,0
+Box of Resentment,12030,30,0
+Distilled Fighting Spirit,682,15,0
+Herb of Incantation,683,15,0
+Durian,684,30,0
+Sesame Pastry,12122,15,0
+Honey Pastry,12123,15,0
+Rainbow Cake,12124,15,0
+Lucky Rice Cake,12198,15,0
+L10 Increase AGI Scroll,12216,30,0
+L10 Increase BLES Scroll,12215,30,0
+Arunafeltz Desert Sandwich,12321,30,0
+Schwartzwald Pine Jubilee,12320,30,0
+Rune Strawberry Cake,12319,30,0
+Flame Elemental Converter,12114,30,0
+Frost Elemental Converter,12115,30,0
+Seismic Elemental Converter,12116,30,0
+Lightning Elemental Converter,12117,30,0
+STR+7,12072,10,0
+INT+7,12077,10,0
+VIT+7,12082,10,0
+AGI+7,12087,10,0
+DEX+7,12092,10,0
+LUK+7,12097,10,0
+STR+10,12202,10,0
+AGI+10,12203,10,0
+INT+10,12204,10,0
+DEX+10,12205,10,0
+LUK+10,12206,10,0
+VIT+10,12207,10,0
+Trap,1065,30,0
+Arrow,1750,500,0
+Fire Arrow,1752,500,0
+Silver Arrow,1751,500,0
+Arrow of Counter Evil,1766,500,0
+Arrow of Wind,1755,500,0
+Crystal Arrow,1754,500,0
+Cursed Arrow,1761,500,0
+Flash Arrow,1760,500,0
+Frozen Arrow,1759,500,0
+Inmaterial Arrow,1757,500,0
+Iron Arrow,1770,500,0
+Mute Arrow,1769,500,0
+Oridecon Arrow,1765,500,0
+Poison Arrow,1763,500,0
+Rusty Arrow,1762,500,0
+Arrow of Shadow,1767,500,0
+Sharp Arrow,1764,500,0
+Sleep Arrow,1768,500,0
+Steel Arrow,1753,500,0
+Stone Arrow,1756,500,0
+Stun Arrow,1758,500,0
+Wind Stone,7523,50,0
+Flame Stone,7521,50,0

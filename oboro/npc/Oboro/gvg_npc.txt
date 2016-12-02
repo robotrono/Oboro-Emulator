@@ -1,0 +1,133 @@
+gr_1,61,59,4	script	GvG	468,{
+
+	mes name$; mes " ";
+	set @mapa$ , "bat_c01";
+
+	if ( ( $@GUILD1 == 0 || $@GUILD2 == 0 ) && getguildmasterid(getcharid(2)) == getcharid(0) && getcharid(2) != 0 ) {
+		if ( $@GUILD1 == 0 ) {
+			mes "Tu guild quedó inscrita para el GvG, esperando otra guild...";
+			set $@GUILD1 , getcharid(2); 
+			close;
+		} else if ( $@GUILD2 == 0 && $@GUILD1 != getcharid(2) ) {
+			mes "Tu guild quedó inscrita para el Guild vs Guild.";
+			set $@GUILD2 , getcharid(2);
+			set $@On , 1;
+			initnpctimer "Respawn";
+			donpcevent "GvG::OnLoop";
+			close;
+		}
+	}
+
+	mes "¿Deseas entrar al GvG?";
+	if ( select ( "Llévame con mi guild.:Mejor no." ) == 2 ) close;	
+		if ( getguildname(getcharid(2)) == getguildname($@GUILD1) && getcharid(2) != 0 ) {
+			warp @mapa$,53,128; 
+			close;
+		} else if ( getguildname(getcharid(2)) == getguildname($@GUILD2) && getcharid(2) != 0 ) {
+			warp @mapa$,146,55; 
+			close; 
+		} else {
+		 	next; 
+			mes name$; 
+			mes " "; 
+			mes "No perteneces a ninguna guild inscrita.";
+			close;
+		}
+
+OnInit:
+	set $@GUILD1 , 0;
+	set $@GUILD2 , 0;
+	set $@On,0;
+	setwall "bat_c01",54,122,6,7,0,"batc01wall_a";
+	setwall "bat_c01",55,122,5,7,0,"batc01wall_b";
+	setwall "bat_c01",140,56,6,7,0,"batc01wall_c";
+	setwall "bat_c01",140,57,5,7,0,"batc01wall_d";
+end; 
+
+OnPCDieEvent:
+	areapercentheal "bat_c01",50,123,58,131,100,100;
+	areapercentheal "bat_c01",141,52,149,60,100,100;
+	getmapxy .@maprfyl$,.@xrfyl,.@yrfyl,0;
+	if ( .@maprfyl$ == @mapa$ ) { 
+		if ( getguildname(getcharid(2)) == getguildname($@GUILD1) ) {
+		 	set .GUILDPUNTO2, .GUILDPUNTO2 + 1;
+			warp @mapa$,53,128; announce "[ GvG ] : Punto para "+getguildname($@GUILD2)+". Total : " + ( .GUILDPUNTO2 ) + ".",bc_map;
+		}
+		else if ( getguildname(getcharid(2)) == getguildname($@GUILD2) ) { 
+			set .GUILDPUNTO1, .GUILDPUNTO1 + 1;
+			warp @mapa$,146,55; announce "[ GvG ] : Punto para "+getguildname($@GUILD1)+". Total : " + ( .GUILDPUNTO1 ) + ".",bc_map;
+		}
+		atcommand "@alive "+ strcharinfo(0); 
+		sc_start 32,  240000, 10; 
+		sc_start 30, 240000, 10; 
+		percentheal 100,100; 
+		repairall;
+		end;
+	}
+end;
+
+OnLoop:
+	sleep 10000;
+	do {
+		sleep 30000;
+		if ( getmapusers("bat_c01") < 1 && $@On >= 1 ) {
+			set $@GUILD1 , 0;
+			set $@GUILD2 , 0;
+			set $@On,0;
+			mapwarp "bat_c01","prontera",155,173;
+			stopnpctimer "Respawn"; 
+			end;
+		}
+	} while(1);
+end;
+
+}
+
+-	script	Respawn	-1,{
+	end;
+
+	OnTimer20000:
+		areawarp "bat_c01",50,124,57,131,"bat_c01",60,121;
+		areawarp "bat_c01",149,59,142,52,"bat_c01",139,62;
+		initnpctimer;
+	end;
+}
+
+bat_c01	mapflag	nomemo
+bat_c01	mapflag	nowarp
+bat_c01	mapflag	nowarpto
+bat_c01	mapflag	nobranch
+bat_c01	mapflag	noreturn
+bat_c01	mapflag	nosave	SavePoint
+bat_c01	mapflag	gvg
+
+//GuildRoom
+gr_2,61,59,4	duplicate(GvG)	GvG#GR02	468
+gr_3,61,59,4	duplicate(GvG)	GvG#GR03	468
+gr_4,61,59,4	duplicate(GvG)	GvG#GR04	468
+gr_5,61,59,4	duplicate(GvG)	GvG#GR05	468
+gr_6,61,59,4	duplicate(GvG)	GvG#GR06	468
+gr_7,61,59,4	duplicate(GvG)	GvG#GR07	468
+gr_8,61,59,4	duplicate(GvG)	GvG#GR08	468
+gr_9,61,59,4	duplicate(GvG)	GvG#GR09	468
+gr_10,61,59,4	duplicate(GvG)	GvG#GR10	468
+gr_11,61,59,4	duplicate(GvG)	GvG#GR11	468
+gr_12,61,59,4	duplicate(GvG)	GvG#GR12	468
+gr_13,61,59,4	duplicate(GvG)	GvG#GR13	468
+gr_14,61,59,4	duplicate(GvG)	GvG#GR14	468
+gr_15,61,59,4	duplicate(GvG)	GvG#GR15	468
+gr_16,61,59,4	duplicate(GvG)	GvG#GR16	468
+gr_17,61,59,4	duplicate(GvG)	GvG#GR17	468
+gr_18,61,59,4	duplicate(GvG)	GvG#GR18	468
+gr_19,61,59,4	duplicate(GvG)	GvG#GR19	468
+gr_20,61,59,4	duplicate(GvG)	GvG#GR20	468
+gr_21,61,59,4	duplicate(GvG)	GvG#GR21	468
+gr_22,61,59,4	duplicate(GvG)	GvG#GR22	468
+gr_23,61,59,4	duplicate(GvG)	GvG#GR23	468
+gr_24,61,59,4	duplicate(GvG)	GvG#GR24	468
+gr_25,61,59,4	duplicate(GvG)	GvG#GR25	468
+gr_26,61,59,4	duplicate(GvG)	GvG#GR26	468
+gr_27,61,59,4	duplicate(GvG)	GvG#GR27	468
+gr_28,61,59,4	duplicate(GvG)	GvG#GR28	468
+gr_29,61,59,4	duplicate(GvG)	GvG#GR29	468
+gr_30,61,59,4	duplicate(GvG)	GvG#GR30	468

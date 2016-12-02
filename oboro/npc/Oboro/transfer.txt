@@ -1,0 +1,195 @@
+/*
+[============================================================================]
+
+		       -----   ----   .     .     .----
+			  |	'---.  /_\   /_\    |
+                     -----  ----' /   \ /   \   |____
+
+			SCRIPT.C :: guildpack2sql OBLIGADO
+			BY DEV   :: iSaaChjK
+			FOR      :: EAMOD zephysoft.com/eamod
+
+[============================================================================]
+*/
+gr_1,51,53,6	script	Guild Transfer	529,{
+
+	set .@ITEMINDV, 7280;
+
+	set .@ITEM1GP , 7281;
+	set .@CSETS1GP , 5;
+	set .@CHAT1GP , 6;
+	set .@CLOWS1GP,7;
+	set .@CASH1GP,20000;
+
+
+	set .@ITEM2GP , 7282; 
+	set .@CSETS2GP , 5;
+	set .@CHAT2GP , 6;
+	set .@CLOWS2GP,6;
+	set .@CASH2GP,20000;
+
+	mes name$;
+	mes " ";
+	if ( ( countitem(.@ITEMINDV) == 0 && countitem(.@ITEM1GP) == 0 && countitem(.@ITEM2GP) == 0 ) || getcharid(2) == 0  ) {
+		mes " ^0174DF - ^000000 No tienes item de GP.";
+		mes_with_close " ^0174DF - ^000000 Necesitas estar en la guild."; 
+	}
+
+	if ( countitem(.@ITEMINDV) > 1 || countitem(.@ITEM1GP) > 1 || countitem(.@ITEM2GP) > 1 ) {	
+		if ( countitem(.@ITEMINDV) > 1 ) set .@RESET,.@ITEMINDV;
+		if ( countitem(.@ITEM1GP)  > 1 ) set .@RESET,.@ITEM1GP;
+		if ( countitem(.@ITEM2GP)  > 1 ) set .@RESET,.@ITEM2GP;
+		
+		delitem .@RESET,countitem(.@RESET) - 1;
+		npctalk strcharinfo(0) + "Tratas de hacer Doble Transfer.";
+		close;
+	}
+
+	if ( countitem( 7280 ) == 1 && #GPI == 0 ) 
+		callfunc ("TIDNV",.@ITEMINDV);
+	else if ( countitem( 7281 ) == 1 && #GPT == 0 && getguildmasterid(getcharid(2)) == getcharid(0) ) 
+			callfunc ("TGP", name$ , .@CSETS1GP, .@CHAT1GP, .@CLOWS1GP, .@ITEM1GP, .@CASH1GP );	 	
+	else if ( countitem( 7282 ) == 1 && #GPT == 0 && getguildmasterid(getcharid(2)) == getcharid(0) ) 
+			callfunc ("TGP" , name$ , .@CSETS2GP, .@CHAT2GP, .@CLOWS2GP, .@ITEM2GP, .@CASH2GP ); 
+	else {  mes " ^0174DF - ^000000Ya retiraste el Guild Pack.";  close;  }
+
+}	
+
+function	script	TGP	{
+	delitem getarg(4),1;
+	set #GPT , #GPT + 1;
+	
+	mes "Tienes derecho a: " + getarg(1) + " Mvp's Set";
+	
+	do {
+		switch ( select ( "^0174DF> ^000000 Valkyrie Set :^0174DF> ^000000 Satan Set :^0174DF> ^000000 Beelzebut Set " ) ) {
+			case 1: 
+				guildpack2sql(2357,1);
+				guildpack2sql(2524,1);
+				guildpack2sql(2421,1);
+				break;
+			case 2: 
+				guildpack2sql(2375,1);
+				guildpack2sql(2433,1);
+				guildpack2sql(2374,1);
+
+				break;
+			case 3: 
+				guildpack2sql(2702,1);
+				guildpack2sql(2000,1);
+				guildpack2sql(2423,1);
+				break;
+		}
+		set .@SETCANT , .@SETCANT + 1;
+
+		next; 
+		mes getarg( 0 ); 
+		mes " "; 
+		mes "Acabas de recibir tu Set número [  "+ .@SETCANT + " ] ";
+
+	} while ( .@SETCANT != getarg( 1 ) );
+	
+	next; 
+	mes getarg( 0 ); 
+	mes " "; 
+	mes "Muy bien ahora escoge tus [ " + getarg( 2 ) + " ] Hats de donación";
+	
+	do {
+		switch ( select ("^0174DF> ^000000 RWC Gold :^0174DF> ^000000 Love Dad Bandana :^0174DF> ^000000 Large Baphoment :^0174DF> ^000000 Blush of Groom :^0174DF> ^000000 Giant Baphoment Horn " ) ) {
+			case 1: guildpack2sql(5451,1); break;
+			case 2: guildpack2sql(5366,1); break;	
+			case 3: guildpack2sql(5518,1); break;
+			case 4: guildpack2sql(5800,1); break;
+			case 5: guildpack2sql(5374,1); break;
+		}
+		set .@CHATS , .@CHATS + 1;
+	
+		atcommand "@storeall";
+		
+		next; 
+		mes getarg( 0 ); 
+		mes " "; 
+		mes "Acabas de recibir tu hat número [  "+ .@CHATS + " ] ";
+
+	} while ( .@CHATS != getarg( 2 ) );		
+	
+	next; 
+	mes getarg( 0 ); 
+	mes ""; 
+	mes "Muy bien ahora escoge tus [ " + getarg( 3 ) + " ] Lowers a elección.";
+	do {
+		if ( select ( " ^0174DF> ^000000 Bubble Gum : ^0174DF> ^000000 4 Leaf Clover ") == 1 )
+			guildpack2sql(5597,1);
+		else 
+			guildpack2sql(5596,1);
+		
+		set .@CLOW , .@CLOW + 1;
+
+		next; 
+		mes getarg( 0 ); 
+		mes ""; 
+		mes "Acabas de recibir tu Lower número [  "+ .@CLOW + " ] ";	
+
+	} while ( .@CLOW != getarg( 3 ) );
+		setarray .@IGP[0],2554,1228,5293,5225,30167,30166,7959;
+	if ( getarg(4) == 7281 )
+	 	setarray .@CGP[0],5,3,4,4,3,5,500;
+	else if ( getarg(4) == 7282 )
+		setarray .@CGP[0],4,3,6,6,3,5;
+
+	for ( set .@i , 0; .@i < getarraysize(.@IGP); set .@i , .@i + 1 ) {
+		if ( .@IGP[i] == 0 )
+			continue;
+
+		getitem2 .@IGP[.@i],.@CGP[.@i],1,0,0,0,0,0,0;
+		atcommand "@storeall";
+	}	
+	
+	set zeny , zeny + 30000000;
+	set #CASHPOINTS , #CASHPOINTS + getarg(5);
+	mes_with_close "Guild Transfer listo."; 
+}
+
+function	script	TIDNV	{
+	setarray .@ITEM__PERSONAL[0],2115,5170,2424,2528,2202,2701,2729,4334,4133,4064,4252,4044,4141,4105,4381,4097,4058,4045,4439,7828,7829,30044;
+	setarray .@ITEM_PERSONALR[0], 5  , 5  ,  5 , 5  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,  0 ,  0 , 0  ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , 0;
+ 	setarray .@ITEM_PERSONALC[0], 1  , 1  ,  1 , 1  , 1  , 2  , 2  , 1  , 1  , 2  , 1  ,  1 ,  1 , 1  ,  1 ,  1 ,  1 ,  1 ,  1 , 500, 500, 1;
+	delitem getarg(0),1;
+	for ( set .@item,0; .@item < getarraysize(.@ITEM__PERSONAL); set .@item , .@item + 1 )
+		getitem2 .@ITEM__PERSONAL[.@item],.@ITEM_PERSONALC[.@item],1,.@ITEM_PERSONALR[.@item],0,0,0,0,0;
+	atcommand "@storeall";	
+	set #GPI, #GPI  + 1;
+	mes "Guild Transfer listo.";  
+	close;
+}
+
+//GuildRoom
+gr_2,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR02	529
+gr_3,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR03	529
+gr_4,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR04	529
+gr_5,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR05	529
+gr_6,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR06	529
+gr_7,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR07	529
+gr_8,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR08	529
+gr_9,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR09	529
+gr_10,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR10	529
+gr_11,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR11	529
+gr_12,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR12	529
+gr_13,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR13	529
+gr_14,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR14	529
+gr_15,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR15	529
+gr_16,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR16	529
+gr_17,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR17	529
+gr_18,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR18	529
+gr_19,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR19	529
+gr_20,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR20	529
+gr_21,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR21	529
+gr_22,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR22	529
+gr_23,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR23	529
+gr_24,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR24	529
+gr_25,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR25	529
+gr_26,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR26	529
+gr_27,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR27	529
+gr_28,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR28	529
+gr_29,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR29	529
+gr_30,51,53,6	duplicate(Guild Transfer)	Guild Transfer#GR30	529

@@ -1,0 +1,64 @@
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// eAmod Project - Scripts
+// --------------------------------------------------------------------------
+// Script Name : Headgear to Costume converter
+// --------------------------------------------------------------------------
+// Description :
+// Allows a user to convert the equipped headgear (on Top, Mid or Low) into a
+// costume item. It will remove any card and refine of the Item.
+// --------------------------------------------------------------------------
+
+itemmall,171,85,6	script	Costumes Equip::Costume-IT	533,{
+	set .@Cash,3000;
+	mes "[ ^F70358Costume^000000 ]";
+	mes "¡Hola y bienvenido al servicio de Costume!";
+	mes "Aquí puedes convertir tus Hat en Costume a cambio de Cash Points.";
+	next;
+	mes "[ ^F70358Costume^000000 ]";
+	mes "Por favor, elige el hat que quieras convertir.";
+	mes "^2E2EFERecuerda, los refines y cartas añadidas serán borrados,^000000";
+	mes "y te costará "+.@Cash+" Cash Points.";
+	next;
+
+	setarray .@Position$[1],"Top","Mid","Low";
+	setarray .@Position[1],     1,    9,   10;
+
+	set .@Menu$,"";
+	for( set .@i, 1; .@i < 4; set .@i, .@i + 1 )
+	{
+		if( getequipisequiped(.@Position[.@i]) )
+			set .@Menu$, .@Menu$ + .@Position$[.@i] + "-" + "[" + getequipname(.@Position[.@i]) + "]";
+
+		set .@Menu$, .@Menu$ + ":";
+	}
+
+	set .@Part, .@Position[ select(.@Menu$) ];
+	if( !getequipisequiped(.@Part) )
+	{
+		mes "[ ^F70358Costume^000000 ]";
+		mes "Tú no llevas nada...";
+		close;
+	}
+
+	mes "[ ^F70358Costume^000000 ]";
+	mes "¿Quieres hacer Costume tu ^DF0101" + getitemname(getequipid(.@Part)) + "^000000?";
+	next;
+	if( select("Sí:No, lo siento.") == 2 )
+	{
+		mes "[ ^F70358Costume^000000 ]";
+		mes "¿Necesitas algo de tiempo para pensar en ello, ¿No?";
+		mes "Bien, puedo entenderlo. Espero verte pronto por aquí.";
+		close;
+	}
+	if( #CASHPOINTS < .@cash ){
+		mes "[ ^F70358Costume^000000 ]";
+		mes "Uh, ¿No tienes "+.@Cash+" Cash Points? Vuelve cuando tengas los Cash Points necesarios.";
+		close;
+	}
+	set #CASHPOINTS,#CASHPOINTS - .@Cash;
+	costume .@Part; // Convert the Headgear
+	mes "[ ^F70358Costume^000000 ]";
+	mes "Listo, disfrute de su Costume y de EasyRO.";
+	close;
+}
