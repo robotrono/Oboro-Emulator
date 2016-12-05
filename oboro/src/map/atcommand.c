@@ -1882,12 +1882,13 @@ ACMD_FUNC(hair_color)
 
 /*==========================================
  * @go [city_number or city_name] - Updated by Harbin
+ * eAmod Adapted iSaaC
  *------------------------------------------*/
 ACMD_FUNC(go)
 {
 	int i;
 	int town;
-	int map_name;
+	char map_name[MAP_NAME_LENGTH];
 	char output[CHAT_SIZE_MAX];
 
 	const struct {
@@ -1895,7 +1896,7 @@ ACMD_FUNC(go)
 		int x, y;
 		const char*const displayname;
 	} data[] = {
-		{ MAP_PRONTERA,		155, 187, NULL },
+		{ MAP_PRONTERA,		155, 187, NULL }, // 0 = Prontera
 		{ MAP_MORROC,		157,  93, NULL },
 		{ MAP_GEFFEN,		120,  70, NULL },
 		{ MAP_PAYON,		172, 101, NULL },
@@ -1904,8 +1905,8 @@ ACMD_FUNC(go)
 		{ MAP_ALDEBARAN,	140, 121, NULL },
 		{ MAP_LUTIE,		147, 134, NULL },
 		{ MAP_COMODO,		189, 147, NULL },
-		{ MAP_YUNO,		158, 196, NULL },
-		{ MAP_AMATSU,		224, 229, NULL },
+		{ MAP_YUNO,			158, 196, NULL },
+		{ MAP_AMATSU,		224, 229, NULL }, // 10 = Amatsu
 		{ MAP_GONRYUN,		159, 119, NULL },
 		{ MAP_UMBALA,		144, 160, NULL },
 		{ MAP_NIFLHEIM,		21, 153 , NULL },
@@ -1915,7 +1916,7 @@ ACMD_FUNC(go)
 		{ MAP_AYOTHAYA,		208, 193, NULL },
 		{ MAP_EINBROCH,		 64, 200, NULL },
 		{ MAP_LIGHTHALZEN,	158,  92, NULL },
-		{ MAP_EINBECH,		 70,  95, NULL },
+		{ MAP_EINBECH,		 70,  95, NULL }, // 20 = Einbech
 		{ MAP_HUGEL,		 96, 145, NULL },
 		{ MAP_RACHEL,		113, 137, NULL },
 		{ MAP_VEINS,		216, 123, NULL },
@@ -1925,7 +1926,7 @@ ACMD_FUNC(go)
 		{ MAP_BRASILIS,		196, 217, NULL },
 		{ MAP_MID_CAMP,		218, 236, NULL },
 		{ MAP_DICASTES01,	197, 193, NULL },
-		{ MAP_DEWATA,		200, 179, NULL },
+		{ MAP_DEWATA,		200, 179, NULL }, // 30 = Dewata
 		{ MAP_MALANGDO,		167, 135, NULL },
 		{ MAP_MORA,		110, 104, NULL },
 		{ MAP_ALBERTA,		103, 195, "Merchants" },
@@ -1950,6 +1951,7 @@ ACMD_FUNC(go)
 
 	}
  
+	memset(map_name, '\0', sizeof(map_name));
 	memset(atcmd_output, '\0', sizeof(atcmd_output));
 
 	// get the number
@@ -1970,8 +1972,92 @@ ACMD_FUNC(go)
 
 		}
 		return -1;
-
 	}
+	
+	// get possible name of the city
+	map_name[MAP_NAME_LENGTH-1] = '\0';
+	for (i = 0; map_name[i]; i++)
+		map_name[i] = TOLOWER(map_name[i]);
+	// try to identify the map name
+	if (strncmp(map_name, "prontera", 3) == 0) {
+		town = 0;
+	} else if (strncmp(map_name, "morocc", 4) == 0 ||
+	           strncmp(map_name, "morroc", 4) == 0) {
+		town = 1;
+	} else if (strncmp(map_name, "geffen", 3) == 0) {
+		town = 2;
+	} else if (strncmp(map_name, "payon", 3) == 0) {
+		town = 3;
+	} else if (strncmp(map_name, "alberta", 3) == 0) {
+		town = 4;
+	} else if (strncmp(map_name, "izlude", 3) == 0) {
+		town = 5;
+	} else if (strncmp(map_name, "aldebaran", 3) == 0) {
+		town = 6;
+	} else if (strncmp(map_name, "lutie", 3) == 0 ||
+	           strcmp(map_name,  "christmas") == 0 ||
+	           strncmp(map_name, "xmas", 3) == 0 ||
+	           strncmp(map_name, "x-mas", 3) == 0) {
+		town = 7;
+	} else if (strncmp(map_name, "comodo", 3) == 0) {
+		town = 8;
+	} else if (strncmp(map_name, "juno", 3) == 0 ||
+	           strncmp(map_name, "yuno", 3) == 0) {
+		town = 9;
+	} else if (strncmp(map_name, "amatsu", 3) == 0) {
+		town = 10;
+	} else if (strncmp(map_name, "kunlun", 3) == 0 ||
+	           strncmp(map_name, "gonryun", 3) == 0) {
+		town = 11;
+	} else if (strncmp(map_name, "umbala", 3) == 0) {
+		town = 12;
+	} else if (strncmp(map_name, "niflheim", 3) == 0) {
+		town = 13;
+	} else if (strncmp(map_name, "louyang", 3) == 0) {
+		town = 14;
+	} else if (strncmp(map_name, "itemmall", 6) == 0 ||
+	           strncmp(map_name, "mall", 3) == 0) {
+		town = 15;
+	} else if (strncmp(map_name, "jawaii", 3) == 0) {
+		town = 16;
+	} else if (strncmp(map_name, "ayothaya", 3) == 0) {
+		town = 17;
+	} else if (strncmp(map_name, "einbroch", 5) == 0) {
+		town = 18;
+	} else if (strncmp(map_name, "lighthalzen", 3) == 0) {
+		town = 19;
+	} else if (strncmp(map_name, "einbech", 5) == 0) {
+		town = 20;
+	} else if (strncmp(map_name, "hugel", 3) == 0) {
+		town = 21;
+	} else if (strncmp(map_name, "rachel", 3) == 0) {
+		town = 22;
+	} else if (strncmp(map_name, "veins", 3) == 0) {
+		town = 23;
+	} else if (strncmp(map_name, "moscovia", 3) == 0) {
+		town = 24;
+	} else if (strncmp(map_name, "mid_camp", 3) == 0) {
+		town = 25;
+	} else if (strncmp(map_name, "manuk", 3) == 0) {
+		town = 26;
+	} else if (strncmp(map_name, "splendide", 3) == 0) {
+		town = 27;
+	} else if (strncmp(map_name, "brasilis", 3) == 0) {
+		town = 28;
+	} else if (strncmp(map_name, "dicastes01", 3) == 0) {
+		town = 29;
+	} else if (strncmp(map_name, "dewata", 3) == 0) {
+		town = 30;
+	} else if (strncmp(map_name, "malangdo", 5) == 0) {
+		town = 31;
+	} else if (strcmp(map_name,  "mora") == 0) {
+		town = 32;
+	} else if (strncmp(map_name, "merc", 4) == 0) {
+		town = 33;
+	} else if (strncmp(map_name, "eclage", 3) == 0) {
+		town = 34;
+	}
+
 
 	if (town >= 0 && town < ARRAYLENGTH(data))
 	{

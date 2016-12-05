@@ -1,5 +1,5 @@
-﻿Build started 25/11/2016 04:54:17 p.m..
-     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\char-server_sql.vcxproj" on node 2 (build target(s)).
+﻿Build started 04/12/2016 08:29:26 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\char-server_sql.vcxproj" on node 5 (build target(s)).
      1>InitializeBuildStatus:
          Creating "char-server_sql\Release\char-server_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -31,18 +31,18 @@
          "char-server_sql\Release\int_quest.obj"
          "char-server_sql\Release\int_storage.obj"
          "char-server_sql\Release\inter.obj"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common\Release\common.lib"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common\Release\common.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common_sql\Release\common_sql.lib"
          Generating code
          Finished generating code
-         char-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\..\char-server_sql.exe
+         char-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\..\char-server_sql.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\char-server_sql.exe;#1" /manifest "char-server_sql\Release\char-server_sql.exe.intermediate.manifest"
        FinalizeBuildStatus:
          Deleting file "char-server_sql\Release\char-server_sql.unsuccessfulbuild".
          Touching "char-server_sql\Release\char-server_sql.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\char-server_sql.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\char-server_sql.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.83
+Time Elapsed 00:00:03.85

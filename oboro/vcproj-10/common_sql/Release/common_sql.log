@@ -1,5 +1,5 @@
-﻿Build started 25/11/2016 04:54:16 p.m..
-     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql.vcxproj" on node 2 (build target(s)).
+﻿Build started 04/12/2016 08:29:25 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common_sql.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "common_sql\Release\common_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -7,12 +7,12 @@
          sql.c
        Lib:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"common_sql\Release\common_sql.lib" libmysql.lib /LIBPATH:..\3rdparty\mysql\win32\lib /NOLOGO /LTCG common_sql\Release\sql.obj
-         common_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql\Release\common_sql.lib
+         common_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common_sql\Release\common_sql.lib
        FinalizeBuildStatus:
          Deleting file "common_sql\Release\common_sql.unsuccessfulbuild".
          Touching "common_sql\Release\common_sql.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common_sql.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.32
+Time Elapsed 00:00:00.58

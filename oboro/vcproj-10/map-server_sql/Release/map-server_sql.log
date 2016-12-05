@@ -1,5 +1,5 @@
-﻿Build started 25/11/2016 04:54:17 p.m..
-     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\map-server_sql.vcxproj" on node 4 (build target(s)).
+﻿Build started 04/12/2016 08:29:26 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\map-server_sql.vcxproj" on node 6 (build target(s)).
      1>InitializeBuildStatus:
          Creating "map-server_sql\Release\map-server_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -93,18 +93,18 @@
          "map-server_sql\Release\trade.obj"
          "map-server_sql\Release\unit.obj"
          "map-server_sql\Release\vending.obj"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common\Release\common.lib"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common\Release\common.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common_sql\Release\common_sql.lib"
          Generating code
          Finished generating code
-         map-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\..\map-server_sql.exe
+         map-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\..\map-server_sql.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\map-server_sql.exe;#1" /manifest "map-server_sql\Release\map-server_sql.exe.intermediate.manifest"
        FinalizeBuildStatus:
          Deleting file "map-server_sql\Release\map-server_sql.unsuccessfulbuild".
          Touching "map-server_sql\Release\map-server_sql.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\map-server_sql.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\map-server_sql.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:18.97
+Time Elapsed 00:00:19.36

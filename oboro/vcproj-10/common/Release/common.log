@@ -1,5 +1,5 @@
-﻿Build started 25/11/2016 04:54:16 p.m..
-     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common.vcxproj" on node 2 (build target(s)).
+﻿Build started 04/12/2016 08:29:24 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "common\Release\common.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -43,12 +43,12 @@
          common\Release\strlib.obj
          common\Release\timer.obj
          common\Release\utils.obj /ignore:4006 /ignore:4221 
-         common.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common\Release\common.lib
+         common.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common\Release\common.lib
        FinalizeBuildStatus:
          Deleting file "common\Release\common.unsuccessfulbuild".
          Touching "common\Release\common.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\oboro\vcproj-10\common.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.49
+Time Elapsed 00:00:00.70
