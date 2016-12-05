@@ -1106,7 +1106,7 @@ const char* parse_variable(const char* p) {
 	}
 
 	// push the set function onto the stack
-	add_scriptl(search_str("set"));
+	add_scriptl(search_str("setr"));
 	add_scriptc(C_ARG);
 
 	// always append parenthesis to avoid errors
@@ -2426,6 +2426,65 @@ TBL_PC *script_rid2sd(struct script_state *st)
 	return sd;
 }
 
+/**
+ * Get `sd` from a account id in `loc` param instead of attached rid
+ * @param st Script
+ * @param loc Location to look account id in script parameter
+ * @param sd Variable that will be assigned
+ * @return True if `sd` is assigned, false otherwise
+ **/
+static bool script_accid2sd_(struct script_state *st, uint8 loc, struct map_session_data **sd, const char *func) {
+	if (script_hasdata(st, loc)) {
+		int id_ = script_getnum(st, loc);
+		if (!(*sd = map_id2sd(id_)))
+			ShowError("%s: Player with account id '%d' is not found.\n", func, id_);
+	}
+	else
+		*sd = script_rid2sd(st);
+	return (*sd) ? true : false;
+}
+
+/**
+ * Get `sd` from a char id in `loc` param instead of attached rid
+ * @param st Script
+ * @param loc Location to look char id in script parameter
+ * @param sd Variable that will be assigned
+ * @return True if `sd` is assigned, false otherwise
+ **/
+static bool script_charid2sd_(struct script_state *st, uint8 loc, struct map_session_data **sd, const char *func) {
+	if (script_hasdata(st, loc)) {
+		int id_ = script_getnum(st, loc);
+		if (!(*sd = map_charid2sd(id_)))
+			ShowError("%s: Player with char id '%d' is not found.\n", func, id_);
+	}
+	else
+		*sd = script_rid2sd(st);
+	return (*sd) ? true : false;
+}
+
+/**
+ * Get `sd` from a nick in `loc` param instead of attached rid
+ * @param st Script
+ * @param loc Location to look nick in script parameter
+ * @param sd Variable that will be assigned
+ * @return True if `sd` is assigned, false otherwise
+ **/
+static bool script_nick2sd_(struct script_state *st, uint8 loc, struct map_session_data **sd, const char *func) {
+	if (script_hasdata(st, loc)) {
+		const char *name_ = script_getstr(st, loc);
+		if (!(*sd = map_nick2sd(name_)))
+			ShowError("%s: Player with nick '%s' is not found.\n", func, name_);
+	}
+	else
+		*sd = script_rid2sd(st);
+	return (*sd) ? true : false;
+}
+
+#define script_accid2sd(loc,sd) script_accid2sd_(st,(loc),&(sd),__FUNCTION__)
+#define script_charid2sd(loc,sd) script_charid2sd_(st,(loc),&(sd),__FUNCTION__)
+#define script_nick2sd(loc,sd) script_nick2sd_(st,(loc),&(sd),__FUNCTION__)
+
+
 /// Dereferences a variable/constant, replacing it with a copy of the value.
 ///
 /// @param st Script state
@@ -3371,7 +3430,10 @@ int run_func(struct script_state *st)
 
 	data = &st->stack->stack_data[st->start];
 	if( data->type == C_NAME && str_data[data->u.num].type == C_FUNC )
-		func = data->u.num;
+	{
+		func = (int)data->u.num;
+		st->funcname = reference_getname(data);
+	}
 	else
 	{
 		ShowError("script:run_func: not a buildin command.\n");
@@ -5108,7 +5170,6 @@ BUILDIN_FUNC(set)
 /////////////////////////////////////////////////////////////////////
 /// Array variables
 ///
-
 /// Returns the size of the specified array
 static int32 getarraysize(struct script_state* st, int32 id, int32 idx, int isstring, struct linkdb_node** ref)
 {
@@ -5135,6 +5196,80 @@ static int32 getarraysize(struct script_state* st, int32 id, int32 idx, int isst
 		}
 	}
 	return ret;
+}
+
+// rAthena struct to eAmod => isaac
+// set(<variable>,<value>{,<charid>})
+BUILDIN_FUNC(setr)
+{
+	TBL_PC* sd = NULL;
+	struct script_data* data;
+	//struct script_data* datavalue;
+	int64 num;
+	uint8 pos = 4;
+	const char* name, *command = script_getfuncname(st);
+	char prefix;
+
+	data = script_getdata(st,2);
+	//datavalue = script_getdata(st,3);
+	if( !data_isreference(data) )
+	{
+		ShowError("script:set: not a variable\n");
+		script_reportdata(script_getdata(st,2));
+		st->state = END;
+		return -1;
+	}
+
+	num = reference_getuid(data);
+	name = reference_getname(data);
+	prefix = *name;
+
+	if (!strcmp(command, "setr"))
+		pos = 5;
+
+	if (not_server_variable(prefix) && !script_charid2sd(pos,sd)) {
+		ShowError("buildin_set: No player attached for player variable '%s'\n", name);
+		return -1;
+	}
+
+#if 0
+	if( data_isreference(datavalue) )
+	{// the value being referenced is a variable
+		const char* namevalue = reference_getname(datavalue);
+		if( !not_array_variable(*namevalue) )
+		{// array variable being copied into another array variable
+			if( sd == NULL && not_server_variable(*namevalue) && !(sd = script_rid2sd(st)) )
+			{// player must be attached in order to copy a player variable
+				ShowError("script:set: no player attached for player variable '%s'\n", namevalue);
+				return 0;
+			}
+			if( is_string_variable(namevalue) != is_string_variable(name) )
+			{// non-matching array value types
+				ShowWarning("script:set: two array variables do not match in type.\n");
+				return 0;
+			}
+			// push the maximum number of array values to the stack
+			push_val(st->stack, C_INT, SCRIPT_MAX_ARRAYSIZE);
+			// call the copy array method directly
+			return buildin_copyarray(st);
+		}
+	}
+#endif
+
+	if( !strcmp(command, "setr") && script_hasdata(st, 4) ) { // Optional argument used by post-increment/post-decrement constructs to return the previous value
+		if( is_string_variable(name) )
+			script_pushstrcopy(st,script_getstr(st, 4));
+		else
+			script_pushint(st,script_getnum(st, 4));
+	} else // Return a copy of the variable reference
+		script_pushcopy(st, 2);
+
+	if( is_string_variable(name) )
+		set_reg(st,sd,num,name,(void*)script_getstr(st,3),script_getref(st,2));
+	else
+		set_reg(st,sd,num,name,(void*)(intptr_t)(script_getnum(st,3)),script_getref(st,2));
+
+	return 0;
 }
 
 /// Sets values of an array, from the starting index.

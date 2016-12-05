@@ -12,6 +12,8 @@ extern int potion_flag; //For use on Alchemist improved potions/Potion Pitcher. 
 extern int potion_hp, potion_per_hp, potion_sp, potion_per_sp;
 extern int potion_target;
 
+#define script_getfuncname(st) ( st->funcname )
+
 extern struct Script_Config {
 	unsigned warn_func_mismatch_argtypes : 1;
 	unsigned warn_func_mismatch_paramnum : 1;
@@ -138,6 +140,7 @@ struct script_state {
 	//For backing up purposes
 	struct script_state *bk_st;
 	int bk_npcid;
+	char* funcname; // Stores the current running function name
 };
 
 struct script_reg {
