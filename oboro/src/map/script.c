@@ -997,6 +997,164 @@ static void parse_nextline(bool first, const char* p)
 	str_data[LABEL_NEXTLINE].label     = -1;
 }
 
+/**
+ * Pushes a variable into stack, processing its array index if needed.
+ * @see parse_variable
+ * rAthena => eAmod by Isaac
+ */
+void parse_variable_sub_push(int word, const char *p2)
+{
+	if( p2 ) { // Process the variable index
+		const char *p3 = NULL;
+
+		// Push the getelementofarray method into the stack
+		add_scriptl(search_str("getelementofarray"));
+		add_scriptc(C_ARG);
+		add_scriptl(word);
+
+		// Process the sub-expression for this assignment
+		p3 = parse_subexpr(p2 + 1, 1);
+		p3 = skip_space(p3);
+
+		if( *p3 != ']' ) // Closing parenthesis is required for this script
+			disp_error_message("Missing closing ']' parenthesis for the variable assignment.", p3);
+
+		// Push the closing function stack operator onto the stack
+		add_scriptc(C_FUNC);
+		p3++;
+	} else // No array index, simply push the variable or value onto the stack
+		add_scriptl(word);
+}
+
+/// Parse a variable assignment using the direct equals operator
+/// @param p script position where the function should run from
+/// @return NULL if not a variable assignment, the new position otherwise
+const char* parse_variable(const char* p) {
+	int word;
+	c_op type = C_NOP;
+	const char *p2 = NULL;
+	const char *var = p;
+
+	if ((p[0] == '+' && p[1] == '+' && (type = C_ADD_PRE)) // pre ++
+	 || (p[0] == '-' && p[1] == '-' && (type = C_SUB_PRE))) // pre --
+		var = p = skip_space(&p[2]);
+
+	// skip the variable where applicable
+	p = skip_word(p);
+	p = skip_space(p);
+
+	if( p == NULL ) {// end of the line or invalid buffer
+		return NULL;
+	}
+
+	if( *p == '[' ) {// array variable so process the array as appropriate
+		int i,j;
+		for( p2 = p, i = 0, j = 1; p; ++ i ) {
+			if( *p ++ == ']' && --(j) == 0 ) break;
+			if( *p == '[' ) ++ j;
+		}
+
+		if( !(p = skip_space(p)) ) {// end of line or invalid characters remaining
+			disp_error_message("Missing right expression or closing bracket for variable.", p);
+		}
+	}
+
+	if( type == C_NOP &&
+	!( ( p[0] == '=' && p[1] != '=' && (type = C_EQ) ) // =
+	|| ( p[0] == '+' && p[1] == '=' && (type = C_ADD) ) // +=
+	|| ( p[0] == '-' && p[1] == '=' && (type = C_SUB) ) // -=
+	|| ( p[0] == '^' && p[1] == '=' && (type = C_XOR) ) // ^=
+	|| ( p[0] == '|' && p[1] == '=' && (type = C_OR ) ) // |=
+	|| ( p[0] == '&' && p[1] == '=' && (type = C_AND) ) // &=
+	|| ( p[0] == '*' && p[1] == '=' && (type = C_MUL) ) // *=
+	|| ( p[0] == '/' && p[1] == '=' && (type = C_DIV) ) // /=
+	|| ( p[0] == '%' && p[1] == '=' && (type = C_MOD) ) // %=
+	|| ( p[0] == '~' && p[1] == '=' && (type = C_NOT) ) // ~=
+	|| ( p[0] == '+' && p[1] == '+' && (type = C_ADD_POST) ) // post ++
+	|| ( p[0] == '-' && p[1] == '-' && (type = C_SUB_POST) ) // post --
+	|| ( p[0] == '<' && p[1] == '<' && p[2] == '=' && (type = C_L_SHIFT) ) // <<=
+	|| ( p[0] == '>' && p[1] == '>' && p[2] == '=' && (type = C_R_SHIFT) ) // >>=
+	) )
+	{// failed to find a matching operator combination so invalid
+		return NULL;
+	}
+
+	switch( type ) {
+		case C_ADD_PRE: // pre ++
+		case C_SUB_PRE: // pre --
+			// Nothing more to skip
+		break;
+
+		case C_EQ: {// incremental modifier
+			p = skip_space( &p[1] );
+		}
+		break;
+
+		case C_L_SHIFT:
+		case C_R_SHIFT: {// left or right shift modifier
+			p = skip_space( &p[3] );
+		}
+		break;
+
+		default: {// normal incremental command
+			p = skip_space( &p[2] );
+		}
+	}
+
+	if( p == NULL ) {// end of line or invalid buffer
+		return NULL;
+	}
+
+	// push the set function onto the stack
+	add_scriptl(search_str("set"));
+	add_scriptc(C_ARG);
+
+	// always append parenthesis to avoid errors
+	syntax.curly[syntax.curly_count].type = TYPE_ARGLIST;
+	syntax.curly[syntax.curly_count].count = 0;
+	syntax.curly[syntax.curly_count].flag = ARGLIST_PAREN;
+
+	// increment the total curly count for the position in the script
+	++ syntax.curly_count;
+
+	// parse the variable currently being modified
+	word = add_word(var);
+
+	if( str_data[word].type == C_FUNC || str_data[word].type == C_USERFUNC || str_data[word].type == C_USERFUNC_POS ) // cannot assign a variable which exists as a function or label
+		disp_error_message("Cannot modify a variable which has the same name as a function or label.", p);
+
+	parse_variable_sub_push(word, p2); // Push variable onto the stack
+
+	if( type != C_EQ )
+		parse_variable_sub_push(word, p2); // Push variable onto the stack once again (first argument of setr)
+
+	if( type == C_ADD_POST || type == C_SUB_POST ) { // post ++ / --
+		add_scripti(1);
+		add_scriptc(type == C_ADD_POST ? C_ADD : C_SUB);
+		parse_variable_sub_push(word, p2); // Push variable onto the stack (third argument of setr)
+	} else if( type == C_ADD_PRE || type == C_SUB_PRE ) { // pre ++ / --
+		add_scripti(1);
+		add_scriptc(type == C_ADD_PRE ? C_ADD : C_SUB);
+	} else { // Process the value as an expression
+		p = parse_subexpr(p, -1);
+
+		if( type != C_EQ )
+		{// push the type of modifier onto the stack
+			add_scriptc(type);
+		}
+	}
+
+	// decrement the curly count for the position within the script
+	-- syntax.curly_count;
+
+	// close the script by appending the function operator
+	add_scriptc(C_FUNC);
+
+	// push the buffer from the method
+	return p;
+}
+
+
 /*==========================================
  * çÄÇÃâêÕ
  *------------------------------------------*/
@@ -1054,6 +1212,8 @@ const char* parse_simpleexpr(const char *p)
 		p++;	//'"'
 	} else {
 		int l;
+		const char* pv;
+
 		// label , register , function etc
 		if(skip_word(p)==p)
 			disp_error_message("parse_simpleexpr: unexpected character",p);
@@ -1061,6 +1221,12 @@ const char* parse_simpleexpr(const char *p)
 		l=add_word(p);
 		if( str_data[l].type == C_FUNC || str_data[l].type == C_USERFUNC || str_data[l].type == C_USERFUNC_POS)
 			return parse_callfunc(p,1);
+
+		//RATHENA SCRIPT STRUCT TO EAMOD => ISAAC
+		if( (pv = parse_variable(p)) )
+		{// successfully processed a variable assignment
+			return pv;
+		}
 
 		p=skip_word(p);
 		if( *p == '[' ){
@@ -1102,7 +1268,11 @@ const char* parse_subexpr(const char* p,int limit)
 		}
 	}
 	tmpp=p;
-	if((op=C_NEG,*p=='-') || (op=C_LNOT,*p=='!') || (op=C_NOT,*p=='~')){
+	if( (op = C_ADD_PRE, p[0] == '+' && p[1] == '+') || (op = C_SUB_PRE, p[0] == '-' && p[1] == '-') ) // Pre ++ -- operators rAthena to eAmod => iSaaC
+		p = parse_variable(p);
+	else if( (op=C_NEG,*p=='-') || (op=C_LNOT,*p=='!') || (op=C_NOT,*p=='~') ) 
+	{ 
+		// Unary - ! ~ operator
 		p=parse_subexpr(p+1,10);
 		add_scriptc(op);
 	} else
@@ -1146,7 +1316,7 @@ const char* parse_subexpr(const char* p,int limit)
 }
 
 /*==========================================
- * éÆÇÃï]âø
+ * Evaluation of the expression
  *------------------------------------------*/
 const char* parse_expr(const char *p)
 {
@@ -1160,15 +1330,16 @@ const char* parse_expr(const char *p)
 }
 
 /*==========================================
- * çsÇÃâêÕ
+ * ç Analysis of the line
  *------------------------------------------*/
 const char* parse_line(const char* p)
 {
 	const char* p2;
 
 	p=skip_space(p);
-	if(*p==';') {
-		// if(); for(); while(); ÇÃÇΩÇﬂÇ…ï¬Ç∂îªíË
+	if(*p==';') 
+	{
+		// Close decision for if(); for(); while();
 		p = parse_syntax_close(p + 1);
 		return p;
 	}
@@ -1186,15 +1357,26 @@ const char* parse_line(const char* p)
 		return parse_curly_close(p);
 	}
 
-	// ç\ï∂ä÷òAÇÃèàóù
+	// Syntax-related processing
 	p2 = parse_syntax(p);
 	if(p2 != NULL)
 		return p2;
 
+	// rAthena to eAmod => iSaaC
+	// attempt to process a variable assignment
+	p2 = parse_variable(p);
+
+		if( p2 != NULL )
+		{
+			// variable assignment processed so leave the method
+			return parse_syntax_close(p2 + 1);
+		}
+
 	p = parse_callfunc(p,0);
 	p = skip_space(p);
 
-	if(parse_syntax_for_flag) {
+	if(parse_syntax_for_flag) 
+	{
 		if( *p != ')' )
 			disp_error_message("parse_line: need ')'",p);
 	} else {
@@ -1202,13 +1384,13 @@ const char* parse_line(const char* p)
 			disp_error_message("parse_line: need ';'",p);
 	}
 
-	// if, for , while ÇÃï¬Ç∂îªíË
+	//Binding decision for if(), for(), while()
 	p = parse_syntax_close(p+1);
 
 	return p;
 }
 
-// { ... } ÇÃï¬Ç∂èàóù
+// { ... } Closing process
 const char* parse_curly_close(const char* p)
 {
 	if(syntax.curly_count <= 0) {
@@ -1216,46 +1398,46 @@ const char* parse_curly_close(const char* p)
 		return p + 1;
 	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_NULL) {
 		syntax.curly_count--;
-		// if, for , while ÇÃï¬Ç∂îªíË
+		// Close decision  if, for , while
 		p = parse_syntax_close(p + 1);
 		return p;
 	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_SWITCH) {
-		// switch() ï¬Ç∂îªíË
+		// Closing switch()
 		int pos = syntax.curly_count-1;
 		char label[256];
 		int l;
-		// àÍéûïœêîÇè¡Ç∑
+		// Remove temporary variables
 		sprintf(label,"set $@__SW%x_VAL,0;",syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
-		// ñ≥èåèÇ≈èIóπÉ|ÉCÉìÉ^Ç…à⁄ìÆ
+		// Go to the end pointer unconditionally
 		sprintf(label,"goto __SW%x_FIN;",syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
-		// åªç›ínÇÃÉâÉxÉãÇïtÇØÇÈ
+		// You are here labeled
 		sprintf(label,"__SW%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
 		l=add_str(label);
 		set_label(l,script_pos, p);
 
 		if(syntax.curly[pos].flag) {
-			// default Ç™ë∂ç›Ç∑ÇÈ
+			//Exists default
 			sprintf(label,"goto __SW%x_DEF;",syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 		}
 
-		// èIóπÉâÉxÉãÇïtÇØÇÈ
+		// Label end
 		sprintf(label,"__SW%x_FIN",syntax.curly[pos].index);
 		l=add_str(label);
 		set_label(l,script_pos, p);
 		linkdb_final(&syntax.curly[pos].case_label);	// free the list of case label
 		syntax.curly_count--;
-		// if, for , while ÇÃï¬Ç∂îªíË
+		//Closing decision if, for , while
 		p = parse_syntax_close(p + 1);
 		return p;
 	} else {
@@ -1264,9 +1446,9 @@ const char* parse_curly_close(const char* p)
 	}
 }
 
-// ç\ï∂ä÷òAÇÃèàóù
+// Syntax-related processing
 //	 break, case, continue, default, do, for, function,
-//	 if, switch, while ÇÇ±ÇÃì‡ïîÇ≈èàóùÇµÇ‹Ç∑ÅB
+//	 if, switch, while ? will handle this internally.
 const char* parse_syntax(const char* p)
 {
 	const char *p2 = skip_word(p);
