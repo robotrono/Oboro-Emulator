@@ -26,6 +26,9 @@ Thumbs.db
 *.o
 *.a
 *.yml
+*.tlog
+*.exe
+
 /char-server
 /config.log
 /config.status
@@ -124,10 +127,10 @@ Thumbs.db
 /vcproj-12/*.user
 
 # /vcproj-10/
-/vcproj-10/char-server
-/vcproj-10/login-server
-/vcproj-10/mapcache
-/vcproj-10/map-server
+/vcproj-10/char-server_sql
+/vcproj-10/login-server_sql
+/vcproj-10/mapcache_sql
+/vcproj-10/map-server_sql
 /vcproj-10/*.user
 
 # /vcproj-9/
