@@ -85,7 +85,7 @@ OnBuyItem:
 				if (.@q[3]) setd .Points$[0], getd(.Points$[0])-.@q[3];
 				if (.@q[4]) for(set .@i,4; .@i<getarraysize(.@q); set .@i,.@i+2)
 					delitem .@q[.@i],.@q[.@i+1];
-				atcommand "@costumeitem " + .@q[0] +" "+ .@q[1] + " 3142";
+				atcommand "@costumeitem " + .@q[0] +" "+ .@q[1] + " 5432";
 				if (.Announce) announce strcharinfo(0)+" ha finalizado la Quest de "+(getitemname(.@q[0]))+"!",0;
 				specialeffect2 699;
 				close;

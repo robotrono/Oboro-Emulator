@@ -125,7 +125,7 @@ quiz_01,55,98,4	script	Asistente Casillas	715,{
 		mes name$;
 		mes "Que suerte has tenido "+strcharinfo(0)+"!";
 		mes "Tienes bien merecido el premio.";
-		getitem 15803,10;
+		getitem 7539,10;
 		set EventPoints, EventPoints + 1;
 		close2;
 		announce "Casillas: El ganador del evento Casillas ha sido "+$@charname$+", ¡Felicidades!",bc_all,0x00ffff;
@@ -338,7 +338,7 @@ force_1-3,100,186,4	script	Asistente Laberinto	803,{
 	hideonnpc "ForceWarps#25";
 	sleep2 1000;
 	mes "Ten tu premio, ¡Enhorabuena!";
-	getitem 15803,10;
+	getitem 7539,10;
 	set EventPoints, EventPoints + 1;
 
 	close2;
@@ -432,7 +432,7 @@ quiz_01,42,369,4	script	Asistente Novice	729,{
 	mes name$;
 	mes "¡Ahí tienes!";
 	mes "Bye bye!";
-	getitem 15803,10;
+	getitem 7539,10;
 	set EventPoints, EventPoints + 1;
 
 	close2;
@@ -527,7 +527,7 @@ OnFakePoringDeath:
 end;
 	
 OnRealPoringDeath:
-	getitem 15803,10;
+	getitem 7539,10;
 	mapannounce "poring_w01","Poring: ¡El Poring original ha muerto!",bc_map,0xff8000;
 	set $poringtime, 0;
 	killmonsterall "poring_w01";

@@ -1,5 +1,5 @@
 payon,174,135,3	script	xRO Refiner	63,{
-title();
+	title();
 	mes "Hola " + strcharinfo( 0 ) + ",¿qué deseas hacer? ";
 	switch( select( " ^4EEDE8 > ^000000 ¡Deseo refinar! : ^4EEDE8 > ^000000 Oh, ¿qué es esto ? : ^4EEDE8 > ^000000 Nada, mejor me voy.") ) {
 		case 3:

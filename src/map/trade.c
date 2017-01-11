@@ -402,12 +402,10 @@ void trade_tradeadditem(struct map_session_data *sd, short index, short amount)
 		return;
 	}
 
-	if( (item->bound == 1 || (item->bound == 2 && sd->status.guild_id != target_sd->status.guild_id)) && !pc_isGM(sd) && !pc_isGM(target_sd) )
-	{ // Account/Guild Bound
-		if( item->bound == 1 )
-			clif_displaymessage (sd->fd, "Can't Trade. Account Bounded Item.");
-		else
-			clif_displaymessage (sd->fd, "Can't Trade. Guild Bounded Item.");
+	//isaac...
+	if( item->bound > 0 && sd->status.guild_id != target_sd->status.guild_id )
+	{
+		clif_displaymessage (sd->fd, "Can't Trade. Account Bounded Item.");
 		clif_tradeitemok(sd, index+2, 1);
 		return;
 	}
@@ -443,6 +441,12 @@ void trade_tradeadditem(struct map_session_data *sd, short index, short amount)
 	}
 	sd->deal.weight += trade_weight;
 
+	if( item->bound > 0)
+	{
+		clif_displaymessage (sd->fd, "Estas tradeando un item de GuildPack esto es baneable.");
+		clif_displaymessage (target_sd->fd, "Te estan tradeando un item de Guild Pack, esto puede ser una estafa.");
+	}
+	
 	clif_tradeitemok(sd, index+2, 0); // Return the index as it was received
 	clif_tradeadditem(sd, target_sd, index+2, amount);
 }

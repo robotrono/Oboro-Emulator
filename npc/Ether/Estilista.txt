@@ -19,10 +19,10 @@
 // | 					  Fixed minor text issues |
 // +-------------------------------------------+
 
-prontera,169,180,4	script	Estilista	513,{
+prontera,165,189,4	script	Estilista	503,{
 	cutin "jpn_chrome01",2;
 	set .@name$,"[ ^FF8000Estilista^000000 ]";
-	setarray .@max[1],553,40,79;		// Number of cloths, haircolors, hairstyles in client
+	setarray .@max[1],553,40,76;		// Number of cloths, haircolors, hairstyles in client
 	//setarray .@blacklist[0];
 										//,0,188,143,261;	// NPC will skip any cloth colors in this array.
 										//  	Use for palettes that cause errors or just plain look bad.

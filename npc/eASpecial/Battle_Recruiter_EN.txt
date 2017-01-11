@@ -216,7 +216,7 @@ force_1-1,76,103,0	script	Click to Jump#2	802,{
 }
 //============================= Entradas =======================================
 
-prontera,144,178,5	duplicate(PVP_Warper)	Battle Recruiter#1	751
+prontera,145,189,5	duplicate(PVP_Warper)	Battle Recruiter#1	751
 payon,165,98,6	duplicate(PVP_Warper)	Battle Recruiter#2	751
 morocc,153,97,6	duplicate(PVP_Warper)	Battle Recruiter#3	751
 umbala,139,163,6	duplicate(PVP_Warper)	Battle Recruiter#4	751
@@ -278,6 +278,8 @@ gr_27,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#59	751
 gr_28,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#60	751
 gr_29,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#61	751
 gr_30,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#62	751
+mora,116,112,3	duplicate(PVP_Warper)	Battle Recruiter#63	751
+
 
 //============================= Salidas =======================================
 

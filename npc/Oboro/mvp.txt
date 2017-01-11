@@ -13,19 +13,17 @@ end;
 OnNPCKillEvent:	
 	for ( set .@i, 0; .@i < getarraysize( $mobs ); set .@i, .@i + 1) {
 		if( killedrid == $mobs[.@i] ) { 
-			set #CASHPOINTS , #CASHPOINTS + 100; 
-			getitem 15803,1;
+			set #CASHPOINTS , #CASHPOINTS + 300; 
 			getitem 30212,2;
-			dispbottom " Has obtenido 100 CP por matar el MvP : " + getmonsterinfo( $mobs[.@i] , MOB_NAME );
+			dispbottom " Has obtenido 300 CP por matar el MvP : " + getmonsterinfo( $mobs[.@i] , MOB_NAME );
 			end;
 		}
 	}
 	for ( set .@i, 0; .@i < getarraysize( $mobs2 ); set .@i, .@i + 1) {
 		if(killedrid == $mobs2[.@i] ) { 
-			set #CASHPOINTS , #CASHPOINTS + 300; 
-			getitem 15803,1;
+			set #CASHPOINTS , #CASHPOINTS + 600; 
 			getitem 30212,2;
-			dispbottom " Has obtenido 300 CP por matar el MvP : " + getmonsterinfo( $mobs2[.@i] , MOB_NAME );
+			dispbottom " Has obtenido 600 CP por matar el MvP : " + getmonsterinfo( $mobs2[.@i] , MOB_NAME );
 			end;
 		}
 	}

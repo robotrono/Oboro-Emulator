@@ -96,7 +96,6 @@
     <ClCompile Include="..\src\common\des.c" />
     <ClCompile Include="..\src\common\ers.c" />
     <ClCompile Include="..\src\common\grfio.c" />
-    <ClCompile Include="..\src\common\harmonycore.c" />
     <ClCompile Include="..\src\common\lock.c" />
     <ClCompile Include="..\src\common\malloc.c" />
     <ClCompile Include="..\src\common\mapindex.c" />
@@ -118,8 +117,6 @@
     <ClInclude Include="..\src\common\des.h" />
     <ClInclude Include="..\src\common\ers.h" />
     <ClInclude Include="..\src\common\grfio.h" />
-    <ClInclude Include="..\src\common\harmony.h" />
-    <ClInclude Include="..\src\common\harmserv.h" />
     <ClInclude Include="..\src\common\lock.h" />
     <ClInclude Include="..\src\common\malloc.h" />
     <ClInclude Include="..\src\common\mapindex.h" />

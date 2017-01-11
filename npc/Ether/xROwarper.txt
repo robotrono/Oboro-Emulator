@@ -22,7 +22,7 @@
 //	-	Que muestre si esta vivo o muerto Mvps o mini bosses
 //==============================================================================
 
-prontera,160,195,4	script	Warper::Warper	532,{
+prontera,160,195,4	script	Warper::Warper	831,{
 Main:
 	if (getbrokenid(1) != 0) {
 		while (getbrokenid(1) != 0){
@@ -1035,7 +1035,7 @@ geffen,115,67,6	duplicate(Warper)	Warp NPC#12-1	532
 izlude,132,142,4	duplicate(Warper)	Warp NPC#13-1	532
 xmas,151,135,4	duplicate(Warper)	Warp NPC#14-1	532
 morocc,162,94,4	duplicate(Warper)	Warp NPC#15-1	532
-payon,182,110,4	duplicate(Warper)	Warp NPC#16-1	532
+payon,168,107,6	duplicate(Warper)	Warp NPC#16-1	532
 yuno,158,199,4	duplicate(Warper)	Warp NPC#17-1	532
 moc_fild04,207,331,4	duplicate(Warper)	Warp NPC#18-1	532
 izlu2dun,104,82,4	duplicate(Warper)	Warp NPC#19-1	532
@@ -1094,6 +1094,7 @@ gr_29,47,62,6	duplicate(Warper)	Warp NPC#72-1	532
 gr_30,47,62,6	duplicate(Warper)	Warp NPC#73-1	532
 veins,220,132,3	duplicate(Warper)	Warp NPC#74-1	532
 core,149,169,3	duplicate(Warper)	Warp NPC#75-1	532
+mora,104,105,6	duplicate(Warper)	Warp NPC#76-1	532
 
 
 //mapflags del Cuarto de DB

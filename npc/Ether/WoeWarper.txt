@@ -125,7 +125,7 @@ setarray .C_WoEY[1],85,244,87,242,90,50,239,290,277,57,233,116,293,163,265,64,13
 
 morocc,161,97,4	duplicate(WoE Warper)	WoE Warper#02	430
 geffen,124,70,4	duplicate(WoE Warper)	WoE Warper#03	430
-payon,154,233,4	duplicate(WoE Warper)	WoE Warper#04	430
+payon,165,103,6	duplicate(WoE Warper)	WoE Warper#04	430
 izlude,134,146,4	duplicate(WoE Warper)	WoE Warper#05	430
 aldebaran,135,116,5	duplicate(WoE Warper)	WoE Warper#06	430
 xmas,144,135,5	duplicate(WoE Warper)	WoE Warper#07	430
@@ -150,6 +150,7 @@ dewata,204,182,4	duplicate(WoE Warper)	WoE Warper#25	430
 louyang,211,107,6	duplicate(WoE Warper)	WoE Warper#26	430
 Hyrule,140,192,3	duplicate(WoE Warper)	WoE Warper#27	430
 veins,212,132,6	duplicate(WoE Warper)	WoE Warper#28	430
+mora,107,112,6	duplicate(WoE Warper)	WoE Warper#29	430
 
 //GuildRoom
 gr_1,64,62,3	duplicate(WoE Warper)	WoE Warper#GR01	430

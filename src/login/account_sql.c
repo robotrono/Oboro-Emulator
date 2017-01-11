@@ -4,7 +4,6 @@
 #include "../common/malloc.h"
 #include "../common/mmo.h"
 #include "../common/showmsg.h"
-#include "../common/harmony.h"
 #include "../common/sql.h"
 #include "../common/strlib.h"
 #include "../common/timer.h"
@@ -69,9 +68,6 @@ static bool account_db_sql_iter_next(AccountDBIterator* self, struct mmo_account
 static bool mmo_auth_fromsql(AccountDB_SQL* db, struct mmo_account* acc, int account_id);
 static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, bool is_new);
 
-// Harmony
-static bool account_db_sql_is_mac_banned(AccountDB* db, const char *mac);
-
 /// public constructor
 AccountDB* account_db_sql(void)
 {
@@ -88,7 +84,6 @@ AccountDB* account_db_sql(void)
 	db->vtable.load_num     = &account_db_sql_load_num;
 	db->vtable.load_str     = &account_db_sql_load_str;
 	db->vtable.iterator     = &account_db_sql_iterator;
-	db->vtable.is_mac_banned= &account_db_sql_is_mac_banned;
 
 	// initialize to default values
 	db->accounts = NULL;
@@ -409,26 +404,6 @@ static bool account_db_sql_remove(AccountDB* self, const int account_id)
 	return result;
 }
 
-static bool account_db_sql_is_mac_banned(AccountDB* self, const char *mac) {
-	AccountDB_SQL* db = (AccountDB_SQL*)self;
-	Sql *db_handle = db->accounts;
-	SqlStmt* stmt = SqlStmt_Malloc(db_handle);
-
-	bool result = false;
-
-	if (SQL_SUCCESS != SqlStmt_Prepare(stmt, "SELECT 1 FROM mac_bans WHERE mac = ?") ||
-		SQL_SUCCESS != SqlStmt_BindParam(stmt, 0, SQLDT_STRING, (void*)mac, strlen(mac)) ||
-		SQL_SUCCESS != SqlStmt_Execute(stmt)) {
-			Sql_ShowDebug(db_handle);
-	} else {
-		result = (SqlStmt_NumRows(stmt) > 0);
-		SqlStmt_FreeResult(stmt);
-	}
-	SqlStmt_Free(stmt);
-
-	return result;
-}
-
 /// update an existing account with the provided new data (both account and regs)
 static bool account_db_sql_save(AccountDB* self, const struct mmo_account* acc)
 {
@@ -550,7 +525,7 @@ static bool mmo_auth_fromsql(AccountDB_SQL* db, struct mmo_account* acc, int acc
 
 	// retrieve login entry for the specified account
 	if( SQL_ERROR == Sql_Query(sql_handle,
-	    "SELECT `account_id`,`userid`,`user_pass`,`sex`,`email`,`level`,`state`,`unban_time`,`expiration_time`,`logincount`,`lastlogin`,`last_ip`,`birthdate`,`last_mac` FROM `%s` WHERE `account_id` = %d",
+	    "SELECT `account_id`,`userid`,`user_pass`,`sex`,`email`,`level`,`state`,`unban_time`,`expiration_time`,`logincount`,`lastlogin`,`last_ip`,`birthdate` FROM `%s` WHERE `account_id` = %d",
 		db->account_db, account_id )
 	) {
 		Sql_ShowDebug(sql_handle);
@@ -576,10 +551,6 @@ static bool mmo_auth_fromsql(AccountDB_SQL* db, struct mmo_account* acc, int acc
 	Sql_GetData(sql_handle, 10, &data, NULL); safestrncpy(acc->lastlogin, data, sizeof(acc->lastlogin));
 	Sql_GetData(sql_handle, 11, &data, NULL); safestrncpy(acc->last_ip, data, sizeof(acc->last_ip));
 	Sql_GetData(sql_handle, 12, &data, NULL); safestrncpy(acc->birthdate, data, sizeof(acc->birthdate));
-	Sql_GetData(sql_handle, 13, &data, NULL); safestrncpy(acc->mac_address, data, sizeof(acc->mac_address));
-
-
-
 
 	Sql_FreeResult(sql_handle);
 
@@ -628,7 +599,7 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 	if( is_new )
 	{// insert into account table
 		if( SQL_SUCCESS != SqlStmt_Prepare(stmt,
-			"INSERT INTO `%s` (`account_id`, `userid`, `user_pass`, `sex`, `email`, `level`, `state`, `unban_time`, `expiration_time`, `logincount`, `lastlogin`, `last_ip`, `birthdate`,`last_mac`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			"INSERT INTO `%s` (`account_id`, `userid`, `user_pass`, `sex`, `email`, `level`, `state`, `unban_time`, `expiration_time`, `logincount`, `lastlogin`, `last_ip`, `birthdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			db->account_db)
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  0, SQLDT_INT,    (void*)&acc->account_id,      sizeof(acc->account_id))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  1, SQLDT_STRING, (void*)acc->userid,           strlen(acc->userid))
@@ -643,7 +614,6 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 10, SQLDT_STRING, (void*)&acc->lastlogin,       strlen(acc->lastlogin))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 11, SQLDT_STRING, (void*)&acc->last_ip,         strlen(acc->last_ip))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 12, SQLDT_STRING, (void*)&acc->birthdate,       strlen(acc->birthdate))
-		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 13, SQLDT_STRING, (void*)acc->mac_address,      strlen(acc->mac_address))
 		||  SQL_SUCCESS != SqlStmt_Execute(stmt)
 		) {
 			SqlStmt_ShowDebug(stmt);
@@ -652,7 +622,7 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 	}
 	else
 	{// update account table
-		if( SQL_SUCCESS != SqlStmt_Prepare(stmt, "UPDATE `%s` SET `userid`=?,`user_pass`=?,`sex`=?,`email`=?,`level`=?,`state`=?,`unban_time`=?,`expiration_time`=?,`logincount`=?,`lastlogin`=?,`last_ip`=?,`birthdate`=?,`last_mac`=? WHERE `account_id` = '%d'", db->account_db, acc->account_id)
+		if( SQL_SUCCESS != SqlStmt_Prepare(stmt, "UPDATE `%s` SET `userid`=?,`user_pass`=?,`sex`=?,`email`=?,`level`=?,`state`=?,`unban_time`=?,`expiration_time`=?,`logincount`=?,`lastlogin`=?,`last_ip`=?,`birthdate`=? WHERE `account_id` = '%d'", db->account_db, acc->account_id)
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  0, SQLDT_STRING, (void*)acc->userid,           strlen(acc->userid))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  1, SQLDT_STRING, (void*)acc->pass,             strlen(acc->pass))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  2, SQLDT_ENUM,   (void*)&acc->sex,             sizeof(acc->sex))
@@ -665,7 +635,6 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  9, SQLDT_STRING, (void*)&acc->lastlogin,       strlen(acc->lastlogin))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 10, SQLDT_STRING, (void*)&acc->last_ip,         strlen(acc->last_ip))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 11, SQLDT_STRING, (void*)&acc->birthdate,       strlen(acc->birthdate))
-		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 12, SQLDT_STRING, (void*)acc->mac_address,      strlen(acc->mac_address))
 		||  SQL_SUCCESS != SqlStmt_Execute(stmt)
 		) {
 			SqlStmt_ShowDebug(stmt);

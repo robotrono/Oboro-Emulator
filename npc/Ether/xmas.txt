@@ -61,7 +61,7 @@ prontera,156,173,6	script	xROcita	714,{
 			next;
 			mes "[^D80383xROcita^000000]";
 			mes "   ";
-			mes_with_close "No tienes tanto CashPoint";
+			mclose "No tienes tanto CashPoint";
 		}
 		set #CASHPOINTS, #CASHPOINTS - .@Aporte;
 		set $CASHNECESARIOS, $CASHNECESARIOS + .@Aporte;
@@ -145,7 +145,7 @@ OnBuyItem:
 				if (.@q[3]) setd .Points$[0], getd(.Points$[0])-.@q[3];
 				if (.@q[4]) for(set .@i,4; .@i<getarraysize(.@q); set .@i,.@i+2)
 					delitem .@q[.@i],.@q[.@i+1];
-				atcommand "@costumeitem " + .@q[0] +" "+ .@q[1] + " 2024";
+				atcommand "@costumeitem " + .@q[0] +" "+ .@q[1] + " 5432";
 				if (.Announce) announce strcharinfo(0)+" ha finalizado la Quest de "+(getitemname(.@q[0]))+".",0;
 				specialeffect2 699;
 				close;

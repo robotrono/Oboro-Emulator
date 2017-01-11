@@ -255,6 +255,8 @@ mf_nodiscount	76//isaac
 mf_nowoeitems	77//isaac
 mf_mvp2	78//isaac
 mf_mvprestricted	79//isaac
+mf_nograveyard	80//isaac
+mf_guild_min	81//isaac
 
 
 cell_walkable	0

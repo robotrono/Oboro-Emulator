@@ -26,7 +26,6 @@
     <ClCompile Include="..\src\common\strlib.c" />
     <ClCompile Include="..\src\common\timer.c" />
     <ClCompile Include="..\src\common\utils.c" />
-    <ClCompile Include="..\src\common\harmonycore.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rdparty\mt19937ar\mt19937ar.h">
@@ -53,7 +52,5 @@
     <ClInclude Include="..\src\common\timer.h" />
     <ClInclude Include="..\src\common\utils.h" />
     <ClInclude Include="..\src\common\version.h" />
-    <ClInclude Include="..\src\common\harmony.h" />
-    <ClInclude Include="..\src\common\harmserv.h" />
   </ItemGroup>
 </Project>

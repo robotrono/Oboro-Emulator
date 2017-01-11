@@ -9,49 +9,18 @@
 	end;
 }
 
-prontera,166,158,3	script	Casas Info::Casas Info	858,{
+prontera,165,157,3	script	Casas Info::Casas Info	858,{
 	set .@Cost , 10000;
-	set .@Time, 1 * 3 * 24 * 60 * 60; // Time in Seconds = 4 weeks, 7 days per week, 24 hours per day, 60 minutes per day, 60 seconds per minute. = 1 month in this sample.
-	set .@Time$, "1 día";
 	title("Casas MVP");
 	mes "Bienvenido a las casas rentables!";
 	mes " Recuerda que necesecitas : ";
-	mes "^10B2D2 [ ~ ] ^000000 Cuenta Premium ";
 	mes "^10B2D2 [ ~ ] ^000000 10k de Cashpoints";
 	next; 
 	title("Casas MVP");
 
-	switch ( select( "^10B2D2 [ > ] ^000000 Dame una cuenta Premium:^10B2D2 [ > ] ^000000 Informacion de una casa :^10B2D2 [ > ] ^000000 Gracias, Adios!" ) ) 
+	switch ( select( "^10B2D2 [ > ] ^000000 Informacion de una casa :^10B2D2 [ > ] ^000000 Gracias, Adios!" ) ) 
 	{
 		case 1:
-			if( isPremium() == 1 )
-       			mes "Quieres expandir tu cuenta premium?";
-       		else
-       		 	mes "Quieres tener una cuenta premium?";
-		
-			mes "Tiempo Premium ^FF0000" + .@Time$ + "^000000";
-			mes "Costo : ^FF0000" + .@Cost + "^000000 Cash Points.";
-			next;
-			if( select("^10B2D2 [ > ] ^000000 Si:^10B2D2 [ > ] ^000000 No") == 2 ) close;
-			if( #CASHPOINTS < .@Cost )	
-			{
-			
-				title("Casas MVP");
-				mes "No tienes suficientes Cash Points.";
-				close;
-				
-			}
-			if( isPremium() == 1 )
-				set #Premium_Tick, #Premium_Tick + .@Time; // Time Extension
-			else
-				set #Premium_Tick, gettimetick(2) + .@Time; // New Premium Account
-			set #CASHPOINTS, #CASHPOINTS - .@Cost;
-		
-			title("Casas MVP");
-			mes "Listo";
-			mes "Recuerda tu cuenta premium expira en : ^FF0000" + callfunc("Time2Str",#Premium_Tick) + "^000000.";
-			break;
-		case 2:
 			mes "Introduce el numero de casa";
 			input .@numeroCASA;
 			if ( .@numeroCASA <= 10 && .@numeroCASA >= 1 && getd("$ALQUILADA" + .@numeroCASA ) )
@@ -86,23 +55,23 @@ prontera,166,158,3	script	Casas Info::Casas Info	858,{
 				mes " El numero de casa es incorrecto o no esta alquilada";		 
 			}
 
-			break;
+		break;
 		case 3: break;
 	} 
 	close;
 }
 
-prontera,165,164,4	script	rent_casa::rent_casa	45,2,2,{
+prontera,167,160,4	script	rent_casa::rent_casa	45,2,2,{
 OnTouch:
 	setarray .@casas$[1],"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa ","Casa ";
 	setarray .@casma$[1],"rentb2","rentb3","rentb4","rentb5","rentb6","rentb7","rentb8","rentb9","rentb10","rentb11";
-	set .@precioRENTA , 20000;
+	set .@precioRENTA , 10000;
+	set .@Time, 1 * 3 * 24 * 60 * 60; // Time in Seconds = 4 weeks, 7 days per week, 24 hours per day, 60 minutes per day, 60 seconds per minute. = 1 month in this sample.
 
 	title("Casas MVP");
 	mes "Bienvenido a las casas rentables!";
 	mes " Recuerda que necesecitas : ";
-	mes "^10B2D2 [ ~ ] ^000000 Cuenta Premium ";
-	mes "^10B2D2 [ ~ ] ^000000 20k de Cashpoints";
+	mes "^10B2D2 [ ~ ] ^000000 10k de Cashpoints";
 	next;
 
 	for ( set .@j , 0; .@j < getarraysize(.@casas$); set .@j , .@j + 1 ) 
@@ -148,7 +117,7 @@ OnTouch:
 		end;
 	}
 	
-	if ( getd ( "$ALQUILADA" + .@ESCOJIDO ) != 0 || isPremium() != 1 ) 
+	if ( getd ( "$ALQUILADA" + .@ESCOJIDO ) != 0 ) 
 	{
 	
 		mes "^10B2D2 [ ~ ] ^000000 Casa alquilada";
@@ -184,7 +153,7 @@ OnTouch:
 		} while ( .@SELECCION != 1 );
 		
 		setd "$CLAVE"    + .@ESCOJIDO , .@Clave;
-		setd "$TIEMPO"    + .@ESCOJIDO , ( #Premium_Tick - 1000 );
+		setd "$TIEMPO"    + .@ESCOJIDO , gettimetick(2) + .@Time;
 		setd "$ALQUILADA" + .@ESCOJIDO , getcharid(3);
 		setd "$NOMBREALQ" + .@ESCOJIDO + "$" , strcharinfo(0);
 		set #CASHPOINTS, #CASHPOINTS - .@precioRENTA;
@@ -193,6 +162,48 @@ OnTouch:
 
 	}
 end;
+
+OnPCDieEvent:
+	if ( strcharinfo(3) == "rentb1" ||
+		strcharinfo(3) == "rentb2" ||
+		strcharinfo(3) == "rentb3" ||
+		strcharinfo(3) == "rentb4" ||
+		strcharinfo(3) == "rentb5" ||
+		strcharinfo(3) == "rentb6" ||
+		strcharinfo(3) == "rentb7" ||
+		strcharinfo(3) == "rentb8" ||
+		strcharinfo(3) == "rentb9" ||
+		strcharinfo(3) == "rentb10" ||
+		strcharinfo(3) == "rentb11" ||
+		strcharinfo(3) == "rentb12" ||
+		strcharinfo(3) == "rentb13" ||
+		strcharinfo(3) == "rentb14" ||
+		strcharinfo(3) == "rentb15" ||
+		strcharinfo(3) == "rentb16" ||
+		strcharinfo(3) == "rentb17" ||
+		strcharinfo(3) == "rentb18" ||
+		strcharinfo(3) == "rentb19" ||
+		strcharinfo(3) == "rentb20" ||
+		strcharinfo(3) == "rentb21" ||
+		strcharinfo(3) == "rentb22" ||
+		strcharinfo(3) == "rentb23" ||
+		strcharinfo(3) == "rentb24" ||
+		strcharinfo(3) == "rentb25" ||
+		strcharinfo(3) == "rentb26" ||
+		strcharinfo(3) == "rentb27"
+	) 
+	{
+		sleep2 100;
+		warp strcharinfo(3),16,24;
+		atcommand "@alive "+ strcharinfo(0);
+		sc_start 32,  240000, 10;
+		sc_start 30, 240000, 10;
+		percentheal 100,100;
+		repairall;
+		end;
+	}
+end;
+
 	
 }
 
@@ -514,33 +525,33 @@ rentinb27,13,26,0	duplicate(BRent_Storage)	Armario#by27	111
 //= Activador de PVP en Mapa Outdoor
 //============================================================ 
 
-rentb1,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b1	837
-rentb2,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b2	837
-rentb3,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b3	837
-rentb4,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b4	837
-rentb5,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b5	837
-rentb6,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b6	837
-rentb7,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b7	837
-rentb8,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b8	837
-rentb9,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b9	837
-rentb10,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b10	837
-rentb11,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b11	837
-rentb12,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b12	837
-rentb13,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b13	837
-rentb14,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b14	837
-rentb15,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b15	837
-rentb16,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b16	837
-rentb17,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b17	837
-rentb18,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b18	837
-rentb19,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b19	837
-rentb20,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b20	837
-rentb21,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b21	837
-rentb22,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b22	837
-rentb23,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b23	837
-rentb24,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b24	837
-rentb25,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b25	837
-rentb26,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b26	837
-rentb27,23,21,3	duplicate(BRent_PVPSwitch)	Switch#b27	837
+rentb1,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b1	837
+rentb2,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b2	837
+rentb3,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b3	837
+rentb4,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b4	837
+rentb5,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b5	837
+rentb6,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b6	837
+rentb7,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b7	837
+rentb8,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b8	837
+rentb9,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b9	837
+rentb10,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b10	837
+rentb11,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b11	837
+rentb12,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b12	837
+rentb13,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b13	837
+rentb14,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b14	837
+rentb15,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b15	837
+rentb16,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b16	837
+rentb17,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b17	837
+rentb18,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b18	837
+rentb19,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b19	837
+rentb20,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b20	837
+rentb21,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b21	837
+rentb22,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b22	837
+rentb23,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b23	837
+rentb24,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b24	837
+rentb25,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b25	837
+rentb26,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b26	837
+rentb27,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b27	837
 
 //============================================================ 
 //= Manzano
@@ -578,141 +589,141 @@ rentb27,33,31,0	duplicate(BRent_AppleTree)	Manzano#b27	111
 //= Jardín
 //============================================================ 
 
-rentb1,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb1,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb1,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb1,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb1,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb2,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb2,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb2,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb2,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb2,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb3,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb3,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb3,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb3,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb3,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb4,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb4,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb4,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb4,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb4,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb5,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb5,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb5,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb5,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb5,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb6,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb6,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb6,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb6,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb6,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb7,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb7,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb7,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb7,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb7,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb8,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb8,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb8,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb8,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb8,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb9,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb9,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb9,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb9,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb9,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb10,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb10,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb10,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb10,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb10,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb11,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb11,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb11,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb11,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb11,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb12,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb12,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb12,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb12,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb12,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb13,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb13,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb13,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb13,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb13,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb14,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb14,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb14,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb14,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb14,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb15,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb15,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb15,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb15,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb15,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb16,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb16,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb16,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb16,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb16,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb17,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb17,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb17,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb17,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb17,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb18,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb18,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb18,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb18,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb18,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb19,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb19,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb19,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb19,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb19,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb20,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb20,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb20,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb20,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb20,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb21,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb21,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb21,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb21,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb21,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb22,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb22,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb22,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb22,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb22,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb23,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb23,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb23,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb23,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb23,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb24,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb24,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb24,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb24,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb24,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb25,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb25,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb25,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb25,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb25,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb26,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb26,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb26,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb26,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb26,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
-rentb27,32,9,3,6	monster	Blue Plant	1079,5,39600000,39000000,0
-rentb27,32,9,3,6	monster	White Plant	1082,5,39600000,39000000,0
-rentb27,32,9,3,6	monster	Yellow Plant	1081,5,39600000,39000000,0
-rentb27,32,9,3,6	monster	Green Plant	1080,5,39600000,39000000,0
-rentb27,32,9,3,6	monster	Red Plant	1078,5,39600000,39000000,0
+rentb1,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb1,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb1,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb1,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb1,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb2,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb2,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb2,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb2,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb2,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb3,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb3,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb3,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb3,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb3,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb4,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb4,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb4,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb4,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb4,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb5,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb5,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb5,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb5,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb5,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb6,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb6,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb6,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb6,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb6,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb7,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb7,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb7,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb7,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb7,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb8,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb8,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb8,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb8,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb8,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb9,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb9,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb9,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb9,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb9,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb10,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb10,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb10,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb10,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb10,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb11,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb11,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb11,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb11,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb11,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb12,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb12,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb12,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb12,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb12,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb13,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb13,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb13,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb13,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb13,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb14,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb14,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb14,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb14,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb14,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb15,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb15,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb15,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb15,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb15,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb16,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb16,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb16,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb16,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb16,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb17,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb17,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb17,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb17,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb17,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb18,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb18,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb18,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb18,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb18,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb19,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb19,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb19,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb19,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb19,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb20,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb20,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb20,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb20,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb20,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb21,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb21,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb21,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb21,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb21,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb22,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb22,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb22,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb22,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb22,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb23,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb23,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb23,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb23,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb23,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb24,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb24,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb24,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb24,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb24,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb25,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb25,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb25,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb25,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb25,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb26,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb26,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb26,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb26,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb26,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb27,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb27,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb27,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb27,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb27,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
 
 //============================================================ 
 //= Cambio de Ropa
@@ -774,15 +785,100 @@ rentinb25,5,29,0	duplicate(BRent_Closet)	Closet#by25	111
 rentinb26,5,29,0	duplicate(BRent_Closet)	Closet#by26	111
 rentinb27,5,29,0	duplicate(BRent_Closet)	Closet#by27	111
 
-//aev_fild01 mobs
-aev_fild01,0,0,0,0	monster	Creamy	1018,10,0,0,0
-aev_fild01,0,0,0,0	monster	Fabre	1007,20,0,0,0
-aev_fild01,0,0,0,0	monster	Pupa	1008,30,0,0,0
-aev_fild01,0,0,0,0	monster	Lunatic	1063,30,0,0,0
-aev_fild01,0,0,0,0	monster	Poring	1002,40,0,0,0
-aev_fild01,0,0,0,0	monster	Smokie	1056,40,0,0,0
-aev_fild01,0,0,0,0	monster	Choco	1214,1,0,0,0
-aev_fild01,0,0,0,0	monster	Poporing	1031,10,0,0,0
-aev_fild01,0,0,0,0	monster	Drops	1113,10,0,0,0
-aev_fild01,0,0,0,0	monster	Deviace	1108,20,0,0,0
-aev_fild01,0,0,0,0	boss_monster	Stormy Knight	1251,1,3600000,600000,0
+
+//============================================================
+//= Warps rentb -> rentinb (Entrada a Indoors)
+//============================================================
+
+rentb1,13,24,0	warp	rentb1-2	1,1,rentinb1,34,6
+rentb2,13,24,0	warp	rentb2-2	1,1,rentinb2,34,6
+rentb3,13,24,0	warp	rentb3-2	1,1,rentinb3,34,6
+rentb4,13,24,0	warp	rentb4-2	1,1,rentinb4,34,6
+rentb5,13,24,0	warp	rentb5-2	1,1,rentinb5,34,6
+rentb6,13,24,0	warp	rentb6-2	1,1,rentinb6,34,6
+rentb7,13,24,0	warp	rentb7-2	1,1,rentinb7,34,6
+rentb8,13,24,0	warp	rentb8-2	1,1,rentinb8,34,6
+rentb9,13,24,0	warp	rentb9-2	1,1,rentinb9,34,6
+rentb10,13,24,0	warp	rentb10-2	1,1,rentinb10,34,6
+rentb11,13,24,0	warp	rentb11-2	1,1,rentinb11,34,6
+rentb12,13,24,0	warp	rentb12-2	1,1,rentinb12,34,6
+rentb13,13,24,0	warp	rentb13-2	1,1,rentinb13,34,6
+rentb14,13,24,0	warp	rentb14-2	1,1,rentinb14,34,6
+rentb15,13,24,0	warp	rentb15-2	1,1,rentinb15,34,6
+rentb16,13,24,0	warp	rentb16-2	1,1,rentinb16,34,6
+rentb17,13,24,0	warp	rentb17-2	1,1,rentinb17,34,6
+rentb18,13,24,0	warp	rentb18-2	1,1,rentinb18,34,6
+rentb19,13,24,0	warp	rentb19-2	1,1,rentinb19,34,6
+rentb20,13,24,0	warp	rentb20-2	1,1,rentinb20,34,6
+rentb21,13,24,0	warp	rentb21-2	1,1,rentinb21,34,6
+rentb22,13,24,0	warp	rentb22-2	1,1,rentinb22,34,6
+rentb23,13,24,0	warp	rentb23-2	1,1,rentinb23,34,6
+rentb24,13,24,0	warp	rentb24-2	1,1,rentinb24,34,6
+rentb25,13,24,0	warp	rentb25-2	1,1,rentinb25,34,6
+rentb26,13,24,0	warp	rentb26-2	1,1,rentinb26,34,6
+rentb27,13,24x,0	warp	rentb27-2	1,1,rentinb27,34,6
+
+//============================================================
+//= Warps rentinb -> rentb (Salida de Indoors)
+//============================================================
+
+rentinb1,34,3,0	warp	rentb1-3	1,1,rentb1,19,18
+rentinb2,34,3,0	warp	rentb2-3	1,1,rentb2,19,18
+rentinb3,34,3,0	warp	rentb3-3	1,1,rentb3,19,18
+rentinb4,34,3,0	warp	rentb4-3	1,1,rentb4,19,18
+rentinb5,34,3,0	warp	rentb5-3	1,1,rentb5,19,18
+rentinb6,34,3,0	warp	rentb6-3	1,1,rentb6,19,18
+rentinb7,34,3,0	warp	rentb7-3	1,1,rentb7,19,18
+rentinb8,34,3,0	warp	rentb8-3	1,1,rentb8,19,18
+rentinb9,34,3,0	warp	rentb9-3	1,1,rentb9,19,18
+rentinb10,34,3,0	warp	rentb10-3	1,1,rentb10,19,18
+rentinb11,34,3,0	warp	rentb11-3	1,1,rentb11,19,18
+rentinb12,34,3,0	warp	rentb12-3	1,1,rentb12,19,18
+rentinb13,34,3,0	warp	rentb13-3	1,1,rentb13,19,18
+rentinb14,34,3,0	warp	rentb14-3	1,1,rentb14,19,18
+rentinb15,34,3,0	warp	rentb15-3	1,1,rentb15,19,18
+rentinb16,34,3,0	warp	rentb16-3	1,1,rentb16,19,18
+rentinb17,34,3,0	warp	rentb17-3	1,1,rentb17,19,18
+rentinb18,34,3,0	warp	rentb18-3	1,1,rentb18,19,18
+rentinb19,34,3,0	warp	rentb19-3	1,1,rentb19,19,18
+rentinb20,34,3,0	warp	rentb20-3	1,1,rentb20,19,18
+rentinb21,34,3,0	warp	rentb21-3	1,1,rentb21,19,18
+rentinb22,34,3,0	warp	rentb22-3	1,1,rentb22,19,18
+rentinb23,34,3,0	warp	rentb23-3	1,1,rentb23,19,18
+rentinb24,34,3,0	warp	rentb24-3	1,1,rentb24,19,18
+rentinb25,34,3,0	warp	rentb25-3	1,1,rentb25,19,18
+rentinb26,34,3,0	warp	rentb26-3	1,1,rentb26,19,18
+rentinb27,34,3,0	warp	rentb27-3	1,1,rentb27,19,18
+
+//============================================================
+//= Mapflags [12/12/2016] Isaac
+//============================================================
+
+
+rentb1	mapflag	nograveyard	
+rentb2	mapflag	nograveyard	
+rentb3	mapflag	nograveyard	
+rentb4	mapflag	nograveyard	
+rentb5	mapflag	nograveyard	
+rentb6	mapflag	nograveyard	
+rentb7	mapflag	nograveyard	
+rentb8	mapflag	nograveyard	
+rentb9	mapflag	nograveyard	
+rentb10	mapflag	nograveyard
+rentb11	mapflag	nograveyard
+rentb12	mapflag	nograveyard
+rentb13	mapflag	nograveyard
+rentb14	mapflag	nograveyard
+rentb15	mapflag	nograveyard
+rentb16	mapflag	nograveyard
+rentb17	mapflag	nograveyard
+rentb18	mapflag	nograveyard
+rentb19	mapflag	nograveyard
+rentb20	mapflag	nograveyard
+rentb21	mapflag	nograveyard
+rentb22	mapflag	nograveyard
+rentb23	mapflag	nograveyard
+rentb24	mapflag	nograveyard
+rentb25	mapflag	nograveyard
+rentb26	mapflag	nograveyard
+rentb27	mapflag	nograveyard

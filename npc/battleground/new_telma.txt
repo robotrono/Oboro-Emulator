@@ -3,28 +3,43 @@
 -	shop	bg_shop3	-1,512:-1
 -	shop	bg_shop4	-1,512:-1
 
+arena_4,146,105,5	script	Old Telma	701,{
+	dispbottom "[Oboro]: Hey! sabes que puedes usar @telma???";
+	doevent "OboroTelma::OnAttach";
+	end;
+}
 
-arena_4,146,105,5	script	Telma	701,{
+-	script	OboroTelma	-1,{
+OnAttach:
 	function  i_Shop;
-title();
+	
+	title();
 	mes "Bienvenid" + (Sex?"o caballero ":"a querida dama ") + ",¿qué desea comprar?";
 	set .@Menu$ , "";
 	for ( set .@i , 1; .@i < getarraysize(.Menu$); set .@i , .@i + 1 ) 
 		set .@Menu$ , .@Menu$ + " ^10B2D2 > ^000000 " + .Menu$[.@i] + ":";
 	set .@Select , select(.@Menu$);
 
-	dispbottom "[Telma]: Recuerda, sólo se puede comprar 1 item a la vez.";
+	dispbottom "[Oboro]: Recuerda, sólo se puede comprar 1 item a la vez.";
 	close2;
 		callshop "bg_shop"+.@Select,1;
 		npcshopattach "bg_shop"+.@Select;
 		set @opt , .@Select;
 	end;
+end;
 	
 
 function i_Shop {
-	if ( getitemname( getarg(0) ) == "null" ) { debugmes " Item " + getarg(0) + ", desconocido"; return; } 
+	
+	if ( getitemname( getarg(0) ) == "null" ) 
+	{ 
+		debugmes " Item " + getarg(0) + ", desconocido"; 
+		return; 
+	}
+	
 	for ( set .@i , 0; .@i < 4; set .@i , .@i + 1 )
 		set getd(".item_"+getarg(0)+getarg(3)+"["+.@i+"]"),getarg(.@i);
+		
 	npcshopadditem "bg_shop"+getarg(3),getarg(0),getarg(1);
 	sleep 1;
 	return; 
@@ -124,6 +139,11 @@ OnInit:
 		i_Shop (12321,10,2,4);
 		i_Shop (606,10,2,4);
 		i_Shop (689,50,7,4);
+		i_Shop (7524,10,2,4);
+		i_Shop (14510,10,2,4);
+		i_Shop (14509,10,2,4);
+		i_Shop (657,10,2,4);
+
 
 	for( set .@i , 1; .@i <  4; set .@i , .@i + 1 )
 		npcshopdelitem "bg_shop"+.@i,512;
@@ -131,146 +151,164 @@ OnInit:
 end;
 
 OnBuyItem:
-title();
-	if ( getarraysize( @bought_nameid ) > 1 ) {
-		mes "Sólo se puede comprar 1 item a la vez.";
-		close;
-	}
+	title();
+	if ( getarraysize( @bought_nameid ) > 1 ) 
+		mclose "Sólo se puede comprar 1 item a la vez.";
 
-	switch ( @opt ) {
-	case 1:
-		set		.@purchase[0],@bought_nameid;
-		copyarray	.@purchase[1],getd(".item_"+@bought_nameid+@opt+"[0]"),getarraysize(getd(".item_"+@bought_nameid+@opt+"[0]"));
-		if ( !.@purchase[1] ) { mes strcharinfo(0) + " Un error ocurrio."; close; }	
+	switch ( @opt ) 
+	{
+		case 1:
+			set		.@purchase[0],@bought_nameid;
+			copyarray	.@purchase[1],getd(".item_"+@bought_nameid+@opt+"[0]"),getarraysize(getd(".item_"+@bought_nameid+@opt+"[0]"));
+			if ( !.@purchase[1] ) 
+			{
+				mes strcharinfo(0) + " Un error ocurrio.";
+				close;
+			}	
 
-		mes "Deseas comprar el item " + getitemname(.@purchase[1]) + " al precio de ^DF0101" + .@purchase[3] * @bought_quantity + " BG's jugados?^000000";
-		if ( select ( " - Sí : - Mejor no " ) == 2 ) close;
-		if ( #BGPOINTS < .@purchase[3] * @bought_quantity ) {
+			mes "Deseas comprar el item " + getitemname(.@purchase[1]) + " al precio de ^DF0101" + .@purchase[3] * @bought_quantity + " BG's jugados?^000000";
+			if ( select ( " - Sí : - Mejor no " ) == 2 ) 
+				close;
+	
+			if ( #BGPOINTS < .@purchase[3] * @bought_quantity ) {
 				next;
-				mes name$;
-				mes " ";
+				title();
 				mes "No tienes la cantidad de bg's jugados";
 				mes "Actualmente tienes : " + #BGPOINTS + " BG's jugados";
 			} else {
 				getitem @bought_nameid , .@purchase[2] * @bought_quantity;
 				set #BGPOINTS , #BGPOINTS - .@purchase[3] * @bought_quantity;
 			}
-		close;
-
-	case 3:
-	case 4:
-	case 2:
-		set		.@purchase[0],@bought_nameid;
-		copyarray	.@purchase[1],getd(".item_"+@bought_nameid+@opt+"[0]"),getarraysize(getd(".item_"+@bought_nameid+@opt+"[0]"));
-		if ( !.@purchase[1] || .@purchase[4] == 1 ) { mes strcharinfo(0) + " Un error ocurrio."; close; }
-
-		set .@total_medallas , .@purchase[3] * @bought_quantity;
-		set .@total_items    , .@purchase[2] * @bought_quantity;
-
-		if ( @bought_quantity > 200 ) {
-			mes "El límite máximo es 200.";
 			close;
-		}
-		
-		mes " ^10B2D2 > ^000000 Item a comprar : " + substr(getitemname(.@purchase[1]),0,8)+"...";
-		mes " ^10B2D2 > ^000000 Total medallas : " + .@total_medallas;
-		mes " ^10B2D2 > ^000000 Total comprar  : " + .@total_items;	
-		set .@name$, " [ ^10B2D2 Medallas a gastar : " + .@total_medallas + " medalla(s)^000000 ]"; 
+		//no-break;
+		case 3:
+		case 4:
+		case 2:
+			set		.@purchase[0],@bought_nameid;
+			copyarray	.@purchase[1],getd(".item_"+@bought_nameid+@opt+"[0]"),getarraysize(getd(".item_"+@bought_nameid+@opt+"[0]"));
+			if ( !.@purchase[1] || .@purchase[4] == 1 ) 
+			{
+				mes strcharinfo(0) + " Un error ocurrio.";
+				close;
+			}
 
-		if ( countitem( 7773 ) + countitem( 7829 ) + countitem( 7828 ) < .@total_medallas ) {
+			set .@total_medallas , .@purchase[3] * @bought_quantity;
+			set .@total_items    , .@purchase[2] * @bought_quantity;
+
+			if ( @bought_quantity > 200 ) 
+				mclose "El límite máximo es 200.";
+		
+			mes " ^10B2D2 > ^000000 Item a comprar : " + substr(getitemname(.@purchase[1]),0,8)+"...";
+			mes " ^10B2D2 > ^000000 Total medallas : " + .@total_medallas;
+			mes " ^10B2D2 > ^000000 Total comprar  : " + .@total_items;	
+			set .@name$, " [ ^10B2D2 Medallas a gastar : " + .@total_medallas + " medalla(s)^000000 ]"; 
+			
 			next;
-			mes name$;
-			mes " ";
-			mes "No tienes la cantidad de medallas necesitadas";
-			close;
-		}
-		next;
-		mes .@name$;
-		mes " ";
-		mes " ^10B2D2 > ^000000 Valor Badges a gastar : ";
-		input .@valor;
-		if ( .@valor >= .@total_medallas ) {
-			if ( countitem(7829) > .@valor ) {
-				if ( .@total_medallas < .@valor )
-					set .@valor , .@total_medallas;
-				set .@option , 1;
-				break;
-			} else {
-				mes "No tienes suficientes medallas valor";
-				close;
+			title();
+
+			if ( countitem( 7773 ) + countitem( 7829 ) + countitem( 7828 ) < .@total_medallas ) 
+				mclose "No tienes la cantidad de medallas necesitadas";
+			
+			mes " ^10B2D2 > ^000000 Valor Badges a gastar : ";
+			input .@valor;
+			
+			if ( .@valor >= .@total_medallas ) 
+			{
+				if ( countitem(7829) > .@valor ) 
+				{
+					if ( .@total_medallas < .@valor )
+						set .@valor , .@total_medallas;
+					set .@option , 1;
+					break;
+				} else
+					mclose "No tienes suficientes medallas valor";
 			}
-		} 
-		mes " ^10B2D2 > ^000000 Bravery Badges a gastar : ";
-		input .@bravery;
-		if ( .@bravery >= .@total_medallas || .@bravery + .@valor >= .@total_medallas ) {
-			if ( countitem(7828) >= .@bravery ) {
-				if ( ( .@total_medallas - .@valor ) < .@bravery  )
-					set .@bravery , ( .@total_medallas - .@valor );
-				set .@option , 1;
-				break;
-			} else {
-				mes "No tienes suficientes medallas bravery";
-				close;
-			}
-		}
-		mes " ^10B2D2 > ^000000 Battle Badges a gastar : ";
-		input .@battle;
-		if ( .@battle >= .@total_medallas ||  .@battle + .@bravery + .@valor >= .@total_medallas  ) {
-			if ( countitem(7773) >= .@battle ) {
-				if ( ( .@total_medallas - .@valor - .@bravery ) < .@battle  )
-					set .@battle , ( .@total_medallas - .@valor - .@bravery );
- 				set .@option , 1;
-				break;
-			} else {
-				mes "No tienes suficientes medallas Battle.";
-				close;
-			}
-		}
 		
-		next;
-		mes name$;
-		mes "No tienes la cantidad de medallas requeridas.";
-		close;
+			mes " ^10B2D2 > ^000000 Bravery Badges a gastar : ";
+			input .@bravery;
+			
+			if ( .@bravery >= .@total_medallas || .@bravery + .@valor >= .@total_medallas ) 
+			{
+				if ( countitem(7828) >= .@bravery ) 
+				{
+					if ( ( .@total_medallas - .@valor ) < .@bravery  )
+						set .@bravery , ( .@total_medallas - .@valor );
+					set .@option , 1;
+					break;
+				} else
+					mclose "No tienes suficientes medallas bravery";
+			}
+			
+			mes " ^10B2D2 > ^000000 Battle Badges a gastar : ";
+			input .@battle;
+			
+			if ( .@battle >= .@total_medallas ||  .@battle + .@bravery + .@valor >= .@total_medallas  ) 
+			{
+				if ( countitem(7773) >= .@battle ) 
+				{
+					if ( ( .@total_medallas - .@valor - .@bravery ) < .@battle  )
+						set .@battle , ( .@total_medallas - .@valor - .@bravery );
+					set .@option , 1;
+					break;
+				} else
+					mclose "No tienes suficientes medallas Battle.";
+			}
+		
+			next;
+			title();
+			mclose "No tienes la cantidad de medallas requeridas.";
+		//no-break;
 	}
 	
-	if ( !.@option ) close;
+	if ( !.@option ) 
+		close;
 
 	next;
-title();
-	mes "¿Dónde quieres las cosas?";
-	if ( select(" - Inventario: - Storage") == 1 ) {
-		if( checkweight(@bought_nameid,.@total_items ) == 0 ) {
+	title();
+	
+	mes "¿Dónde quieres los consumibles?";
+	if ( select(" - Inventario: - Storage") == 1 ) 
+	{
+		if( checkweight(@bought_nameid,.@total_items ) == 0 ) 
+		{
 			mes "Se ve que no puede llevar las cosas que quieres comprar.";
 			mes "Debes almacenar algunos artículos en su almacenamiento Kafra.";
 			close;
 		}
+		
 		delitem 7829    ,   .@valor;
 		delitem 7828    , .@bravery;
 		delitem 7773    ,  .@battle;
-		if ( @opt == 2 ) {
+		
+		if ( @opt == 2 ) 
+		{
 			set .@cID, getbattleflag("bg_reserved_char_id");
 			set .@Tarjet$, "Battleground";
 			getitem2 @bought_nameid,.@total_items,1,0,0,254,0,.@cID&0xffff,(.@cID>>16)&0xffff;
 		} else
 			getitem @bought_nameid,.@total_items;
-		mes "Listo !!";
-		close;
+		mclose "Gracias por comprar";
 	}
-	if ( @opt == 2 ) {
+	
+	if ( @opt == 2 ) 
+	{
 		set .@cID, getbattleflag("bg_reserved_char_id");
 		set .@Tarjet$, "Battleground";
-		if( checkspace(@bought_nameid,.@total_items,1,0,0,254,0,.@cID&0xffff,(.@cID>>16)&0xffff) == 0 ) {
+		if( checkspace(@bought_nameid,.@total_items,1,0,0,254,0,.@cID&0xffff,(.@cID>>16)&0xffff) == 0 ) 
+		{
 			mes "He visto que su Storage no puede aceptar más artículos.";
 			mes "Vaya a su Storage y comprobar el espacio libre.";
 			close;
 		}
 	} else {
-		if( checkspace(@bought_nameid,.@total_items,1,0,0,0,0,0,0) == 0 ) {
+		if( checkspace(@bought_nameid,.@total_items,1,0,0,0,0,0,0) == 0 ) 
+		{
 			mes "He visto su inventory no puede aceptar más artículos.";
 			mes "Vaya a inventory compruebe el espacio libre.";
 			close;
 		}
 	}
+	
 	close2;
 		delitem 7829    ,   .@valor;
 		delitem 7828    , .@bravery;

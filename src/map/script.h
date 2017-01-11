@@ -80,7 +80,7 @@ typedef enum c_op {
 	C_ADD_POST, // a++
 	C_SUB_POST, // a--
 	C_ADD_PRE, // ++a
-	C_SUB_PRE, // --a
+	C_SUB_PRE // --a
 } c_op;
 
 /// Maximum amount of elements in script arrays

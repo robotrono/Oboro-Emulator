@@ -21,7 +21,7 @@ prontera,164,171,4	script	Reset Girl#01::RESETET	504,{
 						mes "Lo siento, no tienes suficiente Zeny.";
 						close;
 					}
-					mes "¡Reset listo! Vuelve cuando quieras y disfruta de EasyRO.";
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
 					set Zeny,zeny-10000;
 					resetskill;
 					specialeffect2 223;
@@ -34,7 +34,7 @@ prontera,164,171,4	script	Reset Girl#01::RESETET	504,{
 						mes "Lo siento, no tienes suficiente Zeny.";
 						close;
 					}
-					mes "¡Reset listo! Vuelve cuando quieras y disfruta de EasyRO.";
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
 					set Zeny,zeny-10000;
 					resetstatus;
 					specialeffect2 223;
@@ -47,7 +47,7 @@ prontera,164,171,4	script	Reset Girl#01::RESETET	504,{
 						mes "Lo siento, no tienes suficiente Zeny.";
 						close;
 					}
-					mes "¡Reset listo! Vuelve cuando quieras y disfruta de EasyRO.";
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
 					set Zeny,zeny-15000;
 					resetskill;
 					resetstatus;

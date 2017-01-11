@@ -21,9 +21,6 @@ struct login_session_data {
 	long login_id2;
 	char sex;// 'F','M','S'
 
-	void *harm_sd;
-	char mac_address[20];
-
 	char userid[NAME_LENGTH];
 	char passwd[32+1]; // 23+1 for plaintext, 32+1 for md5-ed passwords
 	int passwdenc;

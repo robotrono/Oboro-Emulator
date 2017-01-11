@@ -154,16 +154,10 @@ OnInit:
 	i_Costume(5385,4); //yoyo hat
 	
 	//Troll
-	i_Costume(30263,5); //lol hat
-	i_Costume(30264,5); //megusta hat
-	i_Costume(30265,5); //pohuy
-	i_Costume(30266,5); //pokerface
-	i_Costume(30267,5); //rageface
-	i_Costume(30268,5); //rofl
-	i_Costume(30262,5); //hoplite
-	i_Costume(30261,5); //foreveralone
-	i_Costume(30260,5); //darkvader
-	
+	i_Costume(30358,6); //Invisible Cap
+	i_Costume(30359,6); //Invisible Mask
+	i_Costume(30360,6); //Invisible Sunglasses
+
 	//Mids
 	i_Costume(2283,6); //lol
 	i_Costume(5074,6); //angel wing ear
@@ -211,7 +205,7 @@ OnBuyItem:
 	} else {
 		mes " Muy bien toma!";
 		set #CASHPOINTS , #CASHPOINTS - 2000;
-		atcommand "@costumeitem " + @bought_nameid + " 1 3142";
+		atcommand "@costumeitem " + @bought_nameid + " 1 5432";
 	}
 	close;
 }

@@ -2750,7 +2750,7 @@ void npc_duplicate4graveyard(struct block_list* bl, struct block_list* sbl)
 		ShowError("npc_duplicate4graveyard: the source npc for graveyard cannot be found.\n");
 		return;
 	}
-
+	
 	snprintf(w1, sizeof(w1), "%s,%d,%d,%d", map[bl->m].name, bl->x, bl->y, unit_getdir(bl));
 	snprintf(w2, sizeof(w2), "duplicate(%s)", nd->exname);
 	snprintf(w3, sizeof(w3), "%s#%d::%s", nd->name, bl->id, newname);
@@ -3673,6 +3673,10 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 		map[m].flag.mvp=state;
 	else if (!strcmpi(w3,"mvprestricted"))//iSaaC
 		map[m].flag.mvprestricted=state;
+	else if (!strcmpi(w3,"nograveyard"))//iSaaC
+		map[m].flag.nograveyard=state;
+	else if (!strcmpi(w3,"guild_min"))
+		map[m].flag.guild_min =state;
 	else
 		ShowError("npc_parse_mapflag: unrecognized mapflag '%s' (file '%s', line '%d').\n", w3, filepath, strline(buffer,start-buffer));
 

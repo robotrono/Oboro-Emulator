@@ -102,7 +102,7 @@
 #define MAX_STORAGE 700 // Normal Storage Size
 #define MAX_EXTRA_STORAGE 200 // Extra Storage Size
 #define MAX_GUILD_STORAGE 600
-#define MAX_PARTY 15
+#define MAX_PARTY 30
 #define MAX_GUILD 30+10*7	// increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	// increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
 #define MAX_GUILDEXPULSION 32

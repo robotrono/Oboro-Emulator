@@ -8,7 +8,6 @@
 #include "../common/malloc.h"
 #include "../common/version.h"
 #include "../common/nullpo.h"
-#include "../common/harmony.h"
 #include "../common/showmsg.h"
 #include "../common/strlib.h"
 #include "../common/utils.h"
@@ -36,7 +35,6 @@
 #include "guild.h"
 #include "guild_castle.h"
 #include "vending.h"
-#include "harmony.h"
 #include "pet.h"
 #include "homunculus.h"
 #include "instance.h"
@@ -17677,14 +17675,11 @@ static int clif_parse(int fd)
 		if( !sd && packet_db[packet_ver][cmd].func != clif_parse_WantToConnection )
 			; //Only valid packet when there is no session
 		else
-		if( sd && sd->bl.prev == NULL && packet_db[packet_ver][cmd].func != clif_parse_LoadEndAck && !(cmd >= 0x6A0 && cmd <= 0x6E0) )
+		if( sd && sd->bl.prev == NULL && packet_db[packet_ver][cmd].func != clif_parse_LoadEndAck )
 			; //Only valid packet when player is not on a map
 		else
 		if( sd && session[sd->fd]->flag.eof )
 			; //No more packets accepted
-		else
-		if (!harm_funcs->zone_process(fd, cmd, RFIFOP(fd, 0), packet_len))
-			; // Vaporized
 		else
 			packet_db[packet_ver][cmd].func(fd, sd); 
 	}
@@ -18208,7 +18203,6 @@ static int packetdb_readdb(void)
 
 	clif_config.packet_db_ver = MAX_PACKET_VER;
 	packet_ver = MAX_PACKET_VER;	// read into packet_db's version by default
-#include "harmony_packets.inc"
 	while( fgets(line, sizeof(line), fp) )
 	{
 		ln++;

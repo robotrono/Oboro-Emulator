@@ -398,8 +398,9 @@ int skillnotok (int skillid, struct map_session_data *sd)
 	if (battle_config.gm_skilluncond && pc_isGM(sd) >= battle_config.gm_skilluncond)
 		return 0; // GMs can do any damn thing they want
 
-	if( skillid == AL_TELEPORT && sd->skillitem == skillid && sd->skillitemlv > 2 )
-		return 0; // Teleport lv 3 bypasses this check.[Inkfish]
+	//isaac...
+	//if( skillid == AL_TELEPORT && sd->skillitem == skillid && sd->skillitemlv > 2 )
+		//return 0; // Teleport lv 3 bypasses this check.[Inkfish]
 
 	if( skill_blockpc_get(sd,skillid) != -1 )
 		return 1;
@@ -1685,7 +1686,7 @@ int skill_attack (int attack_type, struct block_list* src, struct block_list *ds
 	struct Damage dmg;
 	struct status_data *sstatus, *tstatus;
 	struct status_change *sc;
-	struct map_session_data *sd, *tsd;
+	struct map_session_data *sd, *tsd, *killer_sd, *dest_sd; //isaac
 	int type,damage,rdamage=0;
 	bool reflected = false;
 
@@ -1721,6 +1722,40 @@ int skill_attack (int attack_type, struct block_list* src, struct block_list *ds
 		return 0;
 
 	dmg = battle_calc_attack(attack_type,src,bl,skillid,skilllv,flag&0xFFF);
+	
+	//isaac start SHARP in same guild with 0 damage
+	if ( skillid == SN_SHARPSHOOTING )
+	{
+		killer_sd = BL_CAST(BL_PC, src);
+		dest_sd = BL_CAST(BL_PC, bl);
+		
+		if ( killer_sd && dest_sd && bl->type == BL_PC)
+		{
+			if ( map[killer_sd->bl.m].flag.gvg || map[killer_sd->bl.m].flag.gvg_castle || map[killer_sd->bl.m].flag.woe_set )
+			{
+				if ( killer_sd->status.guild_id == dest_sd->status.guild_id )
+				{
+					dmg.damage = dmg.damage2 = 0;
+					dmg.dmg_lv = ATK_MISS;
+				}
+			}
+			else if ( map[killer_sd->bl.m].flag.pvp || map[killer_sd->bl.m].flag.pvp_event || map[killer_sd->bl.m].flag.pvp_noguild || map[killer_sd->bl.m].flag.pvp_noparty )
+				; // si esta en un mapa pvp, que le pegue normalmente [Isaac]
+			else
+			{
+				if ( killer_sd->status.guild_id == dest_sd->status.guild_id )
+				{
+					dmg.damage = dmg.damage2 = 0;
+					dmg.dmg_lv = ATK_MISS;
+				}
+			}
+		} 
+		else if ( killer_sd && src->type == BL_PC && bl->type == BL_MOB && map[killer_sd->bl.m].flag.battleground )
+		{
+			dmg.damage = dmg.damage2 = 0;
+			dmg.dmg_lv = ATK_MISS;
+		}
+	}
 
 	//Skotlex: Adjusted to the new system
 	if(src->type==BL_PET)
@@ -2534,7 +2569,7 @@ static int skill_reveal_trap (struct block_list *bl, va_list ap)
  *------------------------------------------*/
 int skill_castend_damage_id (struct block_list* src, struct block_list *bl, int skillid, int skilllv, unsigned int tick, int flag)
 {
-	struct map_session_data *sd = NULL;
+	struct map_session_data *sd = NULL, *dest_sd = NULL;
 	struct status_data *tstatus;
 	struct status_change *sc;
 
@@ -2750,9 +2785,22 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, int 
 
 	case SN_SHARPSHOOTING:
 	case MA_SHARPSHOOTING:
-	case NJ_KAMAITACHI:
 		//It won't shoot through walls since on castend there has to be a direct
 		//line of sight between caster and target.
+
+		//isaac..
+		//killer = sd
+		dest_sd = BL_CAST(BL_PC, bl); //isaac... sniper
+		if( (sd && dest_sd) && map[sd->bl.m].flag.battleground && sd->bg_id == dest_sd->bg_id && bl->type == BL_PC )
+			return 0;
+
+		skill_area_temp[1] = bl->id;
+		map_foreachinpath (skill_attack_area,src->m,src->x,src->y,bl->x,bl->y,
+			skill_get_splash(skillid, skilllv),skill_get_maxcount(skillid,skilllv), splash_target(src),
+			skill_get_type(skillid),src,src,skillid,skilllv,tick,flag,BCT_ENEMY);
+		break;
+
+	case NJ_KAMAITACHI:
 		skill_area_temp[1] = bl->id;
 		map_foreachinpath (skill_attack_area,src->m,src->x,src->y,bl->x,bl->y,
 			skill_get_splash(skillid, skilllv),skill_get_maxcount(skillid,skilllv), splash_target(src),
@@ -5301,7 +5349,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, in
 		{
 
 			/* ISAAC FIX */
-			if ( (sd && dstsd) && sd->status.guild_id == dstsd->status.guild_id /*|| map[sd->bl.m].flag.battleground*/ )
+			if ( (sd && dstsd) && sd->status.guild_id == dstsd->status.guild_id && map[sd->bl.m].flag.battleground )
 			{
 				
 				clif_skill_fail(sd,skillid,USESKILL_FAIL_LEVEL,0);
@@ -5439,82 +5487,76 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, in
 				return 0;
 			}
 			status_zap(src,0,skill_db[skill_get_index(skillid)].sp[skilllv]); // consume sp only if succeeded [Inkfish]
-			do {
-				eff = rand() % 14;
-				clif_specialeffect(bl, 523 + eff, AREA);
-				switch (eff)
+
+			eff = rand() % 14;
+			clif_specialeffect(bl, 523 + eff, AREA);
+			switch (eff)
+			{
+			case 0:	// heals SP to 0
+				status_percent_damage(src, bl, 0, 100, false);
+				break;
+			case 1:	// matk halved
+				sc_start(bl,SC_INCMATKRATE,100,-50,skill_get_time2(skillid,skilllv));
+				break;
+			case 2:	// all buffs removed
+				status_change_clear_buffs(bl,1);
+				break;
+			case 3:	// 1000 damage, random armor destroyed
 				{
-				case 0:	// heals SP to 0
-					status_percent_damage(src, bl, 0, 100, false);
-					break;
-				case 1:	// matk halved
-					sc_start(bl,SC_INCMATKRATE,100,-50,skill_get_time2(skillid,skilllv));
-					break;
-				case 2:	// all buffs removed
-					status_change_clear_buffs(bl,1);
-					break;
-				case 3:	// 1000 damage, random armor destroyed
-					{
-						int where[] = { EQP_ARMOR, EQP_SHIELD, EQP_HELM, EQP_SHOES, EQP_GARMENT };
-						status_fix_damage(src, bl, 1000, 0, skillid);
-						clif_damage(src,bl,tick,0,0,1000,0,0,0);
-						if( !status_isdead(bl) )
-							skill_break_equip(bl, where[rand()%5], 10000, BCT_ENEMY);
-					}
-					break;
-				case 4:	// atk halved
-					sc_start(bl,SC_INCATKRATE,100,-50,skill_get_time2(skillid,skilllv));
-					break;
-				case 5:	// 2000HP heal, random teleported
-					status_heal(src, 2000, 0, 0);
-					if( !map_flag_gvg3(bl->m) )
-						unit_warp(bl, -1,-1,-1, CLR_TELEPORT);
-					break;
-				case 6:	// random 2 other effects
-					if (count == -1)
-						count = 3;
-					else
-						count++; //Should not retrigger this one.
-					break;
-				case 7:	// stop freeze or stoned
-					{
-						enum sc_type sc[] = { SC_STOP, SC_FREEZE, SC_STONE };
-						sc_start(bl,sc[rand()%3],100,skilllv,skill_get_time2(skillid,skilllv));
-					}
-					break;
-				case 8:	// curse coma and poison
-					sc_start(bl,SC_COMA,100,skilllv,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_CURSE,100,skilllv,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_POISON,100,skilllv,skill_get_time2(skillid,skilllv));
-					break;
-				case 9:	// confusion
-					sc_start(bl,SC_CONFUSION,100,skilllv,skill_get_time2(skillid,skilllv));
-					break;
-				case 10:	// 6666 damage, atk matk halved, cursed
-					status_fix_damage(src, bl, 6666, 0, skillid);
-					clif_damage(src,bl,tick,0,0,6666,0,0,0);
-					sc_start(bl,SC_INCATKRATE,100,-50,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_INCMATKRATE,100,-50,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_CURSE,skilllv,100,skill_get_time2(skillid,skilllv));
-					break;
-				case 11:	// 4444 damage
-					status_fix_damage(src, bl, 4444, 0, skillid);
-					clif_damage(src,bl,tick,0,0,4444,0,0,0);
-					break;
-				case 12:	// stun
-					sc_start(bl,SC_STUN,100,skilllv,5000);
-					break;
-				case 13:	// atk,matk,hit,flee,def reduced
-					sc_start(bl,SC_INCATKRATE,100,-20,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_INCMATKRATE,100,-20,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_INCHITRATE,100,-20,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_INCFLEERATE,100,-20,skill_get_time2(skillid,skilllv));
-					sc_start(bl,SC_INCDEFRATE,100,-20,skill_get_time2(skillid,skilllv));
-					break;
-				default:
-					break;
+					int where[] = { EQP_ARMOR, EQP_SHIELD, EQP_HELM, EQP_SHOES, EQP_GARMENT };
+					status_fix_damage(src, bl, 1000, 0, skillid);
+					clif_damage(src,bl,tick,0,0,1000,0,0,0);
+					if( !status_isdead(bl) )
+						skill_break_equip(bl, where[rand()%5], 10000, BCT_ENEMY);
 				}
-			} while ((--count) > 0);
+				break;
+			case 4:	// atk halved
+				sc_start(bl,SC_INCATKRATE,100,-50,skill_get_time2(skillid,skilllv));
+				break;
+			case 5:	// 2000HP heal, random teleported
+				status_heal(src, 2000, 0, 0);
+				if( !map_flag_gvg3(bl->m) )
+					unit_warp(bl, -1,-1,-1, CLR_TELEPORT);
+				break;
+			case 6:	// random 2 other effects
+			case 7:	// stop freeze or stoned
+				{
+					enum sc_type sc[] = { SC_STOP, SC_FREEZE, SC_STONE };
+					sc_start(bl,sc[rand()%3],100,skilllv,skill_get_time2(skillid,skilllv));
+				}
+				break;
+			case 8:	// curse coma and poison
+				//sc_start(bl,SC_COMA,100,skilllv,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_CURSE,100,skilllv,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_POISON,100,skilllv,skill_get_time2(skillid,skilllv));
+				break;
+			case 9:	// confusion
+				sc_start(bl,SC_CONFUSION,100,skilllv,skill_get_time2(skillid,skilllv));
+				break;
+			case 10:	// 6666 damage, atk matk halved, cursed
+				status_fix_damage(src, bl, 6666, 0, skillid);
+				clif_damage(src,bl,tick,0,0,6666,0,0,0);
+				sc_start(bl,SC_INCATKRATE,100,-50,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_INCMATKRATE,100,-50,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_CURSE,skilllv,100,skill_get_time2(skillid,skilllv));
+				break;
+			case 11:	// 4444 damage
+				status_fix_damage(src, bl, 4444, 0, skillid);
+				clif_damage(src,bl,tick,0,0,4444,0,0,0);
+				break;
+			case 12:	// stun
+				sc_start(bl,SC_STUN,100,skilllv,5000);
+				break;
+			case 13:	// atk,matk,hit,flee,def reduced
+				sc_start(bl,SC_INCATKRATE,100,-20,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_INCMATKRATE,100,-20,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_INCHITRATE,100,-20,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_INCFLEERATE,100,-20,skill_get_time2(skillid,skilllv));
+				sc_start(bl,SC_INCDEFRATE,100,-20,skill_get_time2(skillid,skilllv));
+				break;
+			default:
+				break;
+			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;

@@ -1,4 +1,4 @@
-prontera,142,180,6	script	Baby Job Master	716,{
+prontera,146,196,5	script	Baby Job Master	877,{
 
 if (class == 0) goto makebaby;
 if (class == 4023) goto Go1st;

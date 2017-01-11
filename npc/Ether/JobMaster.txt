@@ -1,29 +1,10 @@
-//===== eAthena Script =======================================
-//= eAthena Jobchanger AKA Job Master
-//===== By: ==================================================
-//= eAthena Dev Team [Ori:LunatikBunnie] [Cur:Lance]
-//===== Current Version: =====================================
-//= 1.5a
-//===== Compatible With: =====================================
-//= eAthena SVN Trunk 6674
-//===== Description: =========================================
-//= Changes your job without asking too much
-//= For other info, please contact me at Lunatikbunnie@gmail.com 
-//= Editted menu to avoid button mashing.
-//= 1.3 Added TK/SL/SG, thanks to Haplo. Fixed minor bugs [Lupus]
-//=    script leaves grabage variable: 'lastJob'
-//= 1.4 Added NJ/GS, changed all job numbers to Job_* constants. 
-//=    All credits go to pxxx [Skotlex]
-//= 1.5 Rewrite everything from scratch. [Lance]
-//= 1.5a fixed Baby -> Super Baby change. Switched to JobName() [Lupus]
-//============================================================
-prontera,162,192,3	script	Job Master#01::JOBMAS	497,{
+prontera,148,192,5	script	Job Master#01::JOBMAS	502,{
 
 	mes "[ ^ED9200Job Master^000000 ]";
 	if(Upper == 1 && Class >= Job_Lord_Knight) goto L_noReq;
 	if(SkillPoint != 0){
 		mes "Lo siento, por favor usa todos los puntos de skill antes de cambiar de job.";
-		mes "Estaré aquí esperándote para ayudarte a seguir avanzando en EasyRO.";
+		mes "Estaré aquí esperándote para ayudarte a seguir avanzando.";
 		close;
 	}
 	if(JobLevel < 10) goto L_LvError;
@@ -155,7 +136,7 @@ prontera,162,192,3	script	Job Master#01::JOBMAS	497,{
 							break;
 					}
 					mes "Oh!~ Bienvenido/a de nuevo, ^E96D07"+strcharinfo(0)+"^000000.";
-					mes "Veo que estás listo/a para seguir con tu camino en EasyRO. Por favor, selecciona tu siguiente job.";
+					mes "Veo que estás listo/a para seguir con tu camino. Por favor, selecciona tu siguiente job.";
 					next;
 					set @target_job, @job_opt[select(JobName(@job_opt[0]), JobName(@job_opt[1]))-1];
 					if(Class > Job_Novice_High && Class < Job_Lord_Knight) set @target_job, @target_job + 4001;
@@ -173,7 +154,7 @@ prontera,162,192,3	script	Job Master#01::JOBMAS	497,{
 			}
 			if(checkfalcon() || checkcart() || checkriding()) goto L_remove;
 			if((Class >=Job_Knight) && (Class <=Job_Crusader2)){
-				mes "¿Eh? ¿Tú de nuevo? Wooow!~ Que pronto crecen los jugadores de EasyRO... Dime, ¿Quieres renacer ya?";
+				mes "¿Eh? ¿Tú de nuevo? Wooow!~ Que pronto crecen los jugadores... Dime, ¿Quieres renacer ya?";
 				if(select("> ^002BA2¡Claro!^000000","> ^A20000Aún no.^000000")==1){
 					if(BaseLevel < 99 || JobLevel < 50) goto L_cantCh;
 					set lastJob, Class;

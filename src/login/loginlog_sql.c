@@ -56,7 +56,7 @@ unsigned long loginlog_failedattempts(uint32 ip, unsigned int minutes)
 /*=============================================
  * Records an event in the login log
  *---------------------------------------------*/
-void login_log(uint32 ip, const char* username, int rcode, const char* message, const char* mac)
+void login_log(uint32 ip, const char* username, int rcode, const char* message)
 {
 	char esc_username[NAME_LENGTH*2+1];
 	char esc_message[255*2+1];
@@ -69,8 +69,8 @@ void login_log(uint32 ip, const char* username, int rcode, const char* message, 
 	Sql_EscapeStringLen(sql_handle, esc_message, message, strnlen(message, 255));
 
 	retcode = Sql_Query(sql_handle,
-		"INSERT INTO `%s`(`time`,`ip`,`user`,`rcode`,`log`,`mac`) VALUES (NOW(), '%s', '%s', '%d', '%s', '%s')",
-		loginlog_table, ip2str(ip,NULL), esc_username, rcode, message, mac);
+		"INSERT INTO `%s`(`time`,`ip`,`user`,`rcode`,`log`) VALUES (NOW(), '%s', '%s', '%d', '%s')",
+		loginlog_table, ip2str(ip,NULL), esc_username, rcode, message);
 
 	if( retcode != SQL_SUCCESS )
 		Sql_ShowDebug(sql_handle);

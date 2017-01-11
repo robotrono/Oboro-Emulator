@@ -5097,7 +5097,8 @@ int pc_ShowJobInfo( const int fd ) {
 
 
 /*==========================================
- * isaachjk 12/09/2014 house.
+ * isaac 12/09/2014 house.
+ * isaac 13/12/2016 guild_min
  * Set's a player position.
  * Return values:
  * 0 - Success.
@@ -5110,7 +5111,7 @@ int pc_setpos(struct map_session_data* sd, unsigned short mapindex, int x, int y
 	struct party_data *p;
 	struct guild_castle *gc;
 	int m, i, c, numCasa;
-	char concatHouse[40], concatHouseMB[40];
+	char concatHouse[40], concatHouseMB[40], output[CHAT_SIZE_MAX];
 
 	nullpo_ret(sd);
 
@@ -5139,8 +5140,35 @@ int pc_setpos(struct map_session_data* sd, unsigned short mapindex, int x, int y
 			mapindex = map_id2index(m);
 		}
 	}
-
-	if( (map[m].flag.blocked && pc_isGM(sd) < battle_config.lowest_gm_level) || (map[m].flag.ancient && (sd->md || !pc_class2ancientwoe(sd->status.class_) || pc_checkskill(sd, ALL_INCCARRY))) )
+	
+	if( map[m].flag.guild_min )
+	{ // Guild Min Limit
+		if ( !sd->status.guild_id || (sd->status.guild_id && (g = guild_search(sd->status.guild_id)) == NULL) )
+		{
+			mapindex = sd->status.save_point.map;
+			x = sd->status.save_point.x;
+			y = sd->status.save_point.y;
+			m = map_mapindex2mapid(mapindex);
+			clif_displaymessage(sd->fd, "[Guild Limit]: No puedes entrar sin guild al castillo");
+		}
+		else if (sd->bl.m != m && sd->status.guild_id && (g = guild_search(sd->status.guild_id)) != NULL )
+		{
+			for( i = c = 0; i < g->max_member; i++ )
+			if( g->member[i].sd )
+				c++;
+			
+			if ( c < battle_config.min_guild )
+			{
+				sprintf(output,"[Guild Limit]: Tu Guild debe tener al menos %d miembros para entrar a WOE", battle_config.min_guild);
+				clif_displaymessage(sd->fd,output);
+				mapindex = sd->status.save_point.map;
+				x = sd->status.save_point.x;
+				y = sd->status.save_point.y;
+				m = map_mapindex2mapid(mapindex);
+			}
+		}
+	}
+	else if( (map[m].flag.blocked && pc_isGM(sd) < battle_config.lowest_gm_level) || (map[m].flag.ancient && (sd->md || !pc_class2ancientwoe(sd->status.class_) || pc_checkskill(sd, ALL_INCCARRY))) )
 	{
 		mapindex = sd->status.save_point.map;
 		x = sd->status.save_point.x;
@@ -7618,13 +7646,16 @@ int pc_dead(struct map_session_data *sd,struct block_list *src,int skill)
 	// Graveyard System
 	if( battle_config.pc_graveyard && src && (src->type == BL_PC || src->type == BL_MOB) && !map_flag_vs(src->m) )
 	{
-		struct npc_data* nd;
-		if( sd->graveyard_npc_id && (nd = map_id2nd(sd->graveyard_npc_id)) != NULL )
-			npc_unload(nd);
-		sd->graveyard_npc_id = 0;
-		npc_duplicate4graveyard(&sd->bl,src);
+		if ( !map[sd->bl.m].flag.nograveyard )
+		{
+			struct npc_data* nd;
+			if( sd->graveyard_npc_id && (nd = map_id2nd(sd->graveyard_npc_id)) != NULL )
+				npc_unload(nd);
+			sd->graveyard_npc_id = 0;
+			npc_duplicate4graveyard(&sd->bl,src);
+		}
 	}
-
+	
 	// PVPMode OFF
 	if( sd->state.pvpmode ) pc_pvpmodeoff(sd, 1, 1);
 

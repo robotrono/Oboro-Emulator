@@ -2,7 +2,7 @@
 
 que_qaru02,238,328,6	script	Quests	902,{
 
-	setarray .@MENU__HATS$[1],"Alice Doll","Gangster Scarf","Ramen Hat","Flying Angel","Red Glasses","Evil Marcher Hat","Robo Eyes[1]","Black Tail Ribbon", "Trebol(Dex)";
+	setarray .@MENU__HATS$[1],"Alice Doll","Gangster Scarf","Ramen Hat","Flying Angel","Red Glasses","Evil Marcher Hat","Robo Eyes[1]","Black Tail Ribbon"/*, "Trebol(Dex)"*/;
 	title("Hat Quest's");
 	mes " Bienvenido, yo puedo hacer muchas cosas, entre ellos Alice Doll Evil Marcher, que quest deseas hacer?";
 
@@ -19,7 +19,7 @@ set .@ESCOJIDO , select(.@menu$);
 		case 6: next; callfunc("quest_maker","^FF0000 Evil Marcher ^000000", 0,18522,20000000,1 ,5225,1,4252 ,100,991,0); break;
 		case 7: next; callfunc("quest_maker","^FF0000 Robo Eyes[1] ^000000", 0,5325,20000000,30,7337,1,2202,0); break;
 		case 8: next; callfunc("quest_maker","^FF0000 Black Tail Ribbon ^000000", 0,5765,20000000,3,983,1,4375,1,5277,0); break;
-		case 9: next; callfunc("quest_maker","^FF0000 Trebol ^000000", 0,5596,50000000,10,706,1,18697,18,7078,0); break;
+		//case 9: next; callfunc("quest_maker","^FF0000 Trebol ^000000", 0,5596,50000000,10,706,1,18697,18,7078,0); break;
 
 
 	}

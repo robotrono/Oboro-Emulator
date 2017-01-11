@@ -526,44 +526,33 @@ OnMatchEnd:
 	// =======================================================
 	// Team Rewards
 	// =======================================================
-		set .@Reward, 2 + .Score;
-	set .@Won,2;
+	
+	.@Base_Reward = 25;
+	.@Won = .@Base_Reward + 12;
 
+	// Ganó quien ataca
 	if( .Score >= 6 )
-	{ // Emperium Taken
-		set .@Reward, .@Reward + 6;
-		set .@Won,0;
-	}
-	if ( ( bg_get_data($@Conquest_id2, 0) + bg_get_data($@Conquest_id1, 0) ) > 60 ) {
-		set .@Reward , ( .@Reward ) + ( ( bg_get_data($@Conquest_id2, 0) + bg_get_data($@Conquest_id1, 0) ) / 10 );
-		if ( .@Reward > 50 ) set .@Reward , 50; 
-	}
-
-	bg_reward .Atacker,7773,.@Reward,0,0,"BG_CON",1,6,.@Won;
-	bg_getitem .Atacker,7829,.@Reward;
-	bg_getitem .Atacker,7828,.@Reward;
-
-	set .Score, 6 - .Score; // Switch for Defender
-
-	set .@Reward, 67 + .Score;
-	set .@Won,2;
-
-	if( .Score >= 1 )
-	{ // Emperium Defended
-		set .@Reward, .@Reward + 6;
-		set .@Won,0;
+	{		
+		bg_reward .Atacker,7773,.@Won,0,0,"BG_CON",1,6,.@Won;
+		bg_getitem .Atacker,7829,.@Won;
+		bg_getitem .Atacker,7828,.@Won;
+		
+		bg_reward .Defender,7773,.@Base_Reward,0,0,"BG_CON",1,6,.@Won;
+		bg_getitem .Defender,7829,.@Base_Reward;
+		bg_getitem .Defender,7828,.@Base_Reward;
+	} else {
+		//gano quien defiende
+		bg_reward .Atacker,7773,.@Base_Reward,0,0,"BG_CON",1,6,.@Won;
+		bg_getitem .Atacker,7829,.@Base_Reward;
+		bg_getitem .Atacker,7828,.@Base_Reward;
+		
+		bg_reward .Defender,7773,.@Won,0,0,"BG_CON",1,6,.@Won;
+		bg_getitem .Defender,7829,.@Won;
+		bg_getitem .Defender,7828,.@Won;
 	}
 
-	if ( ( bg_get_data($@Conquest_id2, 0) + bg_get_data($@Conquest_id1, 0) ) > 60 ) {
-		set .@Reward , ( .@Reward ) + ( ( bg_get_data($@Conquest_id2, 0) + bg_get_data($@Conquest_id1, 0) ) / 10 );
-		if ( .@Reward > 50 ) set .@Reward , 50; 
-	}
-
-	bg_reward .Defender,7773,.@Reward,0,0,"BG_CON",1,6,.@Won;
-	bg_getitem .Defender,7829,.@Reward;
-	bg_getitem .Defender,7828,.@Reward;
 	// =======================================================
-	mapannounce .Castle$,"Battle of Conquest will start 0 in seconds!",1,0xFFA500;
+	mapannounce .Castle$,"Battle of Conquest is over!",1,0xFFA500;
 	sleep 2000;
 	bg_destroy $@Conquest_id1;
 	set $@Conquest_id1, 0;

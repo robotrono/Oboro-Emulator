@@ -374,6 +374,8 @@ enum {
 	MF_NOWOEITEMS, // iSaaC 
 	MF_MVP, // iSAAC
 	MF_MVPRESTRICTED, //iSaaC 79
+	MF_NOGRAVEYARD, //isaac
+	MF_GUILDMIN, //isaac
 };
 
 const char* script_op2name(int op)
@@ -1154,7 +1156,6 @@ const char* parse_variable(const char* p) {
 	return p;
 }
 
-
 /*==========================================
  * çÄÇÃâêÕ
  *------------------------------------------*/
@@ -1213,7 +1214,7 @@ const char* parse_simpleexpr(const char *p)
 	} else {
 		int l;
 		const char* pv;
-
+		
 		// label , register , function etc
 		if(skip_word(p)==p)
 			disp_error_message("parse_simpleexpr: unexpected character",p);
@@ -1227,7 +1228,7 @@ const char* parse_simpleexpr(const char *p)
 		{// successfully processed a variable assignment
 			return pv;
 		}
-
+		
 		p=skip_word(p);
 		if( *p == '[' ){
 			// array(name[i] => getelementofarray(name,i) )
@@ -1316,7 +1317,7 @@ const char* parse_subexpr(const char* p,int limit)
 }
 
 /*==========================================
- * Evaluation of the expression
+ * éÆÇÃï]âø
  *------------------------------------------*/
 const char* parse_expr(const char *p)
 {
@@ -1330,16 +1331,15 @@ const char* parse_expr(const char *p)
 }
 
 /*==========================================
- * ç Analysis of the line
+ * çsÇÃâêÕ
  *------------------------------------------*/
 const char* parse_line(const char* p)
 {
 	const char* p2;
 
 	p=skip_space(p);
-	if(*p==';') 
-	{
-		// Close decision for if(); for(); while();
+	if(*p==';') {
+		// if(); for(); while(); ÇÃÇΩÇﬂÇ…ï¬Ç∂îªíË
 		p = parse_syntax_close(p + 1);
 		return p;
 	}
@@ -1357,7 +1357,7 @@ const char* parse_line(const char* p)
 		return parse_curly_close(p);
 	}
 
-	// Syntax-related processing
+	// ç\ï∂ä÷òAÇÃèàóù
 	p2 = parse_syntax(p);
 	if(p2 != NULL)
 		return p2;
@@ -1372,11 +1372,11 @@ const char* parse_line(const char* p)
 			return parse_syntax_close(p2 + 1);
 		}
 
+	
 	p = parse_callfunc(p,0);
 	p = skip_space(p);
 
-	if(parse_syntax_for_flag) 
-	{
+	if(parse_syntax_for_flag) {
 		if( *p != ')' )
 			disp_error_message("parse_line: need ')'",p);
 	} else {
@@ -1384,13 +1384,13 @@ const char* parse_line(const char* p)
 			disp_error_message("parse_line: need ';'",p);
 	}
 
-	//Binding decision for if(), for(), while()
+	// if, for , while ÇÃï¬Ç∂îªíË
 	p = parse_syntax_close(p+1);
 
 	return p;
 }
 
-// { ... } Closing process
+// { ... } ÇÃï¬Ç∂èàóù
 const char* parse_curly_close(const char* p)
 {
 	if(syntax.curly_count <= 0) {
@@ -1398,46 +1398,46 @@ const char* parse_curly_close(const char* p)
 		return p + 1;
 	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_NULL) {
 		syntax.curly_count--;
-		// Close decision  if, for , while
+		// if, for , while ÇÃï¬Ç∂îªíË
 		p = parse_syntax_close(p + 1);
 		return p;
 	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_SWITCH) {
-		// Closing switch()
+		// switch() ï¬Ç∂îªíË
 		int pos = syntax.curly_count-1;
 		char label[256];
 		int l;
-		// Remove temporary variables
+		// àÍéûïœêîÇè¡Ç∑
 		sprintf(label,"set $@__SW%x_VAL,0;",syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
-		// Go to the end pointer unconditionally
+		// ñ≥èåèÇ≈èIóπÉ|ÉCÉìÉ^Ç…à⁄ìÆ
 		sprintf(label,"goto __SW%x_FIN;",syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
-		// You are here labeled
+		// åªç›ínÇÃÉâÉxÉãÇïtÇØÇÈ
 		sprintf(label,"__SW%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
 		l=add_str(label);
 		set_label(l,script_pos, p);
 
 		if(syntax.curly[pos].flag) {
-			//Exists default
+			// default Ç™ë∂ç›Ç∑ÇÈ
 			sprintf(label,"goto __SW%x_DEF;",syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 		}
 
-		// Label end
+		// èIóπÉâÉxÉãÇïtÇØÇÈ
 		sprintf(label,"__SW%x_FIN",syntax.curly[pos].index);
 		l=add_str(label);
 		set_label(l,script_pos, p);
 		linkdb_final(&syntax.curly[pos].case_label);	// free the list of case label
 		syntax.curly_count--;
-		//Closing decision if, for , while
+		// if, for , while ÇÃï¬Ç∂îªíË
 		p = parse_syntax_close(p + 1);
 		return p;
 	} else {
@@ -1446,9 +1446,9 @@ const char* parse_curly_close(const char* p)
 	}
 }
 
-// Syntax-related processing
+// ç\ï∂ä÷òAÇÃèàóù
 //	 break, case, continue, default, do, for, function,
-//	 if, switch, while ? will handle this internally.
+//	 if, switch, while ÇÇ±ÇÃì‡ïîÇ≈èàóùÇµÇ‹Ç∑ÅB
 const char* parse_syntax(const char* p)
 {
 	const char *p2 = skip_word(p);
@@ -2426,6 +2426,7 @@ TBL_PC *script_rid2sd(struct script_state *st)
 	return sd;
 }
 
+
 /**
  * Get `sd` from a account id in `loc` param instead of attached rid
  * @param st Script
@@ -2483,7 +2484,6 @@ static bool script_nick2sd_(struct script_state *st, uint8 loc, struct map_sessi
 #define script_accid2sd(loc,sd) script_accid2sd_(st,(loc),&(sd),__FUNCTION__)
 #define script_charid2sd(loc,sd) script_charid2sd_(st,(loc),&(sd),__FUNCTION__)
 #define script_nick2sd(loc,sd) script_nick2sd_(st,(loc),&(sd),__FUNCTION__)
-
 
 /// Dereferences a variable/constant, replacing it with a copy of the value.
 ///
@@ -3431,7 +3431,7 @@ int run_func(struct script_state *st)
 	data = &st->stack->stack_data[st->start];
 	if( data->type == C_NAME && str_data[data->u.num].type == C_FUNC )
 	{
-		func = (int)data->u.num;
+		func = data->u.num;
 		st->funcname = reference_getname(data);
 	}
 	else
@@ -5205,11 +5205,11 @@ BUILDIN_FUNC(setr)
 	TBL_PC* sd = NULL;
 	struct script_data* data;
 	//struct script_data* datavalue;
-	int64 num;
+	int num;
 	uint8 pos = 4;
 	const char* name, *command = script_getfuncname(st);
 	char prefix;
-
+	
 	data = script_getdata(st,2);
 	//datavalue = script_getdata(st,3);
 	if( !data_isreference(data) )
@@ -5219,7 +5219,7 @@ BUILDIN_FUNC(setr)
 		st->state = END;
 		return -1;
 	}
-
+	
 	num = reference_getuid(data);
 	name = reference_getname(data);
 	prefix = *name;
@@ -5231,30 +5231,6 @@ BUILDIN_FUNC(setr)
 		ShowError("buildin_set: No player attached for player variable '%s'\n", name);
 		return -1;
 	}
-
-#if 0
-	if( data_isreference(datavalue) )
-	{// the value being referenced is a variable
-		const char* namevalue = reference_getname(datavalue);
-		if( !not_array_variable(*namevalue) )
-		{// array variable being copied into another array variable
-			if( sd == NULL && not_server_variable(*namevalue) && !(sd = script_rid2sd(st)) )
-			{// player must be attached in order to copy a player variable
-				ShowError("script:set: no player attached for player variable '%s'\n", namevalue);
-				return 0;
-			}
-			if( is_string_variable(namevalue) != is_string_variable(name) )
-			{// non-matching array value types
-				ShowWarning("script:set: two array variables do not match in type.\n");
-				return 0;
-			}
-			// push the maximum number of array values to the stack
-			push_val(st->stack, C_INT, SCRIPT_MAX_ARRAYSIZE);
-			// call the copy array method directly
-			return buildin_copyarray(st);
-		}
-	}
-#endif
 
 	if( !strcmp(command, "setr") && script_hasdata(st, 4) ) { // Optional argument used by post-increment/post-decrement constructs to return the previous value
 		if( is_string_variable(name) )
@@ -10767,13 +10743,13 @@ BUILDIN_FUNC(getmapflag)
 			case MF_NOTELEPORT:			script_pushint(st,map[m].flag.noteleport); break;
 			case MF_NOBRANCH:			script_pushint(st,map[m].flag.nobranch); break;
 			case MF_NOPENALTY:			script_pushint(st,map[m].flag.noexppenalty); break;
-			case MF_NOZENYPENALTY:			script_pushint(st,map[m].flag.nozenypenalty); break;
+			case MF_NOZENYPENALTY:		script_pushint(st,map[m].flag.nozenypenalty); break;
 			case MF_PVP:				script_pushint(st,map[m].flag.pvp); break;
-			case MF_PVP_NOPARTY:			script_pushint(st,map[m].flag.pvp_noparty); break;
-			case MF_PVP_NOGUILD:			script_pushint(st,map[m].flag.pvp_noguild); break;
+			case MF_PVP_NOPARTY:		script_pushint(st,map[m].flag.pvp_noparty); break;
+			case MF_PVP_NOGUILD:		script_pushint(st,map[m].flag.pvp_noguild); break;
 			case MF_GVG:				script_pushint(st,map[m].flag.gvg); break;
-			case MF_GVG_NOPARTY:			script_pushint(st,map[m].flag.gvg_noparty); break;
-			case MF_GVG_DUNGEON:			script_pushint(st,map[m].flag.gvg_dungeon); break;
+			case MF_GVG_NOPARTY:		script_pushint(st,map[m].flag.gvg_noparty); break;
+			case MF_GVG_DUNGEON:		script_pushint(st,map[m].flag.gvg_dungeon); break;
 			case MF_GVG_CASTLE:			script_pushint(st,map[m].flag.gvg_castle); break;
 			case MF_NOTRADE:			script_pushint(st,map[m].flag.notrade); break;
 			case MF_NODROP:				script_pushint(st,map[m].flag.nodrop); break;
@@ -10788,7 +10764,7 @@ BUILDIN_FUNC(getmapflag)
 			case MF_SAKURA:				script_pushint(st,map[m].flag.sakura); break;
 			case MF_LEAVES:				script_pushint(st,map[m].flag.leaves); break;
 			case MF_RAIN:				script_pushint(st,map[m].flag.rain); break;
-			case MF_NIGHTENABLED:			script_pushint(st,map[m].flag.nightenabled); break;
+			case MF_NIGHTENABLED:		script_pushint(st,map[m].flag.nightenabled); break;
 			case MF_NOGO:				script_pushint(st,map[m].flag.nogo); break;
 			case MF_NOBASEEXP:			script_pushint(st,map[m].flag.nobaseexp); break;
 			case MF_NOJOBEXP:			script_pushint(st,map[m].flag.nojobexp); break;
@@ -10796,7 +10772,7 @@ BUILDIN_FUNC(getmapflag)
 			case MF_NOMVPLOOT:			script_pushint(st,map[m].flag.nomvploot); break;
 			case MF_NORETURN:			script_pushint(st,map[m].flag.noreturn); break;
 			case MF_NOWARPTO:			script_pushint(st,map[m].flag.nowarpto); break;
-			case MF_NIGHTMAREDROP:			script_pushint(st,map[m].flag.pvp_nightmaredrop); break;
+			case MF_NIGHTMAREDROP:		script_pushint(st,map[m].flag.pvp_nightmaredrop); break;
 			case MF_RESTRICTED:			script_pushint(st,map[m].flag.restricted); break;
 			case MF_NOCOMMAND:			script_pushint(st,map[m].nocommand); break;
 			case MF_JEXP:				script_pushint(st,map[m].jexp); break;
@@ -10809,19 +10785,21 @@ BUILDIN_FUNC(getmapflag)
 			case MF_TOWN:				script_pushint(st,map[m].flag.town); break;
 			case MF_AUTOTRADE:			script_pushint(st,map[m].flag.autotrade); break;
 			case MF_ALLOWKS:			script_pushint(st,map[m].flag.allowks); break;
-			case MF_MONSTER_NOTELEPORT:		script_pushint(st,map[m].flag.monster_noteleport); break;
-			case MF_PVP_NOCALCRANK:			script_pushint(st,map[m].flag.pvp_nocalcrank); break;
-			case MF_BATTLEGROUND:			script_pushint(st,map[m].flag.battleground); break;
+			case MF_MONSTER_NOTELEPORT:	script_pushint(st,map[m].flag.monster_noteleport); break;
+			case MF_PVP_NOCALCRANK:		script_pushint(st,map[m].flag.pvp_nocalcrank); break;
+			case MF_BATTLEGROUND:		script_pushint(st,map[m].flag.battleground); break;
 			case MF_RESET:				script_pushint(st,map[m].flag.reset); break;
 			case MF_NOPVPMODE:			script_pushint(st,map[m].flag.nopvpmode); break;
 			case MF_WOE_SET:			script_pushint(st,map[m].flag.woe_set); break;
 			case MF_BLOCKED:			script_pushint(st,map[m].flag.blocked); break;
 			case MF_NOSTORAGE:			script_pushint(st,map[m].flag.nostorage); break;
-			case MF_NOGUILDSTORAGE:			script_pushint(st,map[m].flag.noguildstorage); break;
+			case MF_NOGUILDSTORAGE:		script_pushint(st,map[m].flag.noguildstorage); break;
 			case MF_NODISCOUNT:			script_pushint(st,map[m].flag.nodiscount); break;//iSaaC
 			case MF_NOWOEITEMS:			script_pushint(st,map[m].flag.nowoeitems); break;//iSaaC
 			case MF_MVP:				script_pushint(st,map[m].flag.mvp); break;//iSaaC
-			case MF_MVPRESTRICTED:			script_pushint(st,map[m].flag.mvprestricted); break;//iSaaC
+			case MF_MVPRESTRICTED:		script_pushint(st,map[m].flag.mvprestricted); break;//iSaaC
+			case MF_NOGRAVEYARD:		script_pushint(st,map[m].flag.nograveyard); break;//iSaaC
+			case MF_GUILDMIN:			script_pushint(st,map[m].flag.guild_min); break;//iSaaC
 		}
 	}
 
@@ -10846,13 +10824,13 @@ BUILDIN_FUNC(setmapflag)
 			case MF_NOTELEPORT:			map[m].flag.noteleport=1; break;
 			case MF_NOBRANCH:			map[m].flag.nobranch=1; break;
 			case MF_NOPENALTY:			map[m].flag.noexppenalty=1; map[m].flag.nozenypenalty=1; break;
-			case MF_NOZENYPENALTY:			map[m].flag.nozenypenalty=1; break;
+			case MF_NOZENYPENALTY:		map[m].flag.nozenypenalty=1; break;
 			case MF_PVP:				map[m].flag.pvp=1; break;
-			case MF_PVP_NOPARTY:			map[m].flag.pvp_noparty=1; break;
-			case MF_PVP_NOGUILD:			map[m].flag.pvp_noguild=1; break;
+			case MF_PVP_NOPARTY:		map[m].flag.pvp_noparty=1; break;
+			case MF_PVP_NOGUILD:		map[m].flag.pvp_noguild=1; break;
 			case MF_GVG:				map[m].flag.gvg=1; break;
-			case MF_GVG_NOPARTY:			map[m].flag.gvg_noparty=1; break;
-			case MF_GVG_DUNGEON:			map[m].flag.gvg_dungeon=1; break;
+			case MF_GVG_NOPARTY:		map[m].flag.gvg_noparty=1; break;
+			case MF_GVG_DUNGEON:		map[m].flag.gvg_dungeon=1; break;
 			case MF_GVG_CASTLE:			map[m].flag.gvg_castle=1; break;
 			case MF_NOTRADE:			map[m].flag.notrade=1; break;
 			case MF_NODROP:				map[m].flag.nodrop=1; break;
@@ -10867,7 +10845,7 @@ BUILDIN_FUNC(setmapflag)
 			case MF_SAKURA:				map[m].flag.sakura=1; break;
 			case MF_LEAVES:				map[m].flag.leaves=1; break;
 			case MF_RAIN:				map[m].flag.rain=1; break;
-			case MF_NIGHTENABLED:			map[m].flag.nightenabled=1; break;
+			case MF_NIGHTENABLED:		map[m].flag.nightenabled=1; break;
 			case MF_NOGO:				map[m].flag.nogo=1; break;
 			case MF_NOBASEEXP:			map[m].flag.nobaseexp=1; break;
 			case MF_NOJOBEXP:			map[m].flag.nojobexp=1; break;
@@ -10875,7 +10853,7 @@ BUILDIN_FUNC(setmapflag)
 			case MF_NOMVPLOOT:			map[m].flag.nomvploot=1; break;
 			case MF_NORETURN:			map[m].flag.noreturn=1; break;
 			case MF_NOWARPTO:			map[m].flag.nowarpto=1; break;
-			case MF_NIGHTMAREDROP:			map[m].flag.pvp_nightmaredrop=1; break;
+			case MF_NIGHTMAREDROP:		map[m].flag.pvp_nightmaredrop=1; break;
 			case MF_RESTRICTED:			map[m].flag.restricted=1; break;
 			case MF_NOCOMMAND:			map[m].nocommand = (!val || atoi(val) <= 0) ? 100 : atoi(val); break;
 			case MF_JEXP:				map[m].jexp = (!val || atoi(val) < 0) ? 100 : atoi(val); break;
@@ -10888,19 +10866,21 @@ BUILDIN_FUNC(setmapflag)
 			case MF_TOWN:				map[m].flag.town=1; break;
 			case MF_AUTOTRADE:			map[m].flag.autotrade=1; break;
 			case MF_ALLOWKS:			map[m].flag.allowks=1; break;
-			case MF_MONSTER_NOTELEPORT:		map[m].flag.monster_noteleport=1; break;
-			case MF_PVP_NOCALCRANK:			map[m].flag.pvp_nocalcrank=1; break;
-			case MF_BATTLEGROUND:			map[m].flag.battleground = (!val || atoi(val) < 0 || atoi(val) > 2) ? 1 : atoi(val); break;
+			case MF_MONSTER_NOTELEPORT:	map[m].flag.monster_noteleport=1; break;
+			case MF_PVP_NOCALCRANK:		map[m].flag.pvp_nocalcrank=1; break;
+			case MF_BATTLEGROUND:		map[m].flag.battleground = (!val || atoi(val) < 0 || atoi(val) > 2) ? 1 : atoi(val); break;
 			case MF_RESET:				map[m].flag.reset=1; break;
 			case MF_NOPVPMODE:			map[m].flag.nopvpmode=1; break;
 			case MF_WOE_SET:			if( val && atoi(val) > 0 ) map[m].flag.woe_set = atoi(val); break;
 			case MF_BLOCKED:			map[m].flag.blocked=1; break;
 			case MF_NOSTORAGE:			map[m].flag.nostorage=1; break;
-			case MF_NOGUILDSTORAGE:			map[m].flag.noguildstorage=1; break;
+			case MF_NOGUILDSTORAGE:		map[m].flag.noguildstorage=1; break;
 			case MF_NODISCOUNT:			map[m].flag.nodiscount=1; break;//iSaaC
 			case MF_NOWOEITEMS:			map[m].flag.nowoeitems=1; break;//isaac
 			case MF_MVP:				map[m].flag.mvp=1; break;//iSaaC
-			case MF_MVPRESTRICTED:			map[m].flag.mvprestricted=1; break;//iSaaC
+			case MF_MVPRESTRICTED:		map[m].flag.mvprestricted=1; break;//iSaaC
+			case MF_NOGRAVEYARD:		map[m].flag.nograveyard=1; break;//iSaaC
+			case MF_GUILDMIN:			map[m].flag.guild_min=1; break;//iSaaC
 		}
 	}
 
@@ -10923,13 +10903,13 @@ BUILDIN_FUNC(removemapflag)
 			case MF_NOBRANCH:			map[m].flag.nobranch=0; break;
 			case MF_NOPENALTY:			map[m].flag.noexppenalty=0; map[m].flag.nozenypenalty=0; break;
 			case MF_PVP:				map[m].flag.pvp=0; break;
-			case MF_PVP_NOPARTY:			map[m].flag.pvp_noparty=0; break;
-			case MF_PVP_NOGUILD:			map[m].flag.pvp_noguild=0; break;
+			case MF_PVP_NOPARTY:		map[m].flag.pvp_noparty=0; break;
+			case MF_PVP_NOGUILD:		map[m].flag.pvp_noguild=0; break;
 			case MF_GVG:				map[m].flag.gvg=0; break;
-			case MF_GVG_NOPARTY:			map[m].flag.gvg_noparty=0; break;
-			case MF_GVG_DUNGEON:			map[m].flag.gvg_dungeon=0; break;
+			case MF_GVG_NOPARTY:		map[m].flag.gvg_noparty=0; break;
+			case MF_GVG_DUNGEON:		map[m].flag.gvg_dungeon=0; break;
 			case MF_GVG_CASTLE:			map[m].flag.gvg_castle=0; break;
-			case MF_NOZENYPENALTY:			map[m].flag.nozenypenalty=0; break;
+			case MF_NOZENYPENALTY:		map[m].flag.nozenypenalty=0; break;
 			case MF_NOTRADE:			map[m].flag.notrade=0; break;
 			case MF_NODROP:				map[m].flag.nodrop=0; break;
 			case MF_NOSKILL:			map[m].flag.noskill=0; break;
@@ -10943,7 +10923,7 @@ BUILDIN_FUNC(removemapflag)
 			case MF_SAKURA:				map[m].flag.sakura=0; break;
 			case MF_LEAVES:				map[m].flag.leaves=0; break;
 			case MF_RAIN:				map[m].flag.rain=0; break;
-			case MF_NIGHTENABLED:			map[m].flag.nightenabled=0; break;
+			case MF_NIGHTENABLED:		map[m].flag.nightenabled=0; break;
 			case MF_NOGO:				map[m].flag.nogo=0; break;
 			case MF_NOBASEEXP:			map[m].flag.nobaseexp=0; break;
 			case MF_NOJOBEXP:			map[m].flag.nojobexp=0; break;
@@ -10951,7 +10931,7 @@ BUILDIN_FUNC(removemapflag)
 			case MF_NOMVPLOOT:			map[m].flag.nomvploot=0; break;
 			case MF_NORETURN:			map[m].flag.noreturn=0; break;
 			case MF_NOWARPTO:			map[m].flag.nowarpto=0; break;
-			case MF_NIGHTMAREDROP:			map[m].flag.pvp_nightmaredrop=0; break;
+			case MF_NIGHTMAREDROP:		map[m].flag.pvp_nightmaredrop=0; break;
 			case MF_RESTRICTED:			map[m].flag.restricted=0; break;
 			case MF_NOCOMMAND:			map[m].nocommand=0; break;
 			case MF_JEXP:				map[m].jexp=100; break;
@@ -10964,19 +10944,21 @@ BUILDIN_FUNC(removemapflag)
 			case MF_TOWN:				map[m].flag.town=0; break;
 			case MF_AUTOTRADE:			map[m].flag.autotrade=0; break;
 			case MF_ALLOWKS:			map[m].flag.allowks=0; break;
-			case MF_MONSTER_NOTELEPORT:		map[m].flag.monster_noteleport=0; break;
-			case MF_PVP_NOCALCRANK:			map[m].flag.pvp_nocalcrank=0; break;
-			case MF_BATTLEGROUND:			map[m].flag.battleground=0; break;
+			case MF_MONSTER_NOTELEPORT:	map[m].flag.monster_noteleport=0; break;
+			case MF_PVP_NOCALCRANK:		map[m].flag.pvp_nocalcrank=0; break;
+			case MF_BATTLEGROUND:		map[m].flag.battleground=0; break;
 			case MF_RESET:				map[m].flag.reset=0; break;
 			case MF_NOPVPMODE:			map[m].flag.nopvpmode=0; break;
 			case MF_WOE_SET:			map[m].flag.woe_set=0; break;
 			case MF_BLOCKED:			map[m].flag.blocked=0; break;
 			case MF_NOSTORAGE:			map[m].flag.nostorage=0; break;
-			case MF_NOGUILDSTORAGE:			map[m].flag.noguildstorage=0; break;
+			case MF_NOGUILDSTORAGE:		map[m].flag.noguildstorage=0; break;
 			case MF_NODISCOUNT:			map[m].flag.nodiscount=0; break;//iSaaC
 			case MF_NOWOEITEMS:			map[m].flag.nowoeitems=0; break;//iSaaC
 			case MF_MVP:				map[m].flag.mvp=0; break;//iSaaC
-			case MF_MVPRESTRICTED:			map[m].flag.mvprestricted=0; break;//iSaaC
+			case MF_MVPRESTRICTED:		map[m].flag.mvprestricted=0; break;//iSaaC
+			case MF_NOGRAVEYARD:		map[m].flag.nograveyard=0; break;//iSaaC
+			case MF_GUILDMIN:			map[m].flag.guild_min=0; break;//iSaaC
 		}
 	}
 
@@ -13428,7 +13410,7 @@ BUILDIN_FUNC(getmapxy)
 		sd=script_rid2sd(st);
 	else
 		sd=NULL;
-	set_reg(st,sd,num,name,(void*)x,script_getref(st,3));
+	set_reg(st,sd,num,name,(void*)(intptr)x,script_getref(st,3));
 
 	//Set MapY
 	num=st->stack->stack_data[st->start+4].u.num;
@@ -13439,7 +13421,7 @@ BUILDIN_FUNC(getmapxy)
 		sd=script_rid2sd(st);
 	else
 		sd=NULL;
-	set_reg(st,sd,num,name,(void*)y,script_getref(st,4));
+	set_reg(st,sd,num,name,(void*)(intptr)y,script_getref(st,4));
 
 	//Return Success value
 	script_pushint(st,0);
@@ -14843,7 +14825,7 @@ BUILDIN_FUNC(setd)
 	if( is_string_variable(varname) ) {
 		setd_sub(st, sd, varname, elem, (void *)script_getstr(st, 3), NULL);
 	} else {
-		setd_sub(st, sd, varname, elem, (void *)script_getnum(st, 3), NULL);
+		setd_sub(st, sd, varname, elem, (void *)(intptr)(script_getnum(st, 3)), NULL);
 	}
 	
 	return 0;
@@ -15479,7 +15461,7 @@ BUILDIN_FUNC(searchitem)
 
 	for( i = 0; i < count; ++start, ++i )
 	{// Set array
-		void* v = (void*)items[i]->nameid;
+		void* v = (void*)(intptr)((int)items[i]->nameid);
 		set_reg(st, sd, reference_uid(id, start), name, v, reference_getref(data));
 	}
 
@@ -19382,7 +19364,7 @@ BUILDIN_FUNC(MF_MVP) {
 }
 
 BUILDIN_FUNC(title) {
-	char *NPC_NAME = "^77B727 DarklingRO ^000000";
+	char *NPC_NAME = "^77B727 XRO ^000000";
 	char NPC[CHAT_SIZE_MAX];
 	TBL_PC* sd = script_rid2sd(st);
 	if( sd == NULL )
@@ -19512,6 +19494,64 @@ BUILDIN_FUNC(getitem_map)
 	return 0;
 }
 
+/* ================================================================
+ * mapeventwarp("actual map", "to map",<x>,<y>,<var_name_check>,<value_winner>,<item_id>,<cantidad>);
+ * Isaac MVP vs MVP
+ * ================================================================*/
+
+int map_event_warp(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd = BL_CAST(BL_PC, bl);
+	struct item it;
+	char *var_winner = va_arg(ap, char *);
+	int var_value = va_arg(ap, int);
+	int i = 0,flag = 0;
+	int item_id = va_arg(ap, int);
+	int cantidad = va_arg(ap, int);
+	
+	if ( strlen(var_winner) <= 0 || var_value < 0 )
+		return 0;
+
+	if (pc_readreg(sd, add_str(var_winner)) == var_value)
+	{
+		memset(&it,0,sizeof(it));
+		it.nameid = item_id;
+		it.identify = 1;
+		it.amount = 1;
+
+		if ((flag = pc_additem(sd, &it, cantidad, LOG_TYPE_SCRIPT)))
+			clif_additem(sd, 0, 0, flag);
+		return 0;
+	}
+	return 0;
+}
+
+BUILDIN_FUNC(mapeventwarp)
+{
+	int x,y,m,i = 0,var_value, item_id, cantidad=0;
+	const char *str, *mapname, *var_winner;
+	unsigned int index;
+	mapname = script_getstr(st,2);
+	str = script_getstr(st,3);
+	x = script_getnum(st,4);
+	y = script_getnum(st,5);
+	var_winner = script_getstr(st,6);
+	var_value = script_getnum(st,7);
+	item_id = script_getnum(st,8);
+	cantidad = script_getnum(st,9);
+
+	if( ( m = map_mapname2mapid(mapname)) < 0 )
+		return 0;
+
+	if( !(index = mapindex_name2id(str)) )
+		return 0;
+
+	map_foreachinmap(map_event_warp, m, BL_PC, var_winner, var_value, item_id, cantidad);
+
+	map_foreachinmap(buildin_areawarp_sub,m,BL_PC,index,x,y,0,0);
+	return 0;
+}
+
 // arg must follow the pattern: (v|s|i|r|l)*\?*\*?
 // 'v' - value (either string or int or reference)
 // 's' - string
@@ -19529,8 +19569,6 @@ BUILDIN_FUNC(activatepset);
 BUILDIN_FUNC(deactivatepset);
 BUILDIN_FUNC(deletepset);
 #endif
-
-#include "harmony_scriptfunc.inc"
 
 /// script command definitions
 /// for an explanation on args, see add_buildin_func
@@ -19553,6 +19591,8 @@ struct script_function buildin_func[] = {
 		BUILDIN_DEF(failedenchant,"i"),
 		BUILDIN_DEF(MF_MVP,"s"),
 		BUILDIN_DEF(title,"?"),
+		BUILDIN_DEF(setr,"rv?"),
+		BUILDIN_DEF(mapeventwarp, "ssiisiii"),
 
 	/* [=====================] SCRIPT FUNCTIONS BY ISAAC [=====================] */
 
@@ -19584,7 +19624,6 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setarray,"rv*"),
 	BUILDIN_DEF(cleararray,"rvi"),
 	BUILDIN_DEF(copyarray,"rri"),
-#include "harmony_scriptdef.h"
 	BUILDIN_DEF(getarraysize,"r"),
 	BUILDIN_DEF(deletearray,"r?"),
 	BUILDIN_DEF(getelementofarray,"ri"),

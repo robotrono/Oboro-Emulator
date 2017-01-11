@@ -28,6 +28,6 @@ OnClock1800:
 OnClock2000:
 OnClock2200:
 	if (agitcheck()) end; 
-	announce "Participa en nuestra comunidad en: WWW.oborocp.net/foro y entérate de las últimas novedades del servidor.",bc_all,0x4FCDFF;
+	announce "Participa en nuestra comunidad en: www.x-ro.es/foro y entérate de las últimas novedades del servidor.",bc_all,0x4FCDFF;
 	end;
 }

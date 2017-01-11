@@ -1,4 +1,4 @@
-prontera,163,189,4	script	Gallinita del mal	800,{
+prontera,145,149,4	script	Gallinita del mal	800,{
 	if ( .evento == 0 ) {
 		mes "[ ^FF009ECluckers^000000 ]";
 		mes "¡Cocorocó, ^E96D07"+strcharinfo(0)+"^000000!";
@@ -55,7 +55,7 @@ prontera,163,189,4	script	Gallinita del mal	800,{
 				set .evento , 0;
 				npctalk "¡WOOF!...........";
 				announce "[Evento] ¡Cluckers por fin se rindió! ¡" + strcharinfo(0) + " logró conseguir el premio, bien hecho!",0;
-				getitem .prize,.cprize;
+				getitem 7539, 10;
 				sleep 5000;
 				announce "[Evento] ¡Despídanse de Cluckers y esperenla en su proximo paseo!",0;
 			} else {
@@ -75,16 +75,16 @@ prontera,163,189,4	script	Gallinita del mal	800,{
 	OnClock0020:
 	OnClock0940:
 	OnClock1140:
-		announce "[ Steady ] ¡Cluckers acaba de salir a pasear!",0;
+		announce "[ Evento ] ¡Cluckers acaba de salir a pasear!",0;
 		sleep 10000; //10 s <-- Espera 10 segundos para el proximo mensaje
 	
-		announce "[ Steady ] ¡¿Quien es Cluckers? es nuestra mascota y le encanta pasear en xRO... o dormir...",0; //puedes poner cualquier ciudad
+		announce "[ Evento ] ¡¿Quien es Cluckers? es nuestra mascota y le encanta pasear en xRO... o dormir...",0; //puedes poner cualquier ciudad
 		sleep 10000; //10 s
 	
-		announce "[ Steady ] El problema es que ha tomado algunas Bronze coins, quien logre quitárselas puede conservarlas.",0; //puedes elegir el premio que te plasca
+		announce "[ Evento ] El problema es que ha tomado algunas Bronze coins, quien logre quitárselas puede conservarlas.",0; //puedes elegir el premio que te plasca
 		sleep 5000; //5 s
 
-		announce "[ Steady ] ¡Solo recuerden, ella despierta de muy mal humor!",0;
+		announce "[ Evento ] ¡Solo recuerden, ella despierta de muy mal humor!",0;
 		sleep 5000; //5 s
 
 		set .evento , 1;

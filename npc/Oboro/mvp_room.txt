@@ -1,24 +1,25 @@
-prontera,164,174,5	script	MVP Room::MVPR	448,{
-				
-	set .@zeny,5000;
-	setarray $@mapas$[0],"guild_vs1-1","guild_vs1-2","guild_vs1-3","guild_vs2-1","guild_vs2-2";
+prontera,140,153,5	script	MVP Room::MVPR	45,2,2,{
+OnTouch:		
+	.@zeny = 4000;
+	setarray .@mapas_mvp$[0],"xromvp","xromvp2","xromvp3","xromvp4";
 
 	title("MVP Room");
 	mes "Hola " + strcharinfo(0) + ", Soy encargada de distribuir las partys para que puedan jugar en paz.";
 	mes "El valor de la sala es de: " + .@zeny;
 	mes "Una vez que no queden personajes en el mapa la sala quedará libre";
+	mes "Cantidad de Salas: " + getarraysize(.@mapas_mvp$);
 
-	set .@PMenu$, "";
-	set .@Menu$, "";
+	.@PMenu$ = "";
+	.@Menu$ = "";
 
-	for (set .@c, 1; .@c < getarraysize($@mapas$); set .@c, .@c + 1) 
-		set .@PMenu$, .@PMenu$ + " ^10B2D2 [ > ] ^000000 " + ( getmapusers($@mapas$[.@c]) > 0 ? "^FF0000Sala " + (.@c) + " Ocupada.^000000" :  "Sala " + (.@c) +". ^00FF00Libre^000000" ) + ":";
-	set .@select, select(.@PMenu$);
+	for (set .@c, 0; .@c < getarraysize(.@mapas_mvp$); .@c++) 
+		set .@PMenu$, .@PMenu$ + " ^10B2D2 [ > ] ^000000 " + ( getmapusers(.@mapas_mvp$[.@c]) > 0 ? "^FF0000Sala " + (.@c + 1) + " Ocupada.^000000" :  "Sala " + (.@c + 1) +". ^00FF00Libre^000000" ) + ":";
+	.@select = select(.@PMenu$) - 1;
 
 	next; 
 	title("MVP Room");
 
-	if ( getmapusers( $@mapas$[.@select] ) == 0 ) 
+	if ( getmapusers( .@mapas_mvp$[.@select] ) == 0 ) 
 	{
 		if ( #CASHPOINTS  < .@zeny || getcharid(1) == 0 ) 
 		{
@@ -29,11 +30,13 @@ prontera,164,174,5	script	MVP Room::MVPR	448,{
 
 		}
 
-		announce "[ MVP ROOM ]: La sala " + .@select+ " fue alquilada por : "+ strcharinfo(0) + ".",0,0x00BFFF;
-		set #CASHPOINTS , #CASHPOINTS - .@zeny;
-		setd "$SALA" + .@select, getcharid(1);
-		warp $@mapas$[.@select],50,45;
+		announce "[ MVP ROOM ]: La sala " + (.@select + 1)+ " fue alquilada por : "+ strcharinfo(0) + ".",0,0x00BFFF;
 
+		close2;
+			set #CASHPOINTS , #CASHPOINTS - .@zeny;
+			setd "$SALA" + .@select, getcharid(1);
+			warp .@mapas_mvp$[.@select],50,45;
+		end;
 	}
 
 	if ( getcharid(1) == 0 )
@@ -43,24 +46,26 @@ prontera,164,174,5	script	MVP Room::MVPR	448,{
 		mclose "No perteneces a la party registrada.";
 
 	else if ((getd("$SALA" + .@select) == getcharid(1)) && getcharid(1) != 0 )  
-		warp $@mapas$[ .@select],50,45;
+		warp .@mapas_mvp$[ .@select],50,45;
 
 	end;
 
 
 OnPCDieEvent:
-	getmapxy .@map$,.@x,.@y,0;
-	for ( set .@j, 0; getarraysize($@mapas$); set .@j, .@j + 1 )
+	if ( strcharinfo(3) == "xromvp" ||
+		strcharinfo(3) == "xromvp2" ||
+		strcharinfo(3) == "xromvp3" ||
+		strcharinfo(3) == "xromvp4"
+	) 
 	{
-		if ( .@map$ != $@mapas$[.@j] ) end;
-		
 		sleep2 100;
-		warp .@map$,91,49;
+		warp strcharinfo(3),91,49;
 		atcommand "@alive "+ strcharinfo(0);
 		sc_start 32,  240000, 10;
 		sc_start 30, 240000, 10;
-		percentheal 100,100; repairall;
-		end;		
+		percentheal 100,100;
+		repairall;
+		end;
 	}
 end;
 
@@ -68,38 +73,31 @@ end;
 
 gonryun,166,126,4	duplicate(MVPR)	MVP Room#1	448
 
-guild_vs1-1	mapflag	nowarp
-guild_vs1-1	mapflag	nowarpto
-guild_vs1-1	mapflag	nomemo
-guild_vs1-1	mapflag	nosave	SavePoint
-guild_vs1-1	mapflag	monster_noteleport
+xromvp	mapflag	nowarp
+xromvp	mapflag	nowarpto
+xromvp	mapflag	nomemo
+xromvp	mapflag	nosave	SavePoint
+xromvp	mapflag	monster_noteleport
 
-guild_vs1-2	mapflag	nowarp
-guild_vs1-2	mapflag	nowarpto
-guild_vs1-2	mapflag	nomemo
-guild_vs1-2	mapflag	nosave	SavePoint
-guild_vs1-2	mapflag	monster_noteleport
+xromvp2	mapflag	nowarp
+xromvp2	mapflag	nowarpto
+xromvp2	mapflag	nomemo
+xromvp2	mapflag	nosave	SavePoint
+xromvp2	mapflag	monster_noteleport
 
-guild_vs1-3	mapflag	nowarp
-guild_vs1-3	mapflag	nowarpto
-guild_vs1-3	mapflag	nomemo
-guild_vs1-3	mapflag	nosave	SavePoint
-guild_vs1-3	mapflag	monster_noteleport
+xromvp3	mapflag	nowarp
+xromvp3	mapflag	nowarpto
+xromvp3	mapflag	nomemo
+xromvp3	mapflag	nosave	SavePoint
+xromvp3	mapflag	monster_noteleport
 
-guild_vs2-1	mapflag	nowarp
-guild_vs2-1	mapflag	nowarpto
-guild_vs2-1	mapflag	nomemo
-guild_vs2-1	mapflag	nosave	SavePoint
-guild_vs2-1	mapflag	monster_noteleport
+xromvp4	mapflag	nowarp
+xromvp4	mapflag	nowarpto
+xromvp4	mapflag	nomemo
+xromvp4	mapflag	nosave	SavePoint
+xromvp4	mapflag	monster_noteleport
 
-guild_vs2-2	mapflag	nowarp
-guild_vs2-2	mapflag	nowarpto
-guild_vs2-2	mapflag	nomemo
-guild_vs2-2	mapflag	nosave	SavePoint
-guild_vs2-2	mapflag	monster_noteleport
-
-
-guild_vs1-1.gat,88,53,4	script	MVP Killer::MVPK	405,{
+xromvp,88,53,4	script	MVP Killer::MVPK	405,{
 
 	title("MVP Room");
 
@@ -124,8 +122,11 @@ guild_vs1-1.gat,88,53,4	script	MVP Killer::MVPK	405,{
 	mclose "No eres El Party Leader";	
 }
 
-guild_vs1-2,88,53,4	duplicate(MVPK)	MVP Killer#1	405
-guild_vs1-3,88,53,4	duplicate(MVPK)	MVP Killer#2	405
-guild_vs2-1,74,53,4	duplicate(MVPK)	MVP Killer#3	405
-guild_vs2-2,74,53,4	duplicate(MVPK)	MVP Killer#4	405
-morocc,159,97,5	duplicate(MVPR)	MVP Room#1-2	448
+xromvp2,88,53,4	duplicate(MVPK)	MVP Killer#2	405
+xromvp3,88,53,4	duplicate(MVPK)	MVP Killer#3	405
+xromvp4,84,53,4	duplicate(MVPK)	MVP Killer#4	405
+
+xromvp,84,49,0	warp	xromvp1-2	1,1,xromvp,72,49
+xromvp2,84,49,0	warp	xromvp2-2	1,1,xromvp2,72,49
+xromvp3,84,49,0	warp	xromvp3-2	1,1,xromvp3,72,49
+xromvp4,84,49,0	warp	xromvp4-2	1,1,xromvp4,72,49

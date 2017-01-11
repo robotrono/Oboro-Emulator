@@ -545,6 +545,8 @@ struct map_data {
 		unsigned nowoeitems : 1; //iSaaC no se pueden usar items ( rentales + bound ) = woeitem 
 		unsigned mvp : 1; //isaac
 		unsigned mvprestricted : 1; //isaac
+		unsigned nograveyard : 1; //isaac
+		unsigned guild_min : 1; //isaac
 	} flag;
 	struct point save;
 	struct npc_data *npc[MAX_NPC_PER_MAP];

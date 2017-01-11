@@ -957,7 +957,10 @@ int mob_setdelayspawn(struct mob_data* md, struct map_session_data* sd)
 
 	if( sd && battle_config.mob_graveyard && (md->status.mode&MD_BOSS) && spawntime >= 60000 )
 	{ // Graveyard System - Only MVP with 1 minute spawn or more
-		npc_duplicate4graveyard(&md->bl,&sd->bl);
+		if ( map[sd->bl.m].flag.nograveyard )
+			;
+		else
+			npc_duplicate4graveyard(&md->bl,&sd->bl);
 	}
 
 	md->spawn_timer = add_timer(gettick()+spawntime, mob_delayspawn, md->bl.id, 0);

@@ -23,8 +23,6 @@ prtg_cas03	mapflag	guild_max	26
 prtg_cas04	mapflag	guild_max	26
 prtg_cas05	mapflag	guild_max	26
 
-
-
 //	SE Castles
 schg_cas01	mapflag	guild_max	26
 schg_cas02	mapflag	guild_max	26
@@ -38,3 +36,16 @@ arug_cas03	mapflag	guild_max	26
 arug_cas04	mapflag	guild_max	26
 arug_cas05	mapflag	guild_max	26
 mocg_cas01	mapflag	guild_max	26
+
+schg_cas01	mapflag	guild_min
+schg_cas02	mapflag	guild_min
+schg_cas03	mapflag	guild_min
+schg_cas04	mapflag	guild_min
+schg_cas05	mapflag	guild_min
+
+arug_cas01	mapflag	guild_min
+arug_cas02	mapflag	guild_min
+arug_cas03	mapflag	guild_min
+arug_cas04	mapflag	guild_min
+arug_cas05	mapflag	guild_min
+mocg_cas01	mapflag	guild_min

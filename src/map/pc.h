@@ -646,11 +646,9 @@ extern int global_size;
 	1<<(sd)->status.weapon:(1<<(sd)->weapontype1)|(1<<(sd)->weapontype2)))
 //Checks if the given class value corresponds to a player class. [Skotlex]
 //isaac 3rd jobs
-#define pcdb_checkid(class_) \
-( \
-    ( (class_) >= JOB_NOVICE      && (class_) <  JOB_MAX_BASIC   ) \
-||    ( (class_) >= JOB_NOVICE_HIGH && (class_) <  JOB_MAX         ) \
-)
+#define pcdb_checkid_sub(class_) (( (class_) < JOB_MAX_BASIC ) || ( (class_) >= JOB_NOVICE_HIGH && (class_) <  JOB_MAX ))
+
+#define pcdb_checkid(class_) pcdb_checkid_sub((unsigned int)class_)
 
 //Ancient WoE Check
 #define pc_class2ancientwoe(class_) ( (class_ >= JOB_NOVICE && class_ <= JOB_SUPER_NOVICE && class_ != JOB_WEDDING) )

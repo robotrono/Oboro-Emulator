@@ -10,7 +10,6 @@
 #include "../common/socket.h"
 #include "../common/timer.h"
 #include "../common/plugins.h"
-#include "../common/harmony.h"
 #include "../common/utils.h" // filesize()
 #ifndef _WIN32
 #include "svnversion.h"
@@ -283,8 +282,6 @@ int main (int argc, char **argv)
 	socket_init();
 	plugins_init();
 
-	harmony_core_init();
-
 	do_init(argc,argv);
 	plugin_event_trigger(EVENT_ATHENA_INIT);
 
@@ -295,8 +292,6 @@ int main (int argc, char **argv)
 			do_sockets(next);
 		}
 	}
-
-	harmony_core_final();
 
 	plugin_event_trigger(EVENT_ATHENA_FINAL);
 	do_final();

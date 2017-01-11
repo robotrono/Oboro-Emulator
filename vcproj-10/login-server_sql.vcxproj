@@ -113,14 +113,12 @@
     <ClInclude Include="..\src\login\account.h" />
     <ClInclude Include="..\src\login\ipban.h" />
     <ClInclude Include="..\src\login\login.h" />
-    <ClInclude Include="..\src\common\harmony.h" />
     <ClInclude Include="..\src\login\loginlog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\login\account_sql.c" />
     <ClCompile Include="..\src\login\ipban_sql.c" />
     <ClCompile Include="..\src\login\login.c" />
-    <ClCompile Include="..\src\common\harmonycore.c" />
     <ClCompile Include="..\src\login\loginlog_sql.c" />
   </ItemGroup>
   <ItemGroup>

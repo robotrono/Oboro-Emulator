@@ -1,4 +1,4 @@
-prontera,147,171,5	script	Guild Guard#01::GRooM	459,{
+prontera,147,174,5	script	Guild Guard#01::GRooM	459,{
 	if (getgmlevel() == 100 ) {
 		mes "[ ^AA3000Menú Administrador^000000 ]";
 		mes "   ";

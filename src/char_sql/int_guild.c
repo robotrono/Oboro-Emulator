@@ -985,21 +985,18 @@ int guild_calcinfo(struct guild *g)
 	//Isaac guild skill.
 	switch(guild_checkskill (g, GD_EXTENSION))
 	{
-		case 0: g->max_member = 4; break;
-		case 1: g->max_member = 6; break;
-		case 2: g->max_member = 8; break;
-		case 3: g->max_member =10; break;
-		case 4: g->max_member =12; break;
-		case 5: g->max_member =14; break;
-		case 6: g->max_member =16; break;
-		case 7: g->max_member =19; break;
-		case 8: g->max_member =21; break;
-		case 9: g->max_member =23; break;
-		case 10: g->max_member=26; break;
-
-
+		case 0: g->max_member =10; break;
+		case 1: g->max_member =12; break;
+		case 2: g->max_member =14; break;
+		case 3: g->max_member =16; break;
+		case 4: g->max_member =18; break;
+		case 5: g->max_member =20; break;
+		case 6: g->max_member =22; break;
+		case 7: g->max_member =24; break;
+		case 8: g->max_member =26; break;
+		case 9: g->max_member =28; break;
+		case 10: g->max_member=30; break;
 	}
-
 
 	if(g->max_member > MAX_GUILD)
 	{
@@ -1403,7 +1400,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	}
 
 	// Initialize guild property
-	g->max_member = 4; // iSaaC
+	g->max_member = 10; // iSaaC
 	g->skill_point = 2; //iSaaC
 	g->average_lv = master->lv;
 	g->connect_member = 1;

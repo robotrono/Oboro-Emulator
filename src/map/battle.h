@@ -599,6 +599,7 @@ extern struct Battle_Config
 	int dancing_weaponchange_fix;
 	int anti_mayapurple_hack;
 	int afk_timeout; //isaac
+	int min_guild; //isaac
 
 	int oboro_tol;
 	int oboro_tol2;

@@ -3,3 +3,4 @@
 // Example:
 // 8,1 = Endure cannot be used
 396,1
+73,1

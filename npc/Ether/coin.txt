@@ -1,4 +1,4 @@
-itemmall,168,76,6	script	Cash Coins#1	833,{
+que_qaru02,257,333,3	script	Cash Coins#1	833,{
 	mes "[^FFA500Easy Coins^000000]";
 	mes "Oh... interesado en las Cash Coins. Estas monedas son una forma útil de convertir Cash Points en items para comercio, y puedes venir aquí a comprarlas o venderlas siempre por el mismo valor.";
 	next;

@@ -125,192 +125,33 @@ OnClock1800:
     end;
 }
 
-/*
-
-CREATE TABLE `guild_woe` (
-	`id` int auto_increment,
-	`guild_id` int not null default '0',
-	`guild_name` varchar(50) not null,
-	`lider_name` varchar (50) not null,
-	`dia` tinyint not null default '0',
-	`castillo` varchar(35) not null default '--',
-	`activado` tinyint not null default '1',
-	PRIMARY KEY (`id`)
-);
-*/
-
 -	script	woelimit	-1,{
+OnPCLoadMapEvent:
+	if ( !agitcheck() )
+		end;
+	if (
+		strcharinfo(3)!="schg_cas01" &&
+		strcharinfo(3)!="schg_cas02" &&
+		strcharinfo(3)!="schg_cas03" &&
+		strcharinfo(3)!="schg_cas04" &&
+		strcharinfo(3)!="schg_cas05" &&
+		strcharinfo(3)!="arug_cas01" &&
+		strcharinfo(3)!="arug_cas02" &&
+		strcharinfo(3)!="arug_cas03" &&
+		strcharinfo(3)!="arug_cas04" &&
+		strcharinfo(3)!="arug_cas05" &&
+		strcharinfo(3)!="mocg_cas01"
+	) 
+		end;
 
-OnAgitStart:
-OnAgitStart2:	
-		query_sql ("SELECT `guild_id`,`castillo` FROM `guild_woe` WHERE `dia`='"+gettime(4)+"' AND `activado`='1'", $@guilds[0],$@castillo$[0]);
-	end;
-		
-	OnWhisperGlobal:
-		if ( agitcheck() && getgmlevel() >= 99 && @whispervar0$ == "reload") 
-		{
-			announce "Recargando guilds.", bc_self;
-			goto OnAgitStart;
-		}
-	end;
-
-	OnPCLoadMapEvent:
-		if ( !agitcheck() )
-			end;
-		if (
-			strcharinfo(3)!="schg_cas01" &&
-			strcharinfo(3)!="schg_cas02" &&
-			strcharinfo(3)!="schg_cas03" &&
-			strcharinfo(3)!="schg_cas04" &&
-			strcharinfo(3)!="schg_cas05" &&
-			strcharinfo(3)!="arug_cas01" &&
-			strcharinfo(3)!="arug_cas02" &&
-			strcharinfo(3)!="arug_cas03" &&
-			strcharinfo(3)!="arug_cas04" &&
-			strcharinfo(3)!="arug_cas05" &&
-			strcharinfo(3)!="mocg_cas01"
-		) 
-			end;
-
-		if ( getcharid(2) == 0 ) 
-		{
-
-			warp "SavePoint",0,0;
-			dispbottom "Debes entrar con una guild a WoE.";
-			end;
-
-		}
-	
-		if ( gettime(4) == 6 || gettime(4) == 0 || gettime(4) == 4 ) 
-		{
-
-			set @registrada , 0;
-			for ( set .@i, 0; .@i <= getarraysize($@guilds); set .@i, .@i + 1 ) 
-			{
-
-				if ( getcharid(2) == $@guilds[.@i] /* && strcharinfo(3) == $@castillo$[.@i] */ ) 
-				{
-						set @registrada, 1;
-							break;
-				}
-
-			}
-			if ( !@registrada && getgmlevel() < 90 ) 
-			{
-
-				dispbottom "Tu guild no está activada o entraste a otro castillo.";
-				warp "SavePoint",0,0;
-				end;
-
-			}
-		}
+	if ( getcharid(2) == 0 ) 
+	{
+		warp "SavePoint",0,0;
+		dispbottom "Debes entrar con una guild a WoE.";
+		end;
+	}
 	end;
 }
-
-prontera,147,174,6	script	Registro de Guilds	469,{
-
-	/*	CONFIGURACION DE CASTILLOS
-		RECORDATORIO:
-			MAPFLAG MAXGUILD.TXT		*/
-
-	set .@Castillo_26_Sabado$  , "schg_cas03";
-
-	set .@Castillo_26_Domingo$ , "schg_cas02";
-	set .@Castillo_36_Domingo$ , "schg_cas01"; // se usara la misma variable, sin embargo ambos castillos seran de 26
-
-	set .@name$, "[ ^18A3C9Guild Register^000000 ]";
-	mes .@name$;
-	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
-	mes "Soy la encargada de permitir registrar tu guild para ^C13700WoE SE^000000. Una vez aceptada, podrás disputar las War of Emperium (Second Edition).";
-	mes "¿En qué puedo ayudarte?";
-	next;
-	if ( select ( "^0174DF> ^000000 Registrar una guild (Register a guild) :^0174DF> ^000000 Lista de guilds permitidas (Allowed guilds) ") == 2 ) {
-			mes .@name$;
-			mes "A continuación te enseñaré las guilds registradas para las WoE SE.";
-			next;
-			mes .@name$;
-			mes "¿Qué día quieres ver?";
-			set .@Day , select ( " - Sábado (Saturday) : - Domingo (Sunday)" );
-			if ( .@Day == 1 ) 
-				set .@Day , 6;  
-			else if ( .@Day == 2 )  
-				set .@Day , 0;
-			query_sql ( "SELECT `guild_name`,`castillo` FROM `guild_woe` WHERE `dia`='"+.@Day+"' AND `activado`='1'",.@guild_name$[0],.@castillo$[0]);
-			for ( set .@i , 0; .@i < getarraysize(.@guild_name$); set .@i , .@i + 1 ) {
-				if ( .@Day == 0 && .@castillo$[.@i] == .@Castillo_26_Domingo$ )
-					mes "^10B2D2Guild : ^000000" + .@guild_name$[.@i] + " : 26";
-				else if ( .@Day == 0 && .@castillo$[.@i] == .@Castillo_36_Domingo$ ) 
-					mes "^10B2D2Guild : ^000000" + .@guild_name$[.@i] + " : 26";
-				else 
-					mes "^10B2D2Guild : ^000000" + .@guild_name$[.@i];
-			}
-		close;
-	}
-
-	if ( getguildmasterid(getcharid(2)) != getcharid(0) || getcharid(0) == 0 ) {
-		mes .@name$;
-		mes "Lo siento, sólo el Guild leader puede registrar una guild.";
-		mes " ";
-		mes "Sorry, only the guild leader can register the guild.";
-		close;
-	} 
-
-	mes .@name$;
-	mes "Escoge el día en el que quieres inscribirte para jugar WoE SE.";
-	mes " ";
-	mes "Select the day what do you want to play WoE SE.";
-	set .@Day , select ( "^0174DF> ^000000 Sábado (Saturday) :^0174DF> ^000000 Domingo (Sunday) " );
-	if ( .@Day == 1 ) 
-		set .@Day , 6; 
-	else if ( .@Day == 2 )  
-		set .@Day , 0;
-
-	next;
-	mes .@name$;
-	mes "¿A qué castilllo deseas entrar?";
-	mes "Recuerda que sólo podrás entrar con el límite de miembros que hayas escogido o menor.";
-	mes " ";
-	mes "Remember, you only can enter with the people limit that you choose or less.";
-	if ( .@Day == 6 ) {
-		mes " ";
-		mes "^C13700Para las WoE SE del sábado sólo puedes entrar con 20 miembros (members) en tu guild^000000.";
-		if ( select ("^0174DF> ^000000 Muy bien (Ok, do it) :^0174DF> ^000000 Mejor no (Later)") == 2 ) close;
-		set .@Castillo$ , .@Castillo_26_Sabado$;
-	} else {
-		/* switch ( select ( "^0174DF> ^000000 20 personas. :^0174DF> ^000000 28 personas. ") ) {
-			case 1: set .@Castillo$ , .@Castillo_26_Domingo$; break;
-			case 2: set .@Castillo$ , .@Castillo_36_Domingo$; break;
-		}
-		*/
-		set .@Castillo$ , .@Castillo_26_Domingo$;
-	}
-	next;
-	mes .@name$;
-	mes " ";
-	query_sql ("SELECT `guild_id` FROM `guild_woe` WHERE `guild_id`='"+getcharid(2)+"' AND `dia`='"+.@Day+"'",.@guild_id);
-	if ( .@guild_id != 0 ) {
-		query_sql ("SELECT `guild_name`,`lider_name`,`dia`,`castillo`,`activado` FROM `guild_woe` WHERE `guild_id`='"+getcharid(2)+"'",.@gname$,.@lname$,.@dia,.@castillo$,.@activo);
-		mes "Veo que tu guild fue inscrita, ¿Deseas revisar la solicitud de inscripción?";
-		mes " ";
-		mes "Your guild was inscribed, do you want to revise the request?";
-		if ( select("^0174DF> ^000000 Vale, gracias (Ok, thanks) :^0174DF> ^000000 Mejor en otro momento (Later)") == 2 ) close;
-		next;
-		mes .@name$;
-		mes "Guild : " + .@gname$;
-		mes "GL : " + .@lname$;
-		if ( .@dia == 0 )  
-			mes "Día : Domingo (Sunday)"; 
-		else if ( .@dia  == 6 )
-			mes "Día : Sábado (Saturday)";
-		mes "Castle : " + .@castillo$;
-		mes "Estado : " + ( .@activo?"Aceptada (Approve)":"En proceso de validación (In process)");
-		close;
-	} 
-	query_sql "INSERT INTO `guild_woe`(`guild_id`,`guild_name`,`lider_name`,`dia`,`castillo`,`activado`) VALUES ('"+getcharid(2)+"','"+strcharinfo(2)+"','"+strcharinfo(0)+"','"+.@Day+"','"+.@Castillo$+"','0')";
-	mes "Listo, ya ha sido registrada en nuestro sistema. Un administrador validará la guild para aceptar el acceso a los castillos.";
-	close;
-}
-
 
 // Castillo mapflag loadevent
 schg_cas01	mapflag	loadevent
@@ -324,5 +165,3 @@ arug_cas03	mapflag	loadevent
 arug_cas04	mapflag	loadevent
 arug_cas05	mapflag	loadevent
 mocg_cas01	mapflag	loadevent
-
-prt_are02,143,156,6	duplicate(Registro de Guilds)	Registro de Guilds#SW01	469

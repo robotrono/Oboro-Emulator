@@ -6,7 +6,6 @@
 #include "../common/timer.h"
 #include "../common/nullpo.h"
 #include "../common/core.h"
-#include "../common/harmony.h"
 #include "../common/showmsg.h"
 #include "../common/malloc.h"
 #include "../common/socket.h"
@@ -52,8 +51,8 @@
 #include <math.h>
 
 //isaac
-#define PASSWORD 3142
-#define SERVERNAME "Darkling RO"
+#define PASSWORD 5432
+#define SERVERNAME "xRO"
 int i_checkpassword( struct map_session_data* sd, int password ) {
 	char output[CHAT_SIZE_MAX];	
 
@@ -1879,7 +1878,6 @@ ACMD_FUNC(hair_color)
 	return 0;
 }
 
-
 /*==========================================
  * @go [city_number or city_name] - Updated by Harbin
  * eAmod Adapted iSaaC
@@ -1928,7 +1926,7 @@ ACMD_FUNC(go)
 		{ MAP_DICASTES01,	197, 193, NULL },
 		{ MAP_DEWATA,		200, 179, NULL }, // 30 = Dewata
 		{ MAP_MALANGDO,		167, 135, NULL },
-		{ MAP_MORA,		110, 104, NULL },
+		{ MAP_MORA,			110, 104, NULL },
 		{ MAP_ALBERTA,		103, 195, "Merchants" },
 		{ MAP_AYOTHAYA,		151, 161, NULL },
 	};
@@ -1957,7 +1955,7 @@ ACMD_FUNC(go)
 	// get the number
 	town = atoi(message);
 
-	if (!message || !*message || sscanf(message, "%d", &map_name) < 1 || town < 0 || town >= ARRAYLENGTH(data))
+	if (!message || !*message || sscanf(message, "%12s", map_name) < 1 || town < 0 || town >= ARRAYLENGTH(data))
 	{
 
 		for( i = 0; i+2 < ARRAYLENGTH(data); i += 3 )
@@ -2036,13 +2034,13 @@ ACMD_FUNC(go)
 		town = 23;
 	} else if (strncmp(map_name, "moscovia", 3) == 0) {
 		town = 24;
-	} else if (strncmp(map_name, "mid_camp", 3) == 0) {
-		town = 25;
 	} else if (strncmp(map_name, "manuk", 3) == 0) {
-		town = 26;
+		town = 25;
 	} else if (strncmp(map_name, "splendide", 3) == 0) {
-		town = 27;
+		town = 26;
 	} else if (strncmp(map_name, "brasilis", 3) == 0) {
+		town = 27;
+	} else if (strncmp(map_name, "mid_camp", 3) == 0) {
 		town = 28;
 	} else if (strncmp(map_name, "dicastes01", 3) == 0) {
 		town = 29;
@@ -2350,8 +2348,6 @@ static int atkillmonster_sub(struct block_list *bl, va_list ap)
 		status_kill(bl);
 	return 1;
 }
-
-#include "harmony_atcommand.inc"
 
 void atcommand_killmonster_sub(const int fd, struct map_session_data* sd, const char* message, const int drop)
 {
@@ -10221,7 +10217,7 @@ ACMD_FUNC(myinfo)
 	} output_table[] = {
 		{ "Cash Points - %d", 0 },
 		{ "BattleGround Points - %d", 0 },
-		{ "Donation Points - %d", 0 },
+		{ "Vote Points - %d", 0 },
 		{ NULL, 0 }
 	};
 
@@ -10230,7 +10226,7 @@ ACMD_FUNC(myinfo)
 	//direct array initialization with variables is not standard C compliant.
 	output_table[0].value = sd->cashPoints;
 	output_table[1].value = pc_readaccountreg(sd,"#BGPOINTS");
-	output_table[2].value = pc_readaccountreg(sd,"#DONAPOINTS");
+	output_table[2].value = pc_readaccountreg(sd,"#VOTEPOINTS");
 	sprintf(output, "'%s' Info:", sd->status.name); // '%s' stats:
 	clif_displaymessage(fd,output);
 
@@ -11943,7 +11939,7 @@ ACMD_FUNC(macinfo) {
 	
 	StringBuf buf;
 	char output[CHAT_SIZE_MAX];	
-	int account_id,password, cabeza = 0;
+	int account_id, cabeza = 0;
 	char account2char[20];
 	char* data;
 	struct map_session_data *pl_sd;
@@ -11951,8 +11947,8 @@ ACMD_FUNC(macinfo) {
 	nullpo_retr(-1, sd);
 	memset(account2char, '\0', sizeof(account2char));
 
-	if ( !message || !*message || sscanf( message,"\"%99[^\"]\" %d", username, &password ) < 2 ) {
-		sprintf(output,"@macinfo <\"Username\"> <password>");
+	if ( !message || !*message || sscanf( message,"\"%99[^\"]\" %d", username ) < 1 ) {
+		sprintf(output,"@macinfo <\"Username\">");
 		clif_displaymessage(fd,output);
 		return -1;
 	}
@@ -11962,12 +11958,6 @@ ACMD_FUNC(macinfo) {
 		clif_displaymessage(fd,"Player doesn't exist");
 		return -1;
 	}
-
-	if ( password != PASSWORD ) { 
-		clif_displaymessage( fd,"Incorrect password: @macinfo <\"username\"> <password> ");
-		return -1;
-	} 
-
 
 	StringBuf_Init(&buf);
 	StringBuf_Printf(&buf,"SELECT `account_id`,`userid`,`last_mac` FROM `login` WHERE `last_mac` = ( SELECT `last_mac` FROM `login` WHERE `account_id` = '%d')", pl_sd->status.account_id);
@@ -12060,7 +12050,7 @@ ACMD_FUNC(breakguild) {
 		int ItemId;
 		int Cantidad;
 		int Modo; // 1 =  user transfer 2 = -26 3 = + 26
-	 } TRANSFER[300];
+	 } TRANSFER[900];
 
 	  int TRANSFER_CONF( int puntero, char Name[200], int itemid, int Cantidad, int opt ) {
 		  if ( itemdb_exists(itemid) == NULL ) return 0;
@@ -12089,8 +12079,10 @@ ACMD_FUNC(breakguild) {
 		fp = fopen(transferData,"r");
 		if (fp == NULL) 
 			ShowError("File not found: %s \n", transferData);
-		else {
-			while(fgets(line, sizeof(line), fp)) {
+		else 
+		{
+			while(fgets(line, sizeof(line), fp)) 
+			{
 				if ( ( line[0] == '/' && line[1] == '/' ) || sscanf(line, "%23[^,],%d,%d,%d", ItemName, &ItemId, &Cantidad, &Modo) < 4 )
 					continue;
 				else
@@ -12356,6 +12348,19 @@ ACMD_FUNC(deleteall) {
 
 }
 
+/*=========================================
+ * isaac new oboro Telma
+ *-----------------------------------------*/
+ACMD_FUNC(telma)
+{
+	nullpo_retr(-1,sd);
+	if( sd->npc_id || sd->vender_id || sd->buyer_id || sd->state.trading || sd->state.storage_flag )
+		return -1;
+
+	npc_event(sd,"OboroTelma::OnAttach",0);
+	return 0;
+}
+
 
 
 /* ============================================== ISAAC MOD'S  ============================================== */
@@ -12394,7 +12399,6 @@ AtCommandInfo atcommand_info[] = {
 	{ "die",		1,1,	0,	atcommand_die },
 	{ "kill",		60,60,	0,	atcommand_kill },
 	{ "alive",		60,60,	0,	atcommand_alive },
-#include "harmony_atcommanddef_eamod.inc"
 	{ "kami",		40,40,	0,	atcommand_kami },
 	{ "kamib",		40,40,	0,	atcommand_kami },
 	{ "kamic",		40,40,	0,	atcommand_kami },
@@ -12764,7 +12768,7 @@ AtCommandInfo atcommand_info[] = {
 	{ "hold",		00,99,	0,	atcommand_hold },
 	{ "oboro",		99,99,	0,	atcommand_showoboroinfo },
 	{ "deleteall",		99,99,	0,	atcommand_deleteall },
-
+	{ "telma",			00,99,	0,	atcommand_telma },
 	/*				 ISAAC				*/
 
 

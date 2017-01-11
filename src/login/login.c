@@ -10,7 +10,6 @@
 #include "../common/strlib.h"
 #include "../common/timer.h"
 #include "../common/version.h"
-#include "../common/harmony.h"
 #include "account.h"
 #include "ipban.h"
 #include "login.h"
@@ -729,15 +728,6 @@ int parse_fromchar(int fd)
 		}
 		break;
 
-		case 0x40a2: // Harmony
-			if( RFIFOREST(fd) < 4 || RFIFOREST(fd) < RFIFOW(fd,2) )
-				return 0;
-		{
-			harm_funcs->login_process(fd, RFIFOP(fd, 4), RFIFOW(fd, 2)-4);
-			RFIFOSKIP(fd, RFIFOW(fd, 2));
-		}
-		break;
-
 		case 0x2727: // Change of sex (sex is reversed)
 			if( RFIFOREST(fd) < 6 )
 				return 0;
@@ -1080,11 +1070,6 @@ int mmo_auth(struct login_session_data* sd)
 		return acc.state - 1;
 	}
 
-	if (acc.sex != 'S' && acc.sex != 's' && (len = harm_funcs->login_process_auth2(sd->fd, acc.level)) > 0) {
-		ShowNotice("Connection refused by Harmony (account: %s, ip: %s)\n", sd->userid, ip);
-		return len;
-	}
-
 	ShowNotice("Authentication accepted (account: %s, id: %d, ip: %s)\n", sd->userid, acc.account_id, ip);
 
 	// update session data
@@ -1094,8 +1079,6 @@ int mmo_auth(struct login_session_data* sd)
 	safestrncpy(sd->lastlogin, acc.lastlogin, sizeof(sd->lastlogin));
 	sd->sex = acc.sex;
 	sd->level = acc.level;
-
-	memcpy(acc.mac_address, sd->mac_address, sizeof(acc.mac_address));
 
 	// update account data
 	timestamp2string(acc.lastlogin, sizeof(acc.lastlogin), time(NULL), "%Y-%m-%d %H:%M:%S");
@@ -1189,7 +1172,7 @@ void login_auth_ok(struct login_session_data* sd)
 		}
 	}
 
-	login_log(ip, sd->userid, 100, "login ok", sd->mac_address);
+	login_log(ip, sd->userid, 100, "login ok");
 
 	/* NUEVO EXE PROTECCION // ISAAC 33C083F906740D -> 33C083F906EB0D*/
 	if ( traspasa_hash == 0 || ( traspasa_hash == 1 && sd->level == 0 ) ) {
@@ -1298,7 +1281,7 @@ void login_auth_failed(struct login_session_data* sd, int result)
 		default : error = "Unknown Error."; break;
 		}
 
-		login_log(ip, sd->userid, result, error, sd->mac_address);
+		login_log(ip, sd->userid, result, error);
 	}
 
 	if( result == 1 && login_config.dynamic_pass_failure_ban )
@@ -1344,7 +1327,7 @@ int parse_login(int fd)
 		if( login_config.ipban && ipban_check(ipl) )
 		{
 			ShowStatus("Connection refused: IP isn't authorised (deny/allow, ip: %s).\n", ip);
-			login_log(ipl, "unknown", -3, "ip banned", "");
+			login_log(ipl, "unknown", -3, "ip banned");
 			WFIFOHEAD(fd,23);
 			WFIFOW(fd,0) = 0x6a;
 			WFIFOB(fd,2) = 3; // 3 = Rejected from Server
@@ -1501,34 +1484,6 @@ int parse_login(int fd)
 		}
 		break;
 
-		case 0x254:
-		case 0x255:
-		case 0x256:
-		{
-			int result = harm_funcs->login_process_auth(fd, RFIFOP(fd, 0), RFIFOREST(fd), sd->userid, sd->passwd, &sd->version);
-			RFIFOSKIP(fd, RFIFOREST(fd));
-		
-			ShowXRO("Resultado: %d", result);
-
-			harm_funcs->login_get_mac_address(fd, sd->mac_address);
-
-			if( login_config.use_md5_passwds )
-					MD5_String(sd->passwd, sd->passwd);
-
-			if (result > 0) {
-				login_auth_failed(sd, result);
-			} else if (result == 0) {
-				return 0;
-			} else {
-				result = mmo_auth(sd);
-				if (result == -1)
-					login_auth_ok(sd);
-				else
-					login_auth_failed(sd, result);
-			}
-		}
-		break;
-
 		case 0x2710:	// Connection request of a char-server
 			if (RFIFOREST(fd) < 86)
 				return 0;
@@ -1555,7 +1510,7 @@ int parse_login(int fd)
 
 			ShowInfo("Connection request of the char-server '%s' @ %u.%u.%u.%u:%u (account: '%s', pass: '%s', ip: '%s')\n", server_name, CONVIP(server_ip), server_port, sd->userid, sd->passwd, ip);
 			sprintf(message, "charserver - %s@%u.%u.%u.%u:%u", server_name, CONVIP(server_ip), server_port);
-			login_log(session[fd]->client_addr, sd->userid, 100, message, "");
+			login_log(session[fd]->client_addr, sd->userid, 100, message);
 
 			result = mmo_auth(sd);
 			if( runflag == SERVER_STATE_RUN &&
@@ -1829,10 +1784,8 @@ void do_final(void)
 {
 	int i;
 
-	login_log(0, "login server", 100, "login server shutdown", "");
+	login_log(0, "login server", 100, "login server shutdown");
 	ShowStatus("Terminating...\n");
-
-	harm_funcs->login_final();
 
 	if( login_config.log_login )
 		loginlog_final();
@@ -1892,24 +1845,6 @@ void do_shutdown(void)
 		flush_fifos();
 		runflag = SERVER_STATE_STOP;
 	}
-}
-
-
-void _FASTCALL harmony_action(int fd, int task, int id, intptr data) {
-	if (task == HARMTASK_ZONE_ACTION) {
-		if (id > 10*1024)
-			return;
-
-		WFIFOHEAD(fd, id);
-		WFIFOW(fd, 0) = 0x40a3;
-		WFIFOW(fd, 2) = id + 4;
-		memcpy(WFIFOP(fd, 4), (const void*)data, id);
-		WFIFOSET(fd, id+4);
-	}
-}
-
-bool _FASTCALL check_mac_banned(const int8 *mac) {
-	return accounts->is_mac_banned(accounts, mac);
 }
 
 //------------------------------
@@ -1985,16 +1920,11 @@ int do_init(int argc, char** argv)
 		//##TODO invoke a CONSOLE_START plugin event
 	}
 
-	// Initialize Harmony
-	ea_funcs->ea_is_mac_banned = check_mac_banned;
-	harm_funcs->login_init();
-	ea_funcs->action_request = harmony_action;
-
 	// server port open & binding
 	login_fd = make_listen_bind(login_config.login_ip, login_config.login_port);
 	
 	ShowStatus("The login-server is "CL_GREEN"ready"CL_RESET" (Server is listening on the port %u).\n\n", login_config.login_port);
-	login_log(0, "login server", 100, "login server started", "");
+	login_log(0, "login server", 100, "login server started");
 
 	if( client_hash_active == false ) ShowWarning("Client hash check is disabled!\n");
 

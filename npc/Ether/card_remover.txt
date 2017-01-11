@@ -13,6 +13,7 @@
 //= 1.2 Optimized and fixed getequipname menu. [Kisuka]
 //============================================================ 
 prt_in,28,73,4	script	Old Woman#eAcustom	78,{
+//morocc_in,61,38,4	script	Old Woman#eAcustom	78,{
 	mes "[Wise Old Woman]";
 	mes "Good day, young one. I have the power to remove cards that you have compounded onto your equipment. Does this idea please you?";
 	next;

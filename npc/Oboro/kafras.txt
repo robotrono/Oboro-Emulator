@@ -1,5 +1,5 @@
 //isaac..
-prontera,153,195,6	script	Kafra Employee::Kafra Employee	860,{
+prontera,164,195,4	script	Kafra Employee::Kafra Employee	860,{
 	getmapxy .@map$, .@x, .@y, 0;
 	cutin "kafra_08",2;
 	mes "^BB8104 Kafra Employee ^000000";
@@ -85,3 +85,5 @@ gr_29,47,59,6	duplicate(Kafra Employee)	Kafra Employee#49-1	860
 gr_30,47,59,6	duplicate(Kafra Employee)	Kafra Employee#50-1	860
 Hyrule,127,192,6	duplicate(Kafra Employee)	Kafra Employee#51-1	860
 veins,223,128,3	duplicate(Kafra Employee)	Kafra Employee#52-1	860
+mora,112,112,3	duplicate(Kafra Employee)	Kafra Employee#53-1	860
+comodo,195,150,3	duplicate(Kafra Employee)	Kafra Employee#54-1	860

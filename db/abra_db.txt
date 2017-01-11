@@ -275,8 +275,8 @@
 
 // Abracadabra Derivation Skill
 291,Monocell,4,2500
-292,Class Change,8,5000
-293,Summon Monster,6,350
+292,Class Change,8,2500
+293,Summon Monster,6,3500
 294,Grampus Morph,4,5000
 295,Grim Reaper,8,2000
 296,Gold Digger,6,4000

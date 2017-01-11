@@ -424,7 +424,7 @@
 379,9,6,1,-1,0x8,0,10,1,yes,0,0,0,weapon,0,	ASC_BREAKER,Soul Destroyer
 380,0,6,4,0,0x1,0,10,1,no,0,0,0,weapon,0,	SN_SIGHT,Falcon Eyes
 381,5,8,1,0,0x40,0,5,1,yes,0,0,0,misc,0,		SN_FALCONASSAULT,Falcon Assault
-382,9,8,1,-1,0,2,5,1,yes,0,0,13,weapon,0,	SN_SHARPSHOOTING,Focused Arrow Strike
+382,9,8,1,-1,0,2,5,1,yes,0,0x0800,13,weapon,0,	SN_SHARPSHOOTING,Focused Arrow Strike
 383,0,6,4,0,0x3,-1,10,1,yes,0,0,0,weapon,0,	SN_WINDWALK,Wind Walker
 384,0,0,4,0,0x1,0,10,1,yes,0,0,0,weapon,0,	WS_MELTDOWN,Shattering Strike
 //385,0,0,4,0,0x1,0,1,1,yes,0,0,0,none,0,	WS_CREATECOIN,Create Coins
@@ -444,7 +444,7 @@
 399,4,6,1,-1,0,0,10,1,no,0,0,0,weapon,0,		LK_JOINTBEAT,Vital Strike
 400,9,8,1,8,0x6,1,5,1:2:3:4:5,yes,0,0,0,magic,0,	HW_NAPALMVULCAN,Napalm Vulcan
 401,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,		CH_SOULCOLLECT,Zen
-402,9,6,16,0,0x1,0,5,1,no,0,0,0,none,0,		PF_MINDBREAKER,Mind Breaker
+402,9,6,16,0,0x1,0,5,1,no,0,0x0800,0,none,0,		PF_MINDBREAKER,Mind Breaker
 403,0,0,4,0,0x1,0,1,1,yes,0,0,0,magic,0,		PF_MEMORIZE,Foresight
 404,9,6,2,2,0x1,0,5,1,yes,0,0x100,2,magic,0,	PF_FOGWALL,Blinding Mist
 405,7,6,1,0,0x1,0,1,1,no,0,0,3,magic,0,		PF_SPIDERWEB,Fiber Lock
@@ -513,7 +513,8 @@
 468,9,6,1,-2,0,0,7,1,no,0,0,0,magic,0,		SL_STUN,Estun
 469,9,8,1,-2,0,0,10,1:2:3:4:5:6:7:8:9:10,yes,0,0,0,magic,0,	SL_SMA,Esma
 470,9,6,1,0,0x1,0,7,1,no,0,0,0,magic,0,		SL_SWOO,Eswoo
-471,9,6,1,0,0x1,0,3,1,no,0,0,0,magic,0,		SL_SKE,Eske
+//Isaac SKE Edit
+471,9,6,16,0,0x1,0,5,1,yes,0,0x200,0,magic,0,		SL_SKE,Eske
 472,9,6,1,0,0x1,0,3,1,no,0,0,0,magic,0,		SL_SKA,Eska
 473,0,6,4,0,0,0,1,1,no,0,0,0,none,0,		SM_SELFPROVOKE,Provoke Self
 474,0,0,4,0,0x1,0,10,1,no,0,0x2,0,none,0,	NPC_EMOTION_ON,Emotion ON

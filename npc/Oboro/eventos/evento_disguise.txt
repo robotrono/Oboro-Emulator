@@ -60,7 +60,7 @@ prontera,155,167,5	script	Wiki Event	439,{
 		if( .MonsterID == 0 || .@Guess$ != .Answer$ )
 			mes_with_close "La respuesta es ^FF0000 incorrecta ^000000 o ^FF0000 fuera de tiempo ^000000";
 
-		getitem 15803, 10;
+		getitem 7539, 10;
 		close2;
 			setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
 			announce "[ "+strcharinfo(0)+" ]: ganó, respuesta [ "+.Answer$+" ]",bc_npc,0xED1ADC;

@@ -1,11 +1,11 @@
 
-COMMON_OBJ = ../common/obj_all/core.o ../common/obj_all/socket.o ../common/obj_all/harmonycore.o ../common/obj_all/timer.o \
+COMMON_OBJ = ../common/obj_all/core.o ../common/obj_all/socket.o ../common/obj_all/timer.o \
 	../common/obj_all/db.o ../common/obj_all/plugins.o ../common/obj_all/lock.o \
 	../common/obj_all/nullpo.o ../common/obj_all/malloc.o ../common/obj_all/showmsg.o \
 	../common/obj_all/utils.o ../common/obj_all/strlib.o ../common/obj_all/grfio.o \
 	../common/obj_all/mapindex.o ../common/obj_all/ers.o ../common/obj_all/md5calc.o \
 	../common/obj_all/random.o ../common/obj_all/des.o
-COMMON_H = ../common/core.h ../common/socket.h ../common/harmony.h ../common/timer.h \
+COMMON_H = ../common/core.h ../common/socket.h ../common/timer.h \
 	../common/db.h ../common/plugins.h ../common/lock.h \
 	../common/nullpo.h ../common/malloc.h ../common/showmsg.h \
 	../common/utils.h ../common/strlib.h ../common/grfio.h \
@@ -21,7 +21,7 @@ MT19937AR_INCLUDE = -I../../3rdparty/mt19937ar
 
 MAP_OBJ = oboro.o map.o chrif.o clif.o pc.o status.o npc.o \
 	npc_chat.o chat.o path.o itemdb.o mob.o script.o \
-	storage.o skill.o atcommand.o harmony.o battle.o battleground.o \
+	storage.o skill.o atcommand.o battle.o battleground.o \
 	intif.o trade.o party.o vending.o guild.o guild_castle.o guild_expcache.o pet.o \
 	log.o mail.o date.o channel.o unit.o homunculus.o mercenary.o quest.o instance.o \
 	buyingstore.o searchstore.o duel.o achievement.o region.o faction.o
@@ -31,7 +31,7 @@ MAP_SQL_OBJ = $(MAP_OBJ:%=obj_sql/%) \
 	obj_sql/mapreg_sql.o
 MAP_H = oboro.h map.h chrif.h clif.h pc.h status.h npc.h \
 	chat.h itemdb.h mob.h script.h path.h \
-	storage.h skill.h atcommand.h harmony.h battle.h battleground.h \
+	storage.h skill.h atcommand.h battle.h battleground.h \
 	intif.h trade.h party.h vending.h guild.h guild_castle.h guild_expcache.h pet.h \
 	log.h mail.h date.h channel.h unit.h homunculus.h mercenary.h quest.h instance.h mapreg.h \
 	buyingstore.h searchstore.h duel.h achievement.h region.h faction.h
@@ -94,20 +94,20 @@ obj_sql:
 
 # executables
 map-server: obj_txt $(MAP_TXT_OBJ) $(COMMON_OBJ)
-	@echo "	[ CC ]	$<"
+	@echo "	[ MAP ]	$<"
 	@@CC@ @LDFLAGS@ -o ../../map-server@EXEEXT@ $(MAP_TXT_OBJ) $(COMMON_OBJ) $(MT19937AR_OBJ) @LIBS@ @PCRE_LIBS@ -lcurl
 
 map-server_sql: obj_sql $(MAP_SQL_OBJ) $(COMMON_OBJ) $(COMMON_SQL_OBJ)
-	@echo "	[ CC ]	$<"
+	@echo "	[ MAP ]	$<"
 	@@CC@ @LDFLAGS@ -o ../../map-server_sql@EXEEXT@ $(MAP_SQL_OBJ) $(COMMON_OBJ) $(COMMON_SQL_OBJ) $(MT19937AR_OBJ) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@
 
 # map object files
 obj_txt/%.o: %.c $(MAP_H) $(COMMON_H) $(MT19937AR_H)
-	@echo "	[ CC ]	$<"
+	@echo "	[ MAP ]	$<"
 	@@CC@ @DEFS@ @CFLAGS@ $(MT19937AR_INCLUDE) $(PCRE_CFLAGS) -DTXT_ONLY @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
 obj_sql/%.o: %.c $(MAP_H) $(COMMON_H) $(COMMON_SQL_H) $(MT19937AR_H)
-	@echo "	[ CC ]	$<"
+	@echo "	[ MAP ]	$<"
 	@@CC@ @DEFS@ @CFLAGS@ $(MT19937AR_INCLUDE) $(PCRE_CFLAGS) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
 # missing object files

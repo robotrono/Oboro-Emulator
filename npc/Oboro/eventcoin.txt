@@ -1,14 +1,14 @@
 //new costumeshop by isaac...
 //<mapa>,<x>,<y>,<p>,<moneda>,<TAB>,costumeshop,<TAB>,<name>,<TAB>,<npcid>,<itemid>,<valor>;
 
-que_qaru02,0,0,1,15803	costumeshop	EventExchanger	111,18791:100,18793:100,18794:100,18803:100,18848:100,18849:100,18852:100,18857:100,18860:100,18865:100,18866:100,18867:100,19728:100,18877:100,18878:100,18881:100,18885:100,18887:100,18889:100,18890:100,18892:100,18893:100,18895:100,18899:100,19787:100,5872:100,18906:100,18909:100,18907:100,19600:100,19601:100,19805:100,19806:100,19807:100,19815:100,19816:100,19817:100,18925:100,19823:100,19824:100,19825:100,18936:100;
+que_qaru02,0,0,1,7539	costumeshop	EventExchanger	111,18791:100,18793:100,18794:100,18803:100,18848:100,18849:100,18852:100,18857:100,18860:100,18865:100,18866:100,18867:100,19728:100,18877:100,18878:100,18881:100,18885:100,18887:100,18889:100,18890:100,18892:100,18893:100,18895:100,18899:100,19787:100,5872:100,18906:100,18909:100,18907:100,19600:100,19601:100,19805:100,19806:100,19807:100,19815:100,19816:100,19817:100,18925:100,19823:100,19824:100,19825:100,18936:100,30202:100;
 
 
 que_qaru02,258,347,4	script	Event Exchanger	115,{
-	mes "[ Event Coins Changer ]";
+	title ("Event Coins Changer");
 	mes "Hola soy la encargada de entregar ^0040FFHats costumes^000000, por las monedas de evento que has ganado a lo largo del tiempo";
 	mes "¿Quieres comprar algo?, recuerda que no tienen efecto alguno, son costumes.";
-	if ( select ( " -Quiero verme pixelero : -Mejor no... ") == 2 ) close;
+	if ( select ( " [ - ] Quiero verme pixelero : [ - ] Mejor no... ") == 2 ) close;
 	close2;
 		callshop "EventExchanger";
 	end;

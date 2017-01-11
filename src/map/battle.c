@@ -4324,10 +4324,11 @@ static const struct _battle_data {
 
 	{ "anti_mayapurple_hack",               &battle_config.anti_mayapurple_hack,            0,      0,      1,              },
 
-	{ "use_aegis_land_shower",              &battle_config.use_aegis_land_shower,		0,	0,	1,		},//iSaaC
+	{ "use_aegis_land_shower",              &battle_config.use_aegis_land_shower,			0,		0,		1,				},//iSaaC
 	{ "afk_timeout",                        &battle_config.afk_timeout,                     0,      0,      INT_MAX,        },//isaac
+	{ "min_guild",                        	&battle_config.min_guild,                     	0,      0,      INT_MAX,        },//isaac
 
-	{ "oboro_tol",			&battle_config.oboro_tol,				100,     1,	INT_MAX,        },
+	{ "oboro_tol",							&battle_config.oboro_tol,					100, 	    1,		INT_MAX,        },
 	{ "oboro_tol2",			&battle_config.oboro_tol2,				200,     0,	INT_MAX,        },
 	{ "oboro_fixeddelay_tol",		&battle_config.oboro_fixeddelay_tol,		30,	 0,	INT_MAX,        },
 

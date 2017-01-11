@@ -1,4 +1,4 @@
-prontera,146,196,5	script	Transfer	721,{
+prontera,146,196,5	script	Transfer	877,{
 
 	mes "[ ^0080FFTransfer^000000 ]"; 
 	mes "";
@@ -17,7 +17,7 @@ prontera,146,196,5	script	Transfer	721,{
 
 	*/
 
-	mes "Bienvenido a DarklingRO, Esperemos que disfrutes de tu estancia con nosotros, ¿deseas obtener el pack de bienvenida?";
+	mes "Bienvenido, Esperemos que disfrutes de tu estancia con nosotros, ¿deseas obtener el pack de bienvenida?";
 
 	if ( select (" ^10B2D2 [ > ] ^000000 Claro : ^10B2D2 [ > ] ^000000 No, gracias.") == 2 ) close;
 
