@@ -1,0 +1,47 @@
+ra_temple,64,139,6	script	Hunter Cap	954,{
+	mes "[^000000Hunter Cap^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Hunter Cap, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Hunter Cap^000000]";
+		mes "^FF000010^000000 Darkgreen Dyestuff"; //979
+		mes "^FF00001^000000 Cap[1]"; //2227
+		mes "^FF0000100^000000 Cat's Eye"; //7263
+		mes "^FF000030^000000 Green Bijou"; //7445
+		mes "^0000FF10000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(979) < 10) goto L_manque;
+		if(countitem(2227) < 1) goto L_manque;
+		if(countitem(7263) < 100) goto L_manque;
+		if(countitem(7445) < 30) goto L_manque;
+		if(Zeny < 10000000) goto L_manque;
+		mes "[^000000Hunter Cap^000000]";
+		mes "Aquí está tu Hunter Cap";
+		delitem 979,10;
+		delitem 2227,1;
+		delitem 7263,100;
+		delitem 7445,30;
+		set Zeny, Zeny - 10000000;
+		getitem 5383,1;
+		close;
+
+	L_manque:
+		mes "[^000000Hunter Cap^000000]";
+		mes "Te faltan: ";
+		if(countitem(979) < 10) mes "^FF0000"+(10 - countitem(979)) +"^000000 DarkGreen Dyestuff";
+		if(countitem(2227) < 1) mes "^FF0000"+(1 - countitem(2227)) +"^000000 Cap[1]";
+		if(countitem(7263) < 100) mes "^FF0000"+(100 - countitem(949)) +"^000000 Cat's Eye";
+		if(countitem(7445) < 30) mes "^FF0000"+(30 - countitem(7445)) +"^000000 Green Bijou";
+		if(Zeny < 10000000) mes "^0000FF"+(10000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Hunter Cap^000000]";
+		mes "Buen día";
+		close;
+}

@@ -1,0 +1,73 @@
+invek,97,170,5	script	Sr.Kenny	79,{
+
+	setarray $@eventMAP$[0],"pvp_n_1-5","pvp_n_2-5","pvp_n_3-5","pvp_n_4-5","pvp_n_5-5";
+	set .@cash , 5000;
+
+	mes name$;
+	mes " ";
+	mes " Tengo un juego muy interezante...";
+	mes "Por solo 2k de cash te teletransporto a una sala con mobs que te daran items unicos";
+	mes "que dices ???";
+	if ( select ( " ^10B2D2 [ > ] ^000000 Ok, llevame : ^10B2D2 [ > ] ^000000 Mejor no" ) == 2 ) close;
+
+	
+	if ( getguildmasterid(getcharid(2)) != getcharid(0) || getcharid(2) == 0 ) {
+		next;
+		mes name$;
+		mes " ";
+		mes " Se me olvidaba, solo el lider de una party puede inscribirla";
+		close;
+	}
+
+	next;
+	mes name$;
+	mes " ";	
+	mes " A cual sala desea entrar";
+	for (set .@c, 0; .@c < getarraysize($@eventMAP$); set .@c, .@c + 1) {
+		if ( getmapusers($@eventMAP$[.@c]) > 0 )
+			setarray .msg$[.@c], "Evento " + (.@c + 1) + " ^FF0000 Ocupada. ^000000";
+		else
+			setarray .msg$[.@c], "Evento " + (.@c + 1) +". ^00FF00 Libre.   ^000000";
+	}
+	
+	for ( set .@j , 0; .@j < getarraysize($@eventMAP$); set .@j , .@j + 1 )
+		set .@menu$ , .@menu$ + " ^10B2D2 [ > ] ^000000 " + .msg$[.@j] + ":";
+	set .@eleccion , select ( .@menu$ );
+
+	if ( getmapusers( $@eventMAP$[.@eleccion] ) > 0  ) {
+		next;
+		mes name$;
+		mes " ";
+		mes " Esta sala esta en uso";
+		close;
+	}
+	
+	if ( #CASHPOINTS < .@cash ) {
+		next;
+		mes name$;
+		mes " ";
+		mes "No tienes suficiente cash";
+		close;
+	}
+
+	getpartymember(getcharid( 1 ),0 );
+	if ( $@partymembercount < 1 ) {
+		next;
+		mes name$;
+		mes " ";
+		mes " Necesitas una party de mínimo 5";
+		close;	
+	}
+
+	close2;
+		announce name2$ + ": " + getpartyname(getcharid(1)) + " está lista para Item vs Muerte",bc_all;
+		set #CASHPOINTS , #CASHPOINTS - .@cash;
+		warpparty $@eventMAP$[.@eleccion],99,100,getcharid(1);
+		donpcevent "Sr.Kenny::OnBegin";
+	end;
+
+OnBegin:
+	sleep2 10000;
+	mapannounce $@eventMAP$[.@eleccion]," 1 minuto para iniciar",blue;
+end;
+}

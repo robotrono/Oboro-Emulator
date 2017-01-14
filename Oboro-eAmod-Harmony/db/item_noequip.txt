@@ -1,0 +1,164 @@
+// The equipment/items/cards restriction file 
+// here you define which items may not be used at PvP / GvG 
+// format: <item id>,<mode>
+// mode
+// 1    - restricted in normal maps
+// 2    - restricted in PVP
+// 4    - restricted in GVG
+// 8    - restricted in Battlegrounds
+// Restricted zones - they're configured by 'restricted <number>' mapflag
+// 32   - restricted in zone 1
+// 64   - restricted in zone 2
+// 128  - restricted in zone 3
+// 256  - restricted in zone 4
+// 512  - restricted in zone 5
+// 1024 - restricted in zone 6
+// 2048 - restricted in zone 7
+
+//Examples:
+//1201,1 you can't use KNIFE(ID 1201) on normal maps
+//608,4 you can't use Yggdrasil Seed(ID 608) on both GvG and WoE Castles
+//4174,6 Forbid Deviling Card in every PVP or GVG map, and during woes.
+//501,32 you can't use Red Potion on map marked as 'restricted zone 1'
+//502,64 you can't use Orange Potion on map marked as 'restricted zone 2'
+//503,128 you can't use Yellow Potion on map marked as 'restricted zone 3'
+// you can even mix modes
+//519,322 (256+64+2) you can't use Milk on PVP, and maps marked as 'restricted zone 2' and 'restricted zone 4'
+
+//PVP
+14529,2 //Greed Scroll
+607,2 //Berry
+608,2 //Seed
+601,2 //Fly Wing
+
+//GVG
+12218,4 //LV5 Assumptio Scroll
+14529,4 //Greed Scroll
+14590,4 //Party Assumptio 5 Scroll
+678,4 //Poison Bottle
+607,4 //Berry
+608,4 //Seed
+601,4 //Fly Wing
+4236,4 //Amon Ra Card
+4359,4 //Assassin Cross Eremes Card
+4425,4 //Atroce Card
+4372,4 //White Lady Card
+4147,4 //Baphomet Card
+4145,4 //Berzebub Card
+4168,4 //Dark Lord Card
+4386,4 //Detardeurus Card
+4142,4 //Doppelganger Card
+4134,4 //Dracula Card
+4137,4 //Drake Card
+4123,4 //Eddga Card
+4330,4 //Evil Snake Lord Card
+4441,4 //Fallen Bishop Hibram Card
+4324,4 //Hatii Card
+4408,4 //Gloom Under Night Card
+4128,4 //Golden Thief Bug Card
+4363,4 //High Priest Card
+4365,4 //High Wizard Card
+4430,4 //Ifrit Card
+4263,4 //Samurai Spector Card
+4403,4 //Kiel-D-01 Card
+4318,4 //Stormy Knight Card
+4419,4 //Ktullanux Card
+4376,4 //Lady Tanee Card
+4357,4 //Lord Knight Card
+4276,4 //Lord of The Dead Card
+4146,4 //Maya Card
+4132,4 //Mistress Card
+4131,4 //Moonlight Flower Card
+4143,4 //Orc Hero Card
+4135,4 //Orc Lord Card
+4144,4 //Osiris Card
+4148,4 //Pharaoh Card
+4121,4 //Phreeoni Card
+4342,4 //RSX-0806 Card
+4367,4 //Sniper Card
+4302,4 //Tao Gunka Card
+4399,4 //Memory of Thanatos Card
+4305,4 //Turtle General Card
+4407,4 //Randgris Card
+4374,4 //Vesper Card
+4361,4 //MasterSmith Card
+4352,4 //General Egnigem Cenia Card
+4054,4 //Angeling Card
+4169,4 //Dark Illusion Card
+4174,4 //Deviling Card
+4047,4 //Ghostring Card
+4198,4 //Maya Purple Card
+//30161,4
+
+
+//BATTLEGROUND
+12218,8 //LV5 Assumptio Scroll
+14590,8 //Party Assumptio 5 Scroll
+607,8 //Berry
+608,8 //Seed
+30161,12
+
+//Zone 1 - Aldebaran Turbo Track
+601,32 //Fly Wing
+605,32 //Anodyne
+506,32 //Green Potion
+525,32 //Panacea
+7621,32 //Token
+
+//Zone 2 - Jail
+601,64 //Fly Wing - not really needed here but ...
+//602,64 //Butterfly Wing - also not needed
+12212,64 //Giant Fly Wing
+14582,64
+14583,64
+14584,64
+14585,64
+
+//Zone 3 - Izlude Battle Arena
+607,128 //Berry
+608,128 //Seed
+12016,128 //Speedpotion
+
+//Zone 4 - Pvpnopots
+547,256
+11501,256
+504,256
+511,256
+518,256
+514,256
+507,256
+509,256
+508,256
+510,256
+11501,256
+520,256
+505,256
+579,256
+521,256
+546,256
+538,256
+502,256
+11502,256
+536,256
+526,256
+518,256
+517,256
+522,256
+538,256
+539,256
+12016,256
+501,256
+533,256
+503,256
+12027,256
+12274,256
+12275,256
+14535,256
+
+//Zone 6- Endless
+607,1024 //Berry
+608,1024 //Seed
+
+//Zone 7 - Towns
+12103,2048 //Bloody Branch
+604,2048 // Dead Branch

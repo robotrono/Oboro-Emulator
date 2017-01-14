@@ -1,0 +1,416 @@
+// Kapra Teleport Function ==================================================================
+
+2009rwc_03,7,47,0	script	Click to Jump#1	802,{
+	getmapxy .@map$, .@cx, .@cy, 0; // Current Char Position
+	getmapxy .@mapn$, .@cxn, .@cyn, 1; // Current NPC Position
+	set .@x1, .@cxn - 3;
+	set .@x2, .@cxn + 3;
+	set .@y1, .@cyn - 3;
+	set .@y2, .@cyn + 3;
+	if( .@cx < .@x1 || .@cx > .@x2 || .@cy < .@y1 || .@cy > .@y2 )
+		end;
+	warp "2009rwc_03",90,49;
+	end;
+}
+
+2009rwc_03,92,52,0	script	Click to Jump#2	802,{
+	getmapxy .@map$, .@cx, .@cy, 0; // Current Char Position
+	getmapxy .@mapn$, .@cxn, .@cyn, 1; // Current NPC Position
+	set .@x1, .@cxn - 3;
+	set .@x2, .@cxn + 3;
+	set .@y1, .@cyn - 3;
+	set .@y2, .@cyn + 3;
+	if( .@cx < .@x1 || .@cx > .@x2 || .@cy < .@y1 || .@cy > .@y2 )
+		end;
+	warp "2009rwc_03",9,50;
+	end;
+}
+
+-	script	PVP_Warper	-1,{
+	mes "[ ^FFA500Battle Recruiter^000000 ]";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Disfruta en nuestras salas de combate exclusivas de xRO para llegar a ser el jugador más fuerte del servidor. Elige la opción que más te guste:";
+	next;
+	set @ArenaPVP_out, atoi(strnpcinfo(2));
+	switch( select(
+				"^000080[" + (getmapusers("arena_4")) + " users] ^DF0101Sala de Battleground^000000",
+				"-- ^FFA500PVP Event Arena^000000 --",
+				"^000080[" + (getmapusers("guild_vs3")) + " users] ^FF6C00PvP Normal",
+				"^000080[" + (getmapusers("guild_vs2")) + " users] ^DBA901PvP No Pots",
+			   "^8B0000[" + (getmapusers("guild_vs4")) + " users] ^FF0000GvG Arena"
+	) ) {
+		case 1: // Battleground info Board
+			if( $@Conquest == 1 )
+				mes "^FFA500Conquest^000000 * ^FF0000(" + bg_get_data($@Conquest_id2, 0) + ")^000000 vs ^0000FF(" + bg_get_data($@Conquest_id1, 0) + ")^000000";
+			else
+				mes "^FFA500Conquest^000000 * ^808080Sala Vacia^000000";
+			if( $@TvT01_BG != 0 )
+				mes "^00BFFFTeam vs Team^000000 * ^FF0000(" + bg_get_data($@TvTBG_id2, 0) + ")^000000 vs ^0000FF(" + bg_get_data($@TvTBG_id1, 0) + ")^000000";
+			else
+				mes "^00BFFFTeam vs Team^000000 * ^808080Sala Vacía^000000";
+			next;
+			query_sql ("SELECT `BG_DLALLOW` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@respuesta$);
+			if ( .@respuesta$ == "0" ) {
+				if( harm_bg_multicount() > 0 || harm_map_multicount( "arena_4" ) > 0 ) {
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "Double Login is forbidden in Battlegrounds Maps.";
+					close;
+				}
+			}
+				
+			warp "arena_4",148,99;
+			set $@AnnouncePVPArena$, "Battleground xRO";
+			break;
+			
+		case 2:
+			mes "[^FFA500Battle Recruiter^000000]";
+			mes "Standings:";
+			for( set .@i, 0; .@i < $pvpevent_count; set .@i, .@i + 1 )
+				mes "(" + (.@i + 1) + ") - ^4169E1" + $pvpevent_name$[.@i] + "^000000 [" + $pvpevent_fame[.@i] + "]";
+			next;
+			switch( select("^000080[" + (getmapusers("2009rwc_03")) + " users] ^4169E1Enter Event","Information","^FF0000Get my rewards^000000") )
+			{
+				case 1: if( pvpeventcheck() == 0 )
+					{
+						mes "[^FFA500Battle Recruiter^000000]";
+						mes "I am sorry, there is no PvP Event at this time.";
+						mes "Check my information if you need help.";
+						close;
+					}
+
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "Please choose your entering point.";
+					mes "Remember, only a maximum of 6 members of the same party can enter the map.";
+					mes "If more players try to join, they will be send to their respawn point.";
+
+					set .@i, select("[<] Left","[>] Right");
+					if( pvpeventcheck() == 0 )
+					{
+						mes "[^FFA500Battle Recruiter^000000]";
+						mes "I am sorry, the PvP Event is over.";
+						close;
+					}
+
+					switch( .@i )
+					{
+						case 1: warp "2009rwc_03",9,50; break;
+						case 2: warp "2009rwc_03",90,49; break;
+					}
+
+					break;
+
+				case 2: mes "[^FFA500Battle Recruiter^000000]";
+					mes "You can join PVP Event Arena every ^0000FFFriday, starting at 8p.m. and ending at 9p.m^000000.";
+					next;
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "This is a PvP arena where players can win Items and Cash Points by playing and killing other players.";
+					mes "You can join the battle alone or in a maximum of 6 members party";
+					next;
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "Also there is a Top 10 Fame List of this event.";
+					mes "To increase your points and enter this list, you need to kill others players, monsters and boxes without leaving the Arena.";
+					mes "Your party members will share you points if they kill players too.";
+					next;
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "If you get into the Top 10 list at the end of the event, you can come to me and reclaim your Reward.";
+					mes "The 1st place will receive ^0000FF2.500 Kafra Points^000000.";
+					mes "The 2nd place will receive ^0000FF2.000 Kafra Points^000000.";
+					mes "Each next place will receive -250 Kafra Points, until 10th.";
+					next;
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "Prepare yourself and your friends, come and participate. We will wait for you.";
+					close;
+
+				case 3: mes "[^FFA500Battle Recruiter^000000]";
+					mes "Are you on the Top 10 PVP Event Fame List of this week?";
+					mes "Let me see...";
+					next;
+					if( pvpeventcheck() )
+					{
+						mes "[^FFA500Battle Recruiter^000000]";
+						mes "I am sorry, but you need to wait until PvP Event is over...";
+						close;
+					}
+
+					for( set .@i, 0; .@i < $pvpevent_count; set .@i, .@i + 1 )
+					{
+						if( $pvpevent_id[.@i] == getcharid(0) )
+						{ // Found in the Top 10
+							mes "[^FFA500Battle Recruiter^000000]";
+							mes "Congratulations, you are on the Top 10 PvP Event Fame List of this week at position " + (.@i + 1) + "!!";
+
+							if( $pvpevent_reward[.@i] )
+								mes "But... i have already give you the reward.";
+							else
+							{
+								set $pvpevent_reward[.@i], 1;
+								set .@reward, (10 - .@i) * 250;
+								set #KAFRAPOINTS, #KAFRAPOINTS + .@reward;
+								mes "Here is your reward of ^0000FF" + .@reward + " Kafra Points^000000.";
+							}
+							close;
+						}
+					}
+
+					mes "[^FFA500Battle Recruiter^000000]";
+					mes "Mmm...";
+					mes "I am sorry but you are not on the Top 10 List of this week.";
+					close;
+			}
+			break;
+
+		case 3:	
+			switch( rand(4) )
+			{
+				sc_end SC_ASSUMPTIO;
+				sc_end SC_SPIRIT;
+				sc_end SC_POEMBRAGI;
+				sc_end SC_SCRESIST;
+				sc_end SC_INCMSPRATE;
+				sc_end SC_INCALLSTATUS;
+				sc_end SC_BENEDICTIO;
+				sc_end SC_INCDEFRATE;
+				sc_end SC_OVERTHRUST;
+				sc_end SC_KAIZEL;
+				sc_end SC_KAAHI;
+				sc_end SC_KAITE;
+				sc_end SC_KAUPE;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_INCATKRATE;
+				sc_end SC_INCHIT;
+				sc_end SC_INCFLEE;
+				sc_end SC_WEAPONPERFECTION;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_ASSNCROS;
+				case 0: warp "guild_vs3",0,0; break;
+				case 1: warp "guild_vs3",0,0; break;
+				case 2: warp "guild_vs3",0,0; break;
+				case 3: warp "guild_vs3",0,0; break;
+			}
+			set $@AnnouncePVPArena$, "PvP Arena 2";
+			break;
+
+
+		case 4:	
+			switch( rand(4) )
+			{
+				sc_end SC_ASSUMPTIO;
+				sc_end SC_SPIRIT;
+				sc_end SC_WEAPONPERFECTION;
+				sc_end SC_POEMBRAGI;
+				sc_end SC_SCRESIST;
+				sc_end SC_INCMSPRATE;
+				sc_end SC_KAIZEL;
+				sc_end SC_KAAHI;
+				sc_end SC_KAUPE;
+				sc_end SC_KAITE;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_INCALLSTATUS;
+				sc_end SC_OVERTHRUST;
+				sc_end SC_BENEDICTIO;
+				sc_end SC_INCDEFRATE;
+				sc_end SC_INCATKRATE;
+				sc_end SC_INCHIT;
+				sc_end SC_INCFLEE;
+				case 0: warp "guild_vs4",8,49; break;
+				case 1: warp "guild_vs4",91,49; break;
+				case 2: warp "guild_vs4",49,91; break;
+				case 3: warp "guild_vs4",49,8; break;
+			}
+			set $@AnnouncePVPArena$, "GvG Arena 1";
+			break;
+		}
+	}
+
+-	script	PVP_Warper_Out	-1,{
+	mes "[^FFA500Battle Support^000000]";
+	mes "Good day, adventurer.";
+	mes "Do you want to leave the Battle?";
+	
+	if( select("^0000FFBack to "+getsavepoint(0)+":^FF0000I will stay to the end!!^000000") == 2 )
+	{
+		mes "That's the spirit of a True Warrior!!";
+		close;
+	}
+
+	getmapxy .@map$, .@cx, .@cy, 0; // Current Char Position
+	getmapxy .@mapn$, .@cxn, .@cyn, 1; // Current NPC Position
+			
+	set .@x1, .@cxn - 2;
+	set .@x2, .@cxn + 2;
+	set .@y1, .@cyn - 2;
+	set .@y2, .@cyn + 2;
+	if( .@cx < .@x1 || .@cx > .@x2 || .@cy < .@y1 || .@cy > .@y2 )
+	{
+		mes "Please come closer...";
+		mes "I can't take you out of the battle.";
+		close;
+	}
+
+	npctalk "" + strcharinfo(0) + " is leaving the battlefield";
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	end;
+}
+//============================= Entradas =======================================
+
+prontera,145,189,5	duplicate(PVP_Warper)	Battle Recruiter#1	751
+payon,165,98,6	duplicate(PVP_Warper)	Battle Recruiter#2	751
+morocc,153,97,6	duplicate(PVP_Warper)	Battle Recruiter#3	751
+umbala,139,163,6	duplicate(PVP_Warper)	Battle Recruiter#4	751
+comodo,184,152,6	duplicate(PVP_Warper)	Battle Recruiter#5	751
+niflheim,211,190,7	duplicate(PVP_Warper)	Battle Recruiter#6	751
+aldebaran,135,119,5	duplicate(PVP_Warper)	Battle Recruiter#7	751
+geffen,124,73,4	duplicate(PVP_Warper)	Battle Recruiter#8	751
+yuno,153,193,5	duplicate(PVP_Warper)	Battle Recruiter#9	751
+hugel,102,145,4	duplicate(PVP_Warper)	Battle Recruiter#10	751
+lighthalzen,152,94,6	duplicate(PVP_Warper)	Battle Recruiter#11	751
+einbroch,73,191,1	duplicate(PVP_Warper)	Battle Recruiter#12	751
+einbech,165,130,6	duplicate(PVP_Warper)	Battle Recruiter#13	751
+rachel,113,142,4	duplicate(PVP_Warper)	Battle Recruiter#14	751
+veins,210,119,6	duplicate(PVP_Warper)	Battle Recruiter#15	751
+nameless_n,158,179,6	duplicate(PVP_Warper)	Battle Recruiter#16	751
+louyang,213,109,6	duplicate(PVP_Warper)	Battle Recruiter#17	751
+gonryun,164,120,4	duplicate(PVP_Warper)	Battle Recruiter#18	751
+ayothaya,213,196,3	duplicate(PVP_Warper)	Battle Recruiter#19	751
+moscovia,225,197,3	duplicate(PVP_Warper)	Battle Recruiter#20	751
+xmas,142,133,6	duplicate(PVP_Warper)	Battle Recruiter#21	751
+amatsu,228,234,4	duplicate(PVP_Warper)	Battle Recruiter#22	751
+izlude,121,146,5	duplicate(PVP_Warper)	Battle Recruiter#23	751
+brasilis,194,221,6	duplicate(PVP_Warper)	Battle Recruiter#24	751
+manuk,264,199,6	duplicate(PVP_Warper)	Battle Recruiter#25	751
+splendide,196,153,5	duplicate(PVP_Warper)	Battle Recruiter#26	751
+mid_camp,224,235,4	duplicate(PVP_Warper)	Battle Recruiter#27	751
+new_1-1,58,114,4	duplicate(PVP_Warper)	Battle Recruiter#28	751
+dicastes01,192,191,5	duplicate(PVP_Warper)	Battle Recruiter#29	751
+alberta,120,53,3	duplicate(PVP_Warper)	Battle Recruiter#30	751
+gr_1,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#31	751
+gr_2,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#32	751
+gr_3,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#33	751
+gr_4,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#34	751
+gr_5,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#35	751
+gr_6,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#36	751
+gr_7,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#37	751
+gr_8,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#38	751
+gr_9,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#39	751
+gr_10,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#40	751
+gr_11,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#41	751
+gr_12,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#42	751
+gr_13,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#43	751
+gr_14,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#44	751
+gr_15,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#45	751
+Hyrule,138,190,3	duplicate(PVP_Warper)	Battle Recruiter#46	751
+dewata,195,182,6	duplicate(PVP_Warper)	Battle Recruiter#47	751
+gr_16,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#48	751
+gr_17,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#49	751
+gr_18,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#50	751
+gr_19,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#51	751
+gr_20,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#52	751
+gr_21,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#53	751
+gr_22,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#54	751
+gr_23,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#55	751
+gr_24,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#56	751
+gr_25,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#57	751
+gr_26,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#58	751
+gr_27,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#59	751
+gr_28,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#60	751
+gr_29,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#61	751
+gr_30,61,65,3	duplicate(PVP_Warper)	Battle Recruiter#62	751
+mora,116,112,3	duplicate(PVP_Warper)	Battle Recruiter#63	751
+
+
+//============================= Salidas =======================================
+
+guild_vs1,31,68,5	duplicate(PVP_Warper_Out)	Battle Support#1	413
+guild_vs1,68,31,1	duplicate(PVP_Warper_Out)	Battle Support#2	417
+guild_vs2,35,64,5	duplicate(PVP_Warper_Out)	Battle Support#3	413
+guild_vs2,64,35,1	duplicate(PVP_Warper_Out)	Battle Support#4	417
+guild_vs3,30,69,5	duplicate(PVP_Warper_Out)	Battle Support#5	413
+guild_vs3,69,30,1	duplicate(PVP_Warper_Out)	Battle Support#6	417
+guild_vs4,31,68,5	duplicate(PVP_Warper_Out)	Battle Support#7	413
+guild_vs4,68,31,1	duplicate(PVP_Warper_Out)	Battle Support#8	417
+guild_vs5,31,66,5	duplicate(PVP_Warper_Out)	Battle Support#9	413
+guild_vs5,64,32,1	duplicate(PVP_Warper_Out)	Battle Support#10	417
+2009rwc_03,7,52,5	duplicate(PVP_Warper_Out)	Battle Support#11	417
+2009rwc_03,92,47,3	duplicate(PVP_Warper_Out)	Battle Support#12	413
+
+//============================= Mapflags =======================================
+
+guild_vs1	mapflag	nopenalty
+guild_vs1	mapflag	nosave	SavePoint
+guild_vs1	mapflag	nowarp
+guild_vs1	mapflag	noteleport
+guild_vs1	mapflag	nomemo
+guild_vs1	mapflag	pvp
+guild_vs1	mapflag	loadevent
+guild_vs1	mapflag	noreturn
+guild_vs1	mapflag	nobranch
+guild_vs1	mapflag	pvp_noguild
+
+pvp_n_2-5	mapflag	nopenalty
+pvp_n_2-5	mapflag	nosave	SavePoint
+pvp_n_2-5	mapflag	nowarp
+pvp_n_2-5	mapflag	noteleport
+pvp_n_2-5	mapflag	nomemo
+pvp_n_2-5	mapflag	pvp
+pvp_n_2-5	mapflag	loadevent
+pvp_n_2-5	mapflag	noreturn
+pvp_n_2-5	mapflag	nobranch
+pvp_n_2-5	mapflag	pvp_noguild
+pvp_n_2-5	mapflag	restricted	4
+
+guild_vs3	mapflag	nopenalty
+guild_vs3	mapflag	nosave	SavePoint
+guild_vs3	mapflag	nowarp
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	nomemo
+guild_vs3	mapflag	pvp
+guild_vs3	mapflag	loadevent
+guild_vs3	mapflag	noreturn
+guild_vs3	mapflag	nobranch
+guild_vs3	mapflag	pvp_noguild
+
+pvp_n_1-5	mapflag	nopenalty
+pvp_n_1-5	mapflag	nosave	SavePoint
+pvp_n_1-5	mapflag	nowarp
+pvp_n_1-5	mapflag	noteleport
+pvp_n_1-5	mapflag	nomemo
+pvp_n_1-5	mapflag	pvp
+pvp_n_1-5	mapflag	loadevent
+pvp_n_1-5	mapflag	noreturn
+pvp_n_1-5	mapflag	nobranch
+pvp_n_1-5	mapflag	pvp_noguild
+
+guild_vs2	mapflag	nopenalty
+guild_vs2	mapflag	nosave	SavePoint
+guild_vs2	mapflag	nowarp
+guild_vs2	mapflag	noteleport
+guild_vs2	mapflag	nomemo
+guild_vs2	mapflag	pvp
+guild_vs2	mapflag	loadevent
+guild_vs2	mapflag	noreturn
+guild_vs2	mapflag	nobranch
+guild_vs2	mapflag	pvp_noguild
+guild_vs2	mapflag	restricted	4
+
+guild_vs4	mapflag	nopenalty
+guild_vs4	mapflag	nosave	SavePoint
+guild_vs4	mapflag	nowarp
+guild_vs4	mapflag	noteleport
+guild_vs4	mapflag	nomemo
+guild_vs4	mapflag	gvg
+guild_vs4	mapflag	loadevent
+guild_vs4	mapflag	noreturn
+guild_vs4	mapflag	nobranch
+guild_vs4	mapflag	noicewall
+
+guild_vs5	mapflag	nopenalty
+guild_vs5	mapflag	nosave	SavePoint
+guild_vs5	mapflag	nowarp
+guild_vs5	mapflag	noteleport
+guild_vs5	mapflag	nomemo
+guild_vs5	mapflag	gvg
+guild_vs5	mapflag	loadevent
+guild_vs5	mapflag	noreturn
+guild_vs5	mapflag	nobranch
+guild_vs5	mapflag	gvg_noalliance
+guild_vs5	mapflag	noicewall

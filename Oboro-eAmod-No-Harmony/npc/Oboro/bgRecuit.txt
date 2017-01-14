@@ -1,0 +1,19 @@
+arena_4,144,94,5	script	Broad BG	835,{
+
+	mes "[ ^0257ABBattleground Broad^000000 ]";
+	mes " ";
+	if (Baselevel < 60 || #BROADCASTTICK > gettimetick(2) ) 
+	{
+		mes "Requisitos para enviar un Broad:";
+		mes "Renacido.";
+		mes "Espera hasta que puedas enviar el mensaje después de uno ya anunciado.";
+		close;
+	}
+
+	mes "¿Deseas anunciar BattleGround?. Así se fomenta el uso de BG.";
+	if ( select("Si : No") == 2 ) close;
+
+	set #BROADCASTTICK , gettimetick(2) + 60;
+	announce "[ " +strcharinfo(0) +" ] los invita a participar a BattleGround.",bc_all,0xFF8000;
+	close;
+}

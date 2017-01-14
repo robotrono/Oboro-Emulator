@@ -1,0 +1,268 @@
+prontera,147,171,3	script	San Valentin	856,{
+
+	set .@CANTDIDADCASH, 10000;
+
+	if ( getgmlevel() >= 99 ) {
+		title("San Valentin");
+		mes "Bienvenido GM que desea hacer ??";
+		switch ( select ( " > Resetear Contador : > Ver menu usuario : > Encender Evento : > Apagar Evento : > nada") ) 
+		{
+			case 5: close;
+			case 4:
+				set .eventoActivo, 0;
+				announce "El evento de San Valentin ha terminado",0;
+				break;
+			case 3: 
+				set .eventoActivo, 1;
+				announce "Evento de San Valentin está ahora activado",0;
+				break;
+			case 2: break;
+			case 1: 
+				if (select("Estas seguro de resetear el contador ???? : no mejor no") == 2 )
+					close;
+
+				set $CASHNECESARIOS, 0;
+				dispbottom "Cash recogido reseteado";
+				close;
+
+		}
+		next;
+	}
+
+
+	if ( .eventoActivo == 1 && $CASHNECESARIOS < .@CANTDIDADCASH ) {
+		title("San Valentin");
+		mes " A lograr :" + .@CANTDIDADCASH;
+		mes " Faltante : " + (.@CANTDIDADCASH - $CASHNECESARIOS);
+		next;
+		title("San Valentin");
+		mes "¿Deseas aportar a la causa?";
+		if ( select(" No gracias : Aportar") == 1 ) close;
+
+		mes "con cuanto deseas aportar";
+		input .@Aporte;
+		if ( .@Aporte > .@CANTDIDADCASH - $CASHNECESARIOS )
+			set .@Aporte, .@CANTDIDADCASH - $CASHNECESARIOS;
+		if ( .@Aporte > #CASHPOINTS ) {
+			next;
+			title("San Valentin");
+			mclose "No tienes tanto cashpoint";
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@Aporte;
+		set $CASHNECESARIOS, $CASHNECESARIOS + .@Aporte;
+		close2;
+		if ( $CASHNECESARIOS >= .@CANTDIDADCASH )
+			announce strcharinfo(0)+" ha finalizado la cuenta de San Valentin ahora podrán hacer las quest!!!!!!",0;
+		end;
+	}
+
+	title("San Valentin");
+	mes "¡Hola, cuánto tiempo! :),";
+	mes "Recuerda que este NPC te dará el item en ^D00101Costume^000000, es decir no tendrá efecto, ni se podrá refinar.";
+	close2;
+
+	function Add; 
+	function Chk; 
+	function Slot; 
+	function A_An;
+
+	if(.Shops$ != "") set .@i,1;
+	else {
+		set .@menu$,"";
+		for(set .@i,1; .@i<=getarraysize(.Shops$); set .@i,.@i+1)
+			set .@menu$, .@menu$+.Shops$[.@i]+":";
+		set .@i, select(.@menu$); }
+	dispbottom "Selecciona un item.";
+	callshop "nshop"+.@i,1;
+	npcshopattach "nshop"+.@i;
+	end;
+
+function Add {
+
+	if (getitemname(getarg(1))=="null") 
+	{
+		debugmes "Quest reward #"+getarg(1)+" invalid (skipped)."; 
+		return; 
+	}
+
+	for(set .@n,5; .@n<127; set .@n,.@n+2) 
+	{
+		if (!getarg(.@n,0)) 
+			break;
+
+		if (getitemname(getarg(.@n))=="null") 
+		{
+			debugmes "Quest requirement #"+getarg(.@n)+" invalid (skipped)."; 
+			return; 
+		} 
+
+	}
+
+	for(set .@i,2; .@i<.@n; set .@i,.@i+1)
+		set getd(".q_"+getarg(1)+"["+(.@i-2)+"]"), getarg(.@i);
+
+	npcshopadditem "nshop"+getarg(0),getarg(1),((.ShowZeny)?getarg(3):0);
+	sleep 1;
+	return; 
+}
+
+function Chk {
+
+	if (getarg(0)<getarg(1)) 
+	{ 
+
+		set @qe0,1; 
+		return "^FF0000"; 
+
+	} else 
+		return "^00FF00"; 
+}
+
+function Slot {
+
+	set .@s$,getitemname(getarg(0));
+	switch(.ShowSlot)
+	{
+		case 1: 
+			if (!getitemslots(getarg(0))) 
+				return .@s$;
+		case 2: 
+			if (getiteminfo(getarg(0),11)>0) 
+				return .@s$+" ["+getitemslots(getarg(0))+"]";
+		default: 
+			return .@s$; 
+	} 
+}
+
+function A_An {
+	setarray .@A$[0],"a","e","i","o","u";
+	set .@B$, "_"+getarg(0);
+	for(set .@i,0; .@i<5; set .@i,.@i+1)
+		if (compare(.@B$,"_"+.@A$[.@i])) return "an "+getarg(0);
+	return "a "+getarg(0); }
+
+OnBuyItem:
+
+	set .@q[0],@bought_nameid;
+	copyarray .@q[1],getd(".q_"+@bought_nameid+"[0]"),getarraysize(getd(".q_"+@bought_nameid+"[0]"));
+
+	if (!.@q[1]) 
+	{ 
+		message strcharinfo(0),"An error has occurred."; 
+		end; 
+	}
+
+	title("San Valentin");
+	mes "Premio: ^0055FF"+((.@q[1]>1)?.@q[1]+"x ":"")+Slot(.@q[0])+"^000000";
+	mes "Requerimientos:";
+	if (.@q[2]) 
+		mes " > "+Chk(Zeny,.@q[2])+.@q[2]+" Zeny^000000";
+	if (.@q[3]) 
+		mes " > "+Chk(getd(.Points$[0]),.@q[3])+.@q[3]+" "+.Points$[1]+" ("+getd(.Points$[0])+"/"+.@q[3]+")^000000";
+	if (.@q[4]) 
+		for(set .@i,4; .@i<getarraysize(.@q); set .@i,.@i+2)
+			mes " > "+Chk(countitem(.@q[.@i]),.@q[.@i+1])+((.DisplayID)?"{"+.@q[.@i]+"} ":"")+Slot(.@q[.@i])+" ("+countitem(.@q[.@i])+"/"+.@q[.@i+1]+")^000000";
+
+	next;
+
+	set @qe1, getiteminfo(.@q[0],5); set @qe2, getiteminfo(.@q[0],11);
+	addtimer 1000, strnpcinfo(1)+"::OnEnd";
+	while(1)
+	{
+		switch(select(" ~ Comprar ^0055FF"+getitemname(.@q[0])+"^000000:"+((((@qe1&1) || (@qe1&256) || (@qe1&512)) && @qe2>0 && !@qe6)?" ~ Previsualizar...":"")+": ~ ^777777Cancelar^000000")) {
+			case 1:
+				if (@qe0) { 
+					title("San Valentin");
+					mes "Aún te faltan items para completar la Quest. Vuelve cuanto tengas todo. ^^";
+					close; }
+				if (!checkweight(.@q[0],.@q[1])) {
+					title("San Valentin");
+					mes "^FF0000Necesitas "+(((.@q[1]*getiteminfo(.@q[0],6))+Weight-MaxWeight)/10)+" más de peso para completar el trade.^000000";
+					close; }
+				if (.@q[2]) set Zeny, Zeny-.@q[2];
+				if (.@q[3]) setd .Points$[0], getd(.Points$[0])-.@q[3];
+				if (.@q[4]) for(set .@i,4; .@i<getarraysize(.@q); set .@i,.@i+2)
+					delitem .@q[.@i],.@q[.@i+1];
+				atcommand "@costumeitem " + .@q[0] +" "+ .@q[1] + " 3142";
+				if (.Announce) announce strcharinfo(0)+" ha finalizado la Quest de "+(getitemname(.@q[0]))+".",0;
+				specialeffect2 699;
+				close;
+			case 2:
+				set @qe3, getlook(3); set @qe4, getlook(4); set @qe5, getlook(5);
+				if (@qe1&1) atcommand "@changelook 3 "+@qe2;
+				if (@qe1&256) atcommand "@changelook 1 "+@qe2;
+				if (@qe1&512) atcommand "@changelook 2 "+@qe2;
+				set @qe6,1;
+				break;
+			case 3:
+				close; } }
+OnEnd:
+	if (@qe6) 
+	{ 
+	
+		atcommand "@changelook 3 "+@qe3; 
+		atcommand "@changelook 1 "+@qe4; 
+		atcommand "@changelook 2 "+@qe5; 
+
+	}
+
+	for(set .@i,0; .@i<7; set .@i,.@i+1) 
+		setd "@qe"+.@i,0;
+end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() <= 60 ) end;
+ 		if (@whispervar0$ != "activar") end;
+OnInit:
+// --------------------- Config ---------------------
+// Custom points, if needed: "<variable>","<name to display>"
+	setarray .Points$[0],"#CASHPOINTS","Cash Points";
+
+	set .Announce,1;	// Announce quest completion? (1: yes / 0: no)
+	set .ShowSlot,1;	// Show item slots? (2: all equipment / 1: if slots > 0 / 0: never)
+	set .DisplayID,0;	// Show item IDs? (1: yes / 0: no)
+	set .ShowZeny,0;	// Show Zeny cost, if any? (1: yes / 0: no)
+
+// Shop categories, if needed: "<Shop 1>","<Shop 2>"{,...};
+// Duplicate dummy data for any additional shops (bottom of script).
+// If no categories, use the second line instead (remove //).
+
+	set .Shops$,"n/a";
+
+// Add(<shop number>,<reward ID>,<reward amount>,<Zeny cost>,<point cost>,
+//     <required item ID>,<required item amount>{,...});
+// Shop number corresponds with order above (default is 1).
+// Note: Do NOT use a reward item more than once!
+
+	Add(1,30117,1,0,0,7448,100,7149,10,1034,50,978,5);
+	Add(1,30116,1,0,0,720,100,7441,20,1034,50,978,5);
+	Add(1,30121,1,0,0,7751,50,7166,100,4218,5,981,5);
+	Add(1,30122,1,0,0,1916,5,993,100,729,100,979,5);
+	Add(1,30125,1,0,0,7751,50,7166,100,4218,5,981,5);
+	Add(1,30147,1,0,0,1020,50,7206,100,7157,5,983,5,7829,100);
+	Add(1,30152,1,0,0,7438,5,983,5,982,5,7829,100);
+	Add(1,30159,1,0,0,7047,100,7512,50,982,5,7829,100);
+	Add(1,30153,1,0,0,2254,2,7035,10,4001,5,7751,100,7829,100);
+	Add(1,30163,1,0,0,1039,2,1263,5,4001,5,7751,100,7829,100);
+	Add(1,30160,1,0,0,1039,2,1263,5,4001,5,7751,100,7829,100);
+	Add(1,30235,1,0,0,7206,200,7512,50,7773,200,7211,1);
+	Add(1,30236,1,0,0,7206,200,7512,50,7773,200,5160,1);
+	Add(1,30237,1,0,0,7206,200,7512,50,7773,200,7754,1);
+	Add(1,30239,1,0,0,7206,200,7512,50,7773,200,7513,1);
+	Add(1,30242,1,0,0,7206,200,7512,50,7773,200,7562,1);
+	Add(1,30241,1,0,0,7206,200,7512,50,7773,200,7108,1);
+	Add(1,30240,1,0,0,7206,200,7512,50,7773,200,639,1);
+	Add(1,30245,1,0,0,7206,200,7512,50,7773,200,7799,10);
+	Add(1,30219,1,0,0,539,100,7035,10,7828,100,982,5);
+	Add(1,30218,1,0,0,530,100,7035,10,7828,100,982,5);
+	Add(1,30215,1,0,0,529,100,7035,10,7828,100,982,5);
+	Add(1,30246,1,0,0,7097,100,2201,1,994,5);
+
+// --------------------------------------------------
+	for(set .@i,1; .@i<=getarraysize(.Shops$); set .@i,.@i+1)
+		npcshopdelitem "nshop"+.@i,909;
+	end;
+}
+
+// -------- Dummy data (duplicate as needed) --------
+-	shop	nshop1	-1,909:-1

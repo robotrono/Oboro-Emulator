@@ -1,0 +1,89 @@
+que_qaru02,259,347,3	script	Gangster de Colores	410,{
+	mes "[^000000Gangster Scarf de Colores^000000]";
+	mes "Hola!";
+	mes "Puedo tintarte un Gangster Scarf al color que quieras, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Cuáles son los colores disponibles?",L_colores,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Gangster Scarf de Colores^000000]";
+		mes "^FF000010^000000 White Dyestuff"; //982
+		mes "^FF000010^000000 Black Dyestuff"; //983
+		mes "^FF000050^000000 Red Feather"; //7440
+		mes "^FF000050^000000 Blue Feather"; //7441
+		mes "^FF00001^000000 Gangster Scarf"; //5361
+		close;
+	L_colores:
+		mes "[^000000Gangster Scarf de Colores^000000]";
+		mes "Negro, azul, celeste, dorado, "; 
+		mes "verde, morado y blanco. "; 
+		close;
+
+	L_check:
+		if(countitem(982) < 10) goto L_manque;
+		if(countitem(983) < 10) goto L_manque;
+		if(countitem(7440) < 50) goto L_manque;
+		if(countitem(7441) < 50) goto L_manque;
+		if(countitem(5361) < 1) goto L_manque;
+		mes "[^000000Gangster Scarf de Colores^000000]";
+		mes "De qué color lo quieres?";
+		menu "Negro",negro,"Azul",azul,"Celeste",cian,"Dorado",dorado,"Verde",verde,"Morado",morado,"Blanco",blanco,"He cambiado de opinión",L_partir;
+		
+
+	negro:
+		mes "Elegiste negro, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30002,1;
+		goto todos;
+	azul:
+		mes "Elegiste azul, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30003,1;
+		goto todos;
+	cian:
+		mes "Elegiste celeste, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30004,1;
+		goto todos;
+	dorado:
+		mes "Elegiste dorado, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30005,1;
+		goto todos;
+	verde:
+		mes "Elegiste verde, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30006,1;
+		goto todos;
+	morado:
+		mes "Elegiste morado, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30007,1;
+		goto todos;
+	blanco:
+		mes "Elegiste blanco, estás seguro?";
+		menu "Sí, por favor",-,"No, me equivoqué",L_partir;
+		getitem 30008,1;
+	todos:
+		delitem 982,10;
+		delitem 983,10;
+		delitem 7440,50;
+		delitem 7441,50;
+		delitem 5361,1;
+		close;
+
+	L_manque:
+		mes "[^000000Gangster Scarf de Colores^000000]";
+		mes "Te faltan: ";
+		if(countitem(982) < 10) mes "^FF0000"+(10 - countitem(982)) +"^000000 White Dyestuff";
+		if(countitem(983) < 10) mes "^FF0000"+(10 - countitem(983)) +"^000000 Black Dyestuff";
+		if(countitem(7440) < 50) mes "^FF0000"+(50 - countitem(7440)) +"^000000 Red Feather";
+		if(countitem(7441) < 50) mes "^FF0000"+(50 - countitem(7441)) +"^000000 Blue Feather";
+		if(countitem(5361) < 1) mes "^FF0000"+(1 - countitem(5361)) +"^000000 Gangster Scarf";
+		close;
+
+	L_partir:
+		mes "[^000000Gangster Scarf de Colores^000000]";
+		mes "Buen día";
+		close;
+}

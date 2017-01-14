@@ -1,0 +1,77 @@
+sec_in02,20,20,5	script	Premiador de Woe	722,{
+	mes name$;
+	mes "   ";
+	mes "Bienvenido al premiador de woe";
+	mes "Donde los más valientes guerreros de 2 guilds son premiados";
+	mes "¿Deseas ver las guilds premiadas de esta semana?";
+	if (select("^25BCEF - ^000000 Claro : ^25BCEF - ^000000 No") == 2 ) close;
+	if ( !.InformacionCargada || .InformacionCargada == 0 ) {
+		query_sql("SELECT SUM(`kill_count`) FROM `char_wstats` HAVING SUM(`kill_count`) != 0",.TotalDeKills);
+		query_sql("SELECT `G`.`name`,`C`.`guild_id`, ROUND((((SUM(`CWS`.`kill_count`)-SUM(`CWS`.`death_count`))/"+.TotalDeKills+")*100),2) FROM `char_wstats` AS `CWS` INNER JOIN `char` AS `C` ON `C`.`char_id` = `CWS`.`char_id` INNER JOIN `guild` AS `G` ON `G`.`guild_id` = `C`.`guild_id` GROUP BY `C`.`guild_id` HAVING SUM(`CWS`.`kill_count`) != 0 ORDER BY ROUND((((SUM(`CWS`.`kill_count`)-SUM(`CWS`.`death_count`))/"+.TotalDeKills+")*100),2) DESC", .GuildName$[0], .GuildId[0],.Rendimiento[0]);
+		set .InformacionCargada, 1;
+		next;
+		mes name$;
+		mes "   ";
+		mes "Cargando Información...";
+		next;
+	}
+	next;
+	mes "[ ^0257ABGuild - Rendimiento^000000 ]";
+	mes "    ";
+	for ( set .@i, 0; .@i < getarraysize(.GuildName$); set .@i, .@i + 1 ) {
+		mes "^25BCEF - ^000000" + .GuildName$[.@i] + " ^25BCEF[ "+.Rendimiento[.@i]+"% ]^000000";
+		if ( !.@GuildGanadora ) {
+			set .@GuildGanadora, .GuildId[.@i];
+			set .@RendimientoGuildGanadora, .Rendimiento[.@i];
+		} else {
+			if ( .Rendimiento[.@i] > .@RendimientoGuildGanadora ) {
+				set .@GuildGanadora, .GuildId[.@i];
+				set .@RendimientoGuildGanadora, .Rendimiento[.@i];
+			}
+		}
+	}
+	next;
+	mes name$;
+	mes "   ";
+	mes "Guild's premiadas :";
+	mes "Rendimiento : ^25BCEF "+getguildname(.@GuildGanadora)+" ^000000";
+	mes "Castillo : ^25BCEF "+getguildname(GetCastleData("arug_cas01",1))+" ^000000";
+	if ( getguildmasterid(getcharid(2)) == getcharid(0) && getcharid(2) != 0 && getcharid(2) == .@GuildGanadora && ( !getd("$PREMIADA" + .@GuildGanadora) || getd("$PREMIADA" + .@GuildGanadora) == 0 )) {
+		next;
+		mes name$;
+		mes "Veo que eres el GL de una guild premiada, ¿desear retirar tu premio?";
+		if (select("^25BCEF - ^000000 Claro : ^25BCEF - ^000000 No") == 2 ) close;
+		
+		if ( .@GuildGanadora == GetCastleData("arug_cas01",1) ) {
+			setd "$PREMIADA" + .@GuildGanadora, 1;
+			getitem 7959,6000;	
+			getitem 7539,600; 
+		} else {
+			setd "$PREMIADA" + .@GuildGanadora, 1;
+			getitem 7959,3000;
+			getitem 7539,300;
+		}
+	}
+	close;
+end;
+
+OnRecvCastlemo01:
+	FlagEmblem GetCastleData("arug_cas01",1);
+end;
+
+OnAgitStart:
+OnAgitStart2:
+	if ( gettime(4) != 0 ) end; // Domingo = 0
+
+	query_sql("SELECT `guild_id` FROM `guild`",.@GuildId[0]);
+	for ( set .@i, 0; .@i < getarraysize(.@GuildId); set .@i, .@i + 1 ) {
+		if ( !getd("$PREMIADA" + .@GuildId[.@i]) )
+			continue;
+		else if ( getd("$PREMIADA" + .@GuildId[.@i]) && getd("$PREMIADA" + .@GuildId[.@i]) > 0 ) {
+			setd "$PREMIADA" + .@GuildId[.@i], 0;
+		}
+	}
+	set .InformacionCargada, 0;
+end;
+
+}

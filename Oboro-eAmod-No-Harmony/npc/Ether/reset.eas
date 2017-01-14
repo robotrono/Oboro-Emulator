@@ -1,0 +1,232 @@
+prontera,164,171,4	script	Reset Girl#01::RESETET	504,{
+	mes "[  ^8B008BReset Girl^000000  ]";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Soy la encargada de resetear tus Stats/Skills, elige la opción que más quieras.";
+	next;
+	switch (select(
+			"> Reset de ^0033FFSkills^000000 / ^FF0000Stats^000000",
+			"> ^009900Build Storage^000000")){
+		case 1:
+			mes "[  ^8B008BReset Girl^000000  ]";
+			mes "Los precios son:";
+			mes "Reset Stats: ^8B008B10,000^000000 zeny";
+			mes "Reset Skills: ^8B008B10,000^000000 zeny";
+			mes "Reset Ambos: ^8B008B15,000^000000 zeny";
+			next;
+			switch(select("^0033FFReset Skills:^FF0000Reset Stats:^6600FFReset Ambos^000000:Salir")) {
+				case 1:
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "     ";
+					if (Zeny < 10000) {
+						mes "Lo siento, no tienes suficiente Zeny.";
+						close;
+					}
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
+					set Zeny,zeny-10000;
+					resetskill;
+					specialeffect2 223;
+					specialeffect 223;
+					close;
+				case 2:
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "     ";
+					if (Zeny < 10000) {
+						mes "Lo siento, no tienes suficiente Zeny.";
+						close;
+					}
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
+					set Zeny,zeny-10000;
+					resetstatus;
+					specialeffect2 223;
+					specialeffect 223;
+					close;
+				case 3:
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "     ";
+					if (Zeny < 15000) {
+						mes "Lo siento, no tienes suficiente Zeny.";
+						close;
+					}
+					mes "¡Reset listo! Vuelve cuando quieras y disfruta de nuestro server.";
+					set Zeny,zeny-15000;
+					resetskill;
+					resetstatus;
+					specialeffect2 223;
+					specialeffect 223;
+					close;
+				case 4:
+					close;
+			}
+		Main:
+		case 2:
+			if ( Upper == 1){ set .@Spts,1325;} else { set .@Spts,1273; }
+			mes "[  ^8B008BReset Girl^000000  ]";
+			mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+			mes "En esta opción puedes guardar o cargar tus builds de stats para un futuro. Elige una opción:";
+			next;
+			switch (select(
+				"> Quiero ^0066FFGuardar mi build^000000",
+				"> Quiero ^CC0000Cargar una build^000000",
+				"> ^993366Información^000000")){
+			case 1:
+				query_sql "SELECT COUNT(*) FROM build_storage WHERE char_id = "+getcharid(0),.@Cid;
+				query_sql "SELECT id,nombre FROM build_storage WHERE char_id = "+getcharid(0),.@id,.@Build_N$; 
+				if ( .@Cid >= 5)
+				{
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "Oh, parece que ya tienes ocupados todos los slots de Builds.";
+					next;
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "¿Qué build quieres sustituir o actualizar?";
+					next;
+					set .Num,0;
+					set .@Menu$,"";
+					for( set .@i, 0; .@i <= 4; set .@i, .@i + 1 )
+					{
+						set .Num,.Num + 1;
+						if ( .@Build_N$[.@i] == "" ) 
+						{
+							set .@Menu$,.@Menu$ + "Slot "+.Num+" ^9933FF[^000000 ^0033FFSin build^000000 ^9933FF]^000000:";
+						} else {
+							set .@Menu$,.@Menu$ + "Slot "+.Num+" ^9933FF[^000000 ^0033FF"+.@Build_N$[.@i]+"^000000 ^9933FF]^000000:";
+						}
+					}
+					set .@j,select(.@Menu$) - 1;
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "Perfecto procederemos a guardar tu build exactamente como está en tu personaje.";
+					next;
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "Pero primero coloca una descripción para tu build actual.";
+					input .@desc$;
+					query_sql "UPDATE build_storage SET b_vit = "+readparam(bVit)+", b_dex = "+readparam(bDex)+", b_agi = "+readparam(bAgi)+", b_str = "+readparam(bStr)+", b_int = "+readparam(bInt)+", b_luk = "+readparam(bLuk)+",  nombre = '"+escape_sql(.@desc$)+"'  WHERE char_id = "+getcharid(0)+" AND id = "+.@id[.@j];
+					mes "       ";
+					mes "^009900Build Guardada con éxito^000000";
+					next;
+					goto Main;
+				}
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "Perfecto procederemos a guardar tu build exactamente como está en tu personaje.";
+				next;
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "Pero primero coloca una descripción para tu build actual.";
+				input .@desc$;
+				query_sql "INSERT INTO build_storage SET char_id = "+getcharid(0)+", nombre = '"+escape_sql(.@desc$)+"', b_vit = "+readparam(bVit)+", b_dex = "+readparam(bDex)+", b_agi = "+readparam(bAgi)+", b_str = "+readparam(bStr)+", b_int = "+readparam(bInt)+", b_luk = "+readparam(bLuk);
+				mes "       ";
+				mes "^009900¡Build Guardada con éxito!^000000";
+				next;
+				goto Main;
+			case 2:
+				query_sql "SELECT nombre,b_vit,b_dex,b_agi,b_str,b_int,b_luk FROM build_storage WHERE char_id = '"+getcharid(0)+"'",.@Build_N$,.@vit,.@dex,.@agi,.@str,.@int,.@luk;
+				if ( StatusPoint != .@Spts )
+				{
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "Oh disculpa, no te puedo dejar usar una build cargada si no tienes exactamente ^FF0000"+.@Spts+" ^0033FFStatus Points^000000";
+					emotion e_swt;
+					next;
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "¿Quieres que te de un reset de stats por ^FF000010,000^000000 zeny?";
+					next;
+					if (select("^009900Claro.^000000:Mejor en otro momento.") == 2) 
+					{
+						mes "[  ^8B008BReset Girl^000000  ]";
+						mes "Bien, entonces regresa cuando tengas ^FF0000"+.@Spts+" ^0033FFStatus Points^000000.";
+						close;
+					}
+					if (Zeny < 10000) 
+					{
+						mes "[  ^8B008BReset Girl^000000  ]";
+						mes "Lo siento pero no tienes los ^FF000010,000^000000 zeny.";
+						close;
+					}
+					set Zeny,zeny-10000;
+					resetstatus;
+				}
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "Selecciona una de tus Builds:";
+				next;
+				set .Num,0;
+				set .@Menu$,"";
+				for( set .@i, 0; .@i <= 4; set .@i, .@i + 1 )
+				{
+					set .Num,.Num + 1;
+					if ( .@Build_N$[.@i] == "" ) 
+					{
+						set .@Menu$,.@Menu$ + "Slot "+.Num+" ^9933FF[^000000 ^0033FFSin build^000000 ^9933FF]^000000:";
+					} else {
+						set .@Menu$,.@Menu$ + "Slot "+.Num+" ^9933FF[^000000 ^0033FF"+.@Build_N$[.@i]+"^000000 ^9933FF]^000000:";
+					}
+				} 
+				set .@j,select(.@Menu$) - 1;
+				if ( .@Build_N$[.@j] == "" )
+				{
+					mes "[  ^8B008BReset Girl^000000  ]";
+					mes "No tienes una build en este slot.";
+					next;
+					goto Main;
+				}
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "^FF0000Build Info:^000000";
+				mes "^0033FF"+.@Build_N$[.@j]+"^000000";
+				mes "Str: ^9933FF"+.@str[.@j]+"^000000  Agi:  ^9933FF"+.@agi[.@j]+"^000000  Vit:  ^9933FF"+.@vit[.@j]+"^000000";
+				mes "Int: ^9933FF"+.@int[.@j]+"^000000  Dex:  ^9933FF"+.@dex[.@j]+"^000000  Luk:  ^9933FF"+.@luk[.@j]+"^000000";
+				next;
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "¿Estás seguro/a de cargar esa build en tu personaje?";
+				next;
+				if (select("^009900Si, continuar.^000000:Mejor déjame seleccionar otra.") == 2) 
+				{
+						mes "[  ^8B008BReset Girl^000000  ]";
+						mes "Bien, Como tú gustes. Tómate tu tiempo.";
+						emotion e_ok;
+						next;
+						goto Main;
+				} 
+				resetstatus; // Just in case
+				specialeffect2 223;
+				specialeffect 223;
+				for( set .@i, 1; .@i < .@vit[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bVit;
+				}
+				for( set .@i, 1; .@i < .@dex[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bDex;
+				}
+				for( set .@i, 1; .@i < .@agi[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bAgi;
+				}
+				for( set .@i, 1; .@i < .@str[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bStr;
+				}
+				for( set .@i, 1; .@i < .@int[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bInt;
+				}
+				for( set .@i, 1; .@i < .@luk[.@j]; set .@i, .@i + 1 )
+				{
+					statusup bLuk;
+				}
+				close;
+			case 3:
+				mes "[  ^8B008BReset Girl^000000  ]";
+				mes "Este sistema guardará ^0033FF5 Builds para cada personaje^000000, las cuales las puedes actualizar y crear cuando tu lo desees.";
+				close;
+			}
+	}
+	
+	OnInit:
+	//debugmes "[ Reset NPC ] Revisando/Instalando database";
+	callfunc "ResetDatabase";
+	end;
+}
+
+function	script	ResetDatabase	{
+	query_sql "CREATE TABLE IF NOT EXISTS `build_storage` (`id` int(11) NOT NULL auto_increment,`nombre` varchar(30) NOT NULL default '',`char_id` int(11) unsigned NOT NULL,`b_str` smallint(4) unsigned NOT NULL default '0',`b_agi` smallint(4) unsigned NOT NULL default '0',`b_vit` smallint(4) unsigned NOT NULL default '0',`b_int` smallint(4) unsigned NOT NULL default '0',`b_dex` smallint(4) unsigned NOT NULL default '0',`b_luk` smallint(4) unsigned NOT NULL default '0',PRIMARY KEY  (`id`)) ENGINE=MyISAM";
+	//debugmes "[ Reset NPC ] SQL database Lista";
+	return;
+}
+
+//GuildRoom
+prt_are02,153,160,3	duplicate(RESETET)	Reset Girl#SW31	504

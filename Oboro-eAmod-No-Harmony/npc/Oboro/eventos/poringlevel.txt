@@ -1,0 +1,40 @@
+/*[================================================] Script Creado Por iSaac para mitology Ragnarok Online [================================================]*/
+
+-	script	Poring	-1,{
+
+	OnWhisperGlobal:
+		if ( getgmlevel() < 90 ) end; 
+		if ( @whispervar0$ != "activar" ) end;
+	OnClock1230:
+	OnClock1830:
+	OnClock0000:
+	OnClock0630:
+		announce "[ " +  name2$ + " ] : Evento del Poring Feliz comenzará en 30 segundos.",0;
+		sleep2 6000;
+			announce "[ " +  name2$ + " ] : Si quieres participar ve al dungeon de San Jose",0;
+		sleep2 30000;
+			announce "[ " +  name2$ + " ] : El evento De leveo de porings ha comenzado",0;
+			monster "aev_fild01",113,56,name2$+"lvl.Poring",1847,200,"Poring::PoringDeath";
+		sleep2 30000;
+			announce "[ " +  name2$ + " ] : La segunda ronda comenzará en 30 segundos.",0;
+		sleep2 30000;
+			monster "aev_fild01",113,56,name2$+"lvl.Poring",1847,200,"Poring::PoringDeath";
+		sleep2 30000;
+			announce "[ " +  name2$ + " ] : La tercera y última ronda comenzará en 30 segundos.",0;
+		sleep2 30000;
+			monster "aev_fild01",113,56,name2$+"lvl.Poring",1847,200,"Poring::PoringDeath";
+			announce "[ " +  name2$ + " ] : Gracias por asistir al evento, recuerda votar por el server.",0;
+		sleep2 120000;
+			killmonsterall "aev_fild01",2;
+	end;
+
+	PoringDeath:
+		switch( rand(4) )	{
+			case 1: dispbottom "Vota por Steady Ragnarok Online"; break;
+			case 2: dispbottom "www.SteadyRO.com !!! invita a tus amigos a jugar"; break;
+			case 3: dispbottom "Síguenos en Facebook"; break;
+			case 4: dispbottom "Recuerda reportar cualquier bug"; break;
+			}
+		end;
+	end;
+}

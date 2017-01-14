@@ -1,0 +1,39 @@
+ra_temple,66,139,6	script	Koneko Hat	496,{
+	mes "[^000000Koneko Hat^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Koneko Hat, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Koneko Hat^000000]";
+		mes "^FF0000100^000000 Black Cat Doll"; //7206
+		mes "^FF00001^000000 White Dyestuff"; //982
+		mes "^0000FF5000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(7206) < 100) goto L_manque;
+		if(countitem(982) < 1) goto L_manque;
+		if(Zeny < 5000000) goto L_manque;
+		mes "[^000000Koneko Hat^000000]";
+		mes "Aquí está tu Koneko Hat";
+		delitem 7206,100;
+		delitem 982,1;
+		set Zeny, Zeny - 5000000;
+		getitem 5372,1;
+		close;
+
+	L_manque:
+		mes "[^000000Koneko Hat^000000]";
+		mes "Te faltan: ";
+		if(countitem(7206) < 100) mes "^FF0000"+(100 - countitem(7206)) +"^000000 Black Cat Doll";
+		if(countitem(982) < 1) mes "^FF0000"+(1 - countitem(982)) +"^000000 White Dyestuff";
+		if(Zeny < 5000000) mes "^0000FF"+(5000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Koneko Hat^000000]";
+		mes "Buen día";
+		close;
+}

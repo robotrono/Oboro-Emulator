@@ -1,0 +1,36 @@
+make[1]: Entering directory `/root/new/3rdparty/mt19937ar'
+gcc -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK  -L/usr/lib  -I../common -I/usr/include -c -o mt19937ar.o mt19937ar.c
+make[1]: Leaving directory `/root/new/3rdparty/mt19937ar'
+which: no svnversion in (/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin)
+make[1]: Entering directory `/root/new/src/common'
+mkdir obj_all
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/core.o core.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/socket.o socket.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/harmonycore.o harmonycore.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/timer.o timer.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/db.o db.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/plugins.o plugins.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/lock.o lock.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/nullpo.o nullpo.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/malloc.o malloc.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/showmsg.o showmsg.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/strlib.o strlib.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/utils.o utils.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/grfio.o grfio.c
+grfio.c:100: warning: ‘grf_shuffle_enc’ defined but not used
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/mapindex.o mapindex.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/ers.o ers.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/md5calc.o md5calc.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/random.o random.c
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar  -L/usr/lib  -I../common -I/usr/include -c -o obj_all/des.o des.c
+mkdir obj_sql
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I/usr/include/mysql  -I../common -I/usr/include -c -o obj_sql/sql.o sql.c
+make[1]: Leaving directory `/root/new/src/common'
+make[1]: Entering directory `/root/new/src/login'
+test -d obj_sql || mkdir obj_sql
+gcc -DHAVE_CONFIG_H -g -O2 -pipe -ffast-math -Wall -Wno-sign-compare -Wno-unused-parameter -Wno-pointer-sign -Wno-switch -fno-strict-aliasing -ggdb -DDEBUG -DHAVE_MONOTONIC_CLOCK -I../../3rdparty/mt19937ar -DWITH_SQL -I/usr/include/mysql  -I../common -I/usr/include -c -o obj_sql/login.o login.c
+login.c: In function ‘check_mac_banned’:
+login.c:1909: error: ‘AccountDB’ has no member named ‘is_mac_banned’
+make[1]: *** [obj_sql/login.o] Error 1
+make[1]: Leaving directory `/root/new/src/login'
+make: *** [login_sql] Error 2

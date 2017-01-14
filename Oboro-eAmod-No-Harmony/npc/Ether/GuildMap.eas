@@ -1,0 +1,160 @@
+prontera,147,174,5	script	Guild Guard#01::GRooM	459,{
+	if (getgmlevel() == 100 ) {
+		mes "[ ^AA3000Menú Administrador^000000 ]";
+		mes "   ";
+		if ( select ( " >^AA3000 Menu GM^000000 : >^AA3000 Menu User^000000  ") == 1 ) {
+			do {
+				set .@loop , 1;
+				mes "Selecciona el slot que quieras editar:";
+				set .Num,0;
+				set .@Menu$,"";
+				for( set .@i, 1; .@i <= 30; set .@i, .@i + 1 ) {
+					if ( !getd("$GROOM" + .@i) )
+						set .@Menu$,.@Menu$ + "Slot "+(.@i)+" [ ^1CBC81 Disponible ^000000 ]:";
+					else if ( getd("$GROOM" + .@i) && !getd("$GROOMB" + .@i))
+						set .@Menu$,.@Menu$ + "Slot "+(.@i)+" [ ^1CBC81 "+GetGuildName(getd("$GROOM" + .@i))+"^000000 ]:";
+					else if ( getd("$GROOM" + .@i) && getd("$GROOMB" + .@i))
+						set .@Menu$,.@Menu$ + "Slot "+(.@i)+" [ ^1CBC81 "+GetGuildName(getd("$GROOM" + .@i))+"^000000 ][ ^1CBC81 "+GetGuildName(getd("$GROOMB" + .@i))+"^000000]:";
+				}
+		
+				set .@j , select(.@Menu$);
+				mes "¿Qué quieres hacer con el slot "+.@j+"?";
+				next;
+				switch (select( "> Quiero ^0066FFEliminar una Guild^000000","> Quiero ^CC0000Agregar una Guild^000000") ) {
+				case 1:  setd "$GROOM" + .@j , 0; setd "$GROOMB" + .@j , 0; break;
+				case 2:
+					do {
+						mes "[ ^AA3000Menú Administrador^000000 ]";
+						mes "   ";
+						if ( getd("$GROOM" + .@j) != 0 ) {
+							if ( getd("$GROOM" + .@j) != 0 && !getd("$GROOMB" + .@j) ) {
+								mes "Deseas agregar una guild MB ??";
+								if ( select ( "> ^0066FFSi^000000","> ^CC0000No^000000") == 2 )close;
+								mes "Coloca el ID de la guild que quieres agregar a este slot.";
+								input .@guildMB;
+								next;
+								mes "[ ^AA3000Menú Administrador^000000 ]";
+								if ( GetGuildName(.@guildMB) == "No existe" ) {
+									mes "La guild que ha ingresado no existe. Vuélvalo a intentar.";
+									mes "guild : " + GetGuildName(.@guild);
+									set .@opt , 0;
+									next;
+									break;
+								}
+								for( set .@i, 1; .@i <= 30; set .@i, .@i + 1 ) {
+									if ( getd("$GROOMB" + .@i) && getd("$GROOMB" + .@i) == .@guild ) {
+										mes "Ya esta guild tiene un cuarto, no le puedes asignar otro";
+										close;
+									}
+								}
+
+								setd "$GROOMB" + .@j , .@guildMB;
+								close;
+							}
+
+							mes " Ya hay una guild registrada aqui, primero eliminala";
+							close;
+						}
+						mes "Coloca el ID de la guild que quieres agregar a este slot.";
+						input .@guild;
+						next;
+						mes "[ ^AA3000Menú Administrador^000000 ]";
+						mes "   ";
+						if ( GetGuildName(.@guild) == "null" ) {
+							mes "La guild que ha ingresado no existe. Vuélvalo a intentar.";
+							mes "guild : " + GetGuildName(.@guild);
+							set .@opt , 0;
+							next;
+							break;
+						}
+						for( set .@i, 1; .@i <= 30; set .@i, .@i + 1 ) {
+							if ( getd("$GROOM" + .@i) && getd("$GROOM" + .@i) == .@guild ) {
+								mes "Ya esta guild tiene un cuarto, no le puedes asignar otro";
+								close;
+							}
+						}
+						mes "Quieres agregar ^9933FF[^000000 ^0033FF"+GetGuildName(.@guild)+"^000000 ^9933FF]^000000";
+						next;
+						if ( select ( "> ^0066FFContinuar^000000","> ^CC0000Regresar^000000") == 1 ) {
+							mes "[ ^AA3000Menú Administrador^000000 ]";
+							mes "   ";
+							setd "$GROOM" + .@j , .@guild;
+							mes "Guild: ^0033FF"+GetGuildName(.@guild)+"^000000";
+							mes "Asignada al Slot [ ^FF0000"+.@j+"^000000 ]";
+							set .@opt , 0;
+							next;
+							break;
+						} else					
+							set .@opt , 1;
+					} while ( .@opt == 1 ); break;
+				}
+			} while ( .@loop );
+		} next;
+	}
+
+	for( set .@i , 0; .@i <= 30; set .@i , .@i + 1 ) {
+		if ( ( getd( "$GROOM" + .@i ) && getcharid(2) == getd( "$GROOM" + .@i ) ) || ( getd( "$GROOMB" + .@i ) && getcharid(2) == getd( "$GROOMB" + .@i ) ) ) {
+			mes "[ ^AA3000Guild Guard^000000 ]";
+			mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+			mes "Veo que tu guild tiene la casa # " + .@i;
+			mes "¿Quieres que te lleve a tu ^FF3300Guild Room^000000?";
+			emotion e_pif;
+			next; 
+			if ( select("> ^0066FFSí, gracias.^000000","> ^CC0000Mejor en otro momento.^000000") == 2 ) close; 		
+			close2;
+			warp "gr_"+.@i+"",56,61;
+			end;
+
+		} 
+	}
+
+	mes "[ ^AA3000Guild Guard^000000 ]";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "¿En qué puedo ayudarte?";
+	emotion e_dots;
+	next;
+	switch (select("> ^0066FF¿Quién eres?^000000","> ^CC0000Uhm, nada...^000000") ) {
+		case 1:
+			mes "[ ^AA3000Guild Guard^000000 ]";
+			mes "Soy el guardián de los ^FF3300Guild Rooms^000000 de xRO. Unas salas creadas por el Staff exclusivas para nuestro servidor.";
+			next;
+			mes "[ ^AA3000Guild Guard^000000 ]";
+			mes "Mi función es llevar a los miembros de guilds registradas a sus salas de guild. Pero no todos pueden acceder a este sistema único, antes de registrarte tienes que cumplir una serie de requisitos.";
+			next;
+			mes "[ ^AA3000Guild Guard^000000 ]";
+			mes "> Tener ^0033FFmínimo 20 miembros^000000.";
+			mes "> Estar ^0033FFactivos en WoE o MVP^000000.";
+			mes "> Ser una guild ^0033FFconsolidada y seria con futuro^0033FF.";
+			emotion e_pif;
+			next;
+			mes "[ ^AA3000Guild Guard^000000 ]";
+			mes "Si cumples con los requisitos contacta con un ^0033FFmiembro del Staff^000000 para que te activen tu ^FF3300Guild Room^000000 y puedas disfrutar de sus ventajas.";
+			break;
+		case 2:
+			emotion e_an;
+				break;
+	} close;
+}
+
+//Salas
+amatsu,234,234,3	duplicate(GRooM)	Guild Guard#02	459
+gonryun,163,129,3	duplicate(GRooM)	Guild Guard#03	459
+umbala,150,166,3	duplicate(GRooM)	Guild Guard#04	459
+rachel,115,144,5	duplicate(GRooM)	Guild Guard#05	459
+izlude,135,152,3	duplicate(GRooM)	Guild Guard#06	459
+aldebaran,135,114,6	duplicate(GRooM)	Guild Guard#07	459
+xmas,149,136,3	duplicate(GRooM)	Guild Guard#08	459
+ayothaya,218,189,3	duplicate(GRooM)	Guild Guard#09	459
+hugel,102,153,3	duplicate(GRooM)	Guild Guard#10	459
+moscovia,218,204,6	duplicate(GRooM)	Guild Guard#11	459
+dicastes01,204,195,3	duplicate(GRooM)	Guild Guard#12	459
+brasilis,192,226,6	duplicate(GRooM)	Guild Guard#13	459
+splendide,207,156,3	duplicate(GRooM)	Guild Guard#14	459
+mid_camp,224,241,3	duplicate(GRooM)	Guild Guard#15	459
+manuk,262,203,6	duplicate(GRooM)	Guild Guard#17	459
+lighthalzen,151,91,6	duplicate(GRooM)	Guild Guard#18	459
+louyang,224,104,3	duplicate(GRooM)	Guild Guard#19	459
+alberta,123,59,3	duplicate(GRooM)	Guild Guard#20	459
+yuno,162,196,3	duplicate(GRooM)	Guild Guard#21	459
+dewata,203,186,3	duplicate(GRooM)	Guild Guard#22	459
+veins,206,134,6	duplicate(GRooM)	Guild Guard#23	459
