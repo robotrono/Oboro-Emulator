@@ -1,7 +1,7 @@
-﻿Build started 25/11/2016 04:54:17 p.m..
-     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\login-server_sql.vcxproj" on node 3 (build target(s)).
+﻿Build started 19/01/2017 08:42:25 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-eAmod-Harmony\vcproj-10\login-server_sql.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Touching "login-server_sql\Release\login-server_sql.unsuccessfulbuild".
+         Creating "login-server_sql\Release\login-server_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\src\common /I..\3rdparty\msinttypes\include /Zi /nologo /W3 /WX- /MP /O2 /Oy- /GL /D WIN32 /D NDEBUG /D WITH_SQL /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"login-server_sql\Release\\" /Fd"login-server_sql\Release\vc100.pdb" /Gd /TC /wd4100 /wd4800 /wd4996 /FIconfig.vc.h /analyze- /errorReport:prompt ..\src\login\account_sql.c ..\src\login\ipban_sql.c ..\src\login\login.c ..\src\common\harmonycore.c ..\src\login\loginlog_sql.c
          account_sql.c
@@ -15,18 +15,18 @@
          "login-server_sql\Release\login.obj"
          "login-server_sql\Release\harmonycore.obj"
          "login-server_sql\Release\loginlog_sql.obj"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common\Release\common.lib"
-         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-eAmod-Harmony\vcproj-10\common\Release\common.lib"
+         "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-eAmod-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
          Generating code
          Finished generating code
-         login-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\..\login-server_sql.exe
+         login-server_sql.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-eAmod-Harmony\vcproj-10\..\login-server_sql.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\login-server_sql.exe;#1" /manifest "login-server_sql\Release\login-server_sql.exe.intermediate.manifest"
        FinalizeBuildStatus:
          Deleting file "login-server_sql\Release\login-server_sql.unsuccessfulbuild".
          Touching "login-server_sql\Release\login-server_sql.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-Emulator-Harmony\vcproj-10\login-server_sql.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-eAmod-Harmony\vcproj-10\login-server_sql.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.61
+Time Elapsed 00:00:03.59

@@ -12388,6 +12388,97 @@ ACMD_FUNC(dropat)
 }
 
 
+/*==========================================
+* @allchat by [rootKid]
+* Makes all players, except the invoker, send out a desired message
+* eg. @allchat blahblah
+*------------------------------------------*/
+ACMD_FUNC(allchat) {
+	struct map_session_data* iter_sd;
+	struct s_mapiterator* iter;
+	
+	char tempmes[200];
+	iter = mapit_getallusers();
+	nullpo_retr(-1, sd);
+	
+	memset(tempmes, '\0', sizeof(tempmes));
+	memset(atcmd_output, '\0', sizeof(atcmd_output));
+	
+	if (!message || !*message || sscanf(message, "%199[^\n]", tempmes) < 0) {
+		clif_displaymessage(fd, "Please, enter a message (usage: @me <message>).");
+		return -1;
+	}
+	
+	for (iter_sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); iter_sd = (TBL_PC*)mapit_next(iter))
+		if (iter_sd != sd){	//Triggers on all players except the one who initiates it.
+		sprintf(atcmd_output, "%s : %s", iter_sd->status.name, tempmes);	// *%s %s*
+		clif_disp_overhead(&iter_sd->bl, atcmd_output);
+		}
+	mapit_free(iter);
+	return 0;
+}
+
+/*==========================================
+* @emo by [rootKid]
+* Makes invoker send out an emote
+* @emo 3
+*------------------------------------------*/
+ACMD_FUNC(emo) {
+	if (!message || !*message) {
+		clif_displaymessage(fd, "Usage: @emo 1-81");
+	return -1;
+   }
+   clif_emotion(&sd->bl, atoi(message));
+   return 0;
+}
+
+/*==========================================
+* @allemo by [rootKid]
+* Makes all players, except the invoker, send out a desired emote
+* eg. @allemo 1
+*------------------------------------------*/
+ACMD_FUNC(allemo) {
+	struct map_session_data* iter_sd;
+	struct s_mapiterator* iter;	
+	iter = mapit_getallusers();
+	
+	if (!message || !*message) {
+		clif_displaymessage(fd, "Usage: @emo 1-81");
+	return -1;
+   }
+   
+   for (iter_sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); iter_sd = (TBL_PC*)mapit_next(iter))
+		if (iter_sd != sd){	//Triggers on all players except the one who initiates it.
+			clif_emotion(&iter_sd->bl, atoi(message));
+	}
+	mapit_free(iter);
+   return 0;
+}
+
+/*==========================================
+* @alleffect by [rootKid]
+* Makes all players, except the invoker, send out a desired special effect
+* eg. @alleffect 89
+*------------------------------------------*/
+ACMD_FUNC(alleffect) {
+	struct map_session_data* iter_sd;
+	struct s_mapiterator* iter;
+	int type = 0, flag = 0;
+	iter = mapit_getallusers();
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message || sscanf(message, "%d", &type) < 1) {
+		clif_displaymessage(fd, "Please, enter an effect number (usage: @effect <effect number>).");
+		return -1;
+	}
+	
+	for (iter_sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); iter_sd = (TBL_PC*)mapit_next(iter))
+		if (iter_sd != sd){	//Triggers on all players except the one who initiates it.
+			clif_specialeffect(&iter_sd->bl, type, (send_target)flag);
+	}
+	mapit_free(iter);
+	return 0;
+}
 
 /* ============================================== ISAAC MOD'S  ============================================== */
  
