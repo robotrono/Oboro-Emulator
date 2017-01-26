@@ -1,0 +1,11 @@
+-	script	MNH	-1,{
+end;
+
+OnPCLoginEvent:
+	
+	if ( getgmlevel() > 10 )
+		atcommand "@hide";
+
+	//set name$ , "[ ^0257ABEasyRO^000000 ]";
+	//set name2$ , "[ EasyRO ]";
+}

@@ -1,0 +1,130 @@
+prontera,123,198,5	script	Monster Wiki	439,{
+if (.WikiStatus && .Answer$ != "")
+{
+	if( getgmlevel() >= 80 ) 
+		mes "Answer : ^FF0000"+.Answer$+"^000000";
+	switch( .Mode )
+	{
+		Case 0:
+			mes "Digita el ^FF0000NOMBRE^000000 del monstruo.";
+			mes "^0000FFNota^000000 : Es ^FF0000Case-Sensitive^000000";
+		break;
+		
+		Case 1:	
+			mes "Digita el ^FF0000NIVEL^000000 del monstruo.";
+			mes "Ejemplo. ^0000FF10 / 20 / 35 / 75^000000";
+		break;
+			
+		Case 2:
+			mes "Digita el ^FF0000TAMAÑO^000000 del Mounstruo en minúscula.";
+			mes "Opciones: ^0000FFpequeño | Mediano | grande^000000";
+		break;
+		
+		Case 3:
+			mes "Digita la ^FF0000Raza^000000 del mounstruo";
+			mes "^FF0000Lista de \"Razas\"^000000";
+			for( .@i = 0; .@i < getarraysize( .Race$ ); .@i++ )
+			mes " [ > ] ^0000FF"+.Race$[.@i]+"^000000";
+		break;
+			
+		Case 4:	
+			mes "Digita el ^FF0000ELEMENTO^000000 del mounstruo.";
+			mes "^0000FFNota^000000 : Es ^FF0000Case-Sensitive^000000";
+			mes "^FF0000Elementos Disp:^000000";
+			for( set .@i,0; .@i < getarraysize( .Element$ ); set .@i,.@i + 1 )
+				mes " [ > ] ^0000FF"+.Element$[.@i]+"^000000";
+		break;
+	}
+	
+	input @Guess$;
+	
+	if( .MonsterID == 0 || @Guess$ != .Answer$ )
+		mclose "Erroneo! o muy tarde.";
+	
+	mes "^FF0000Correcto^000000 !! Felicidades.";
+	stopnpctimer;
+	getitem 7539, 6;
+	close2;
+		setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+		announce "[ "+strcharinfo(0)+" ] . puso la respueta correcta [ "+.Answer$+" ]",bc_npc,0xED1ADC;
+		.MonsterID = 0;
+		.Answer$ = "";
+		doevent strnpcinfo(0)+"::OnStart";
+	end;
+} else {
+	if ( .WikiStatus )
+		dispbottom "[Monster Wiki]: Esta por iniciar";
+	else
+		dispbottom "[Monster Wiki]: No hay evento aun";
+	end;
+}
+
+OnStart:
+	sleep2 10000;
+	.Round++;
+	if( .Round > 5 )
+	{
+		mapannounce "prontera","[Monster Wiki Event] ha terminado, gracias por participar.",bc_map,0x7766EE;
+		.WikiStatus = 0;
+		sleep2 5000;
+		setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+	} else {
+		npctalk "Ronda [ "+.Round+" ] empezara en 5 segundos.";
+		sleep2 5000;
+		do
+		{
+			.MonsterID = rand( 1001,2380 );
+		} while( getmonsterinfo( .MonsterID,0 ) == "null" || getmonsterinfo( .MonsterID,0 ) == "" || getmonsterinfo( .MonsterID,1 ) == -1 );
+		.Mode = rand(5);
+		switch( .Mode )
+		{
+			Case 0:	.Answer$ = getmonsterinfo( .MonsterID,0 );	break;	// Name
+			Case 1:	.Answer$ = getmonsterinfo( .MonsterID,1 );	break;	// Level
+			Case 2:	.Answer$ = .Size$[ getmonsterinfo( .MonsterID,18 ) ];	break;	// Size
+			Case 3:	.Answer$ = .Race$[ getmonsterinfo( .MonsterID,19 ) ];	break;	// Race
+			Case 4:	.Answer$ = .Element$[ getmonsterinfo( .MonsterID,20 ) ];	break;	// Element
+		}
+		
+		setnpcdisplay( strnpcinfo(0),.MonsterID );
+		npctalk "Click Para ver la pregunta de esta ronda.";
+		initnpctimer;
+	}
+end;
+
+OnTimer10000:
+	npctalk "20 mas...";
+end;
+
+OnTimer20000:
+	npctalk "10 segundos y termina la ronda...";
+end;
+
+OnTimer30000:
+	mapannounce .Map$,"Nadie ha acertatdo!.",bc_map,0x00FF00;
+	donpcevent strnpcinfo(0)+"::OnStart";
+	set .MonsterID,0;
+	stopnpctimer;
+end;
+
+OnInit:
+	setarray .Size$[0],"pequeño","mediano","grande";
+	setarray .Race$[0],"Sin Forma","No-Muerto","Bruto","Planta","Insecto","Pescado","Demonio","Semi-Humano","Angel","Dragon";
+	setarray .Element$[0],"Neutral","Agua","Tierra","Fuego","Viento","Veneno","Santo","Oscuro","Espiritu","No-Muerto";
+end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() >= 60 ) 
+	{
+		if (@whispervar0$ == "activar")
+		{
+			.Round = 0;
+			.WikiStatus = 1;
+			announce "[Monster Wiki]: esta por iniciar en Prontera. Corran! quedan segundos!!!",bc_npc,0xED1ADC;
+			sleep2 20000;
+			donpcevent "Monster Wiki::OnStart";
+		}
+	}
+end;
+
+
+}

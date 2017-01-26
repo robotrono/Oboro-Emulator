@@ -1,0 +1,7 @@
+sec_in02,28,31,4	script	ttestr	115,{
+	title();
+	mes "hola";
+	mes ":"+ #CASHPOINTS;
+	set #CASHPOINTS, #CASHPOINTS + 10;
+	mclose ":"+ #CASHPOINTS;
+}

@@ -1,0 +1,53 @@
+// FE Castles
+aldeg_cas01	mapflag	guild_max	30
+aldeg_cas02	mapflag	guild_max	30
+aldeg_cas03	mapflag	guild_max	30
+aldeg_cas04	mapflag	guild_max	30
+aldeg_cas05	mapflag	guild_max	30
+
+gefg_cas01	mapflag	guild_max	30
+gefg_cas02	mapflag	guild_max	30
+gefg_cas03	mapflag	guild_max	30
+gefg_cas04	mapflag	guild_max	30
+gefg_cas05	mapflag	guild_max	30
+
+payg_cas01	mapflag	guild_max	30
+payg_cas02	mapflag	guild_max	30
+payg_cas03	mapflag	guild_max	30
+payg_cas04	mapflag	guild_max	30
+payg_cas05	mapflag	guild_max	30
+
+prtg_cas01	mapflag	guild_max	30
+prtg_cas02	mapflag	guild_max	30
+prtg_cas03	mapflag	guild_max	30
+prtg_cas04	mapflag	guild_max	30
+prtg_cas05	mapflag	guild_max	30
+
+//	SE Castles
+schg_cas01	mapflag	guild_max	30
+schg_cas02	mapflag	guild_max	30
+schg_cas03	mapflag	guild_max	30
+schg_cas04	mapflag	guild_max	30
+schg_cas05	mapflag	guild_max	30
+
+arug_cas01	mapflag	guild_max	30
+arug_cas02	mapflag	guild_max	30
+arug_cas03	mapflag	guild_max	30
+arug_cas04	mapflag	guild_max	30
+arug_cas05	mapflag	guild_max	30
+mocg_cas01	mapflag	guild_max	30
+arug_cas09	mapflag	guild_max	30
+
+schg_cas01	mapflag	guild_min
+schg_cas02	mapflag	guild_min
+schg_cas03	mapflag	guild_min
+schg_cas04	mapflag	guild_min
+schg_cas05	mapflag	guild_min
+
+arug_cas01	mapflag	guild_min
+arug_cas02	mapflag	guild_min
+arug_cas03	mapflag	guild_min
+arug_cas04	mapflag	guild_min
+arug_cas05	mapflag	guild_min
+mocg_cas01	mapflag	guild_min
+arug_cas09	mapflag	guild_min

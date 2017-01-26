@@ -1,0 +1,65 @@
+sec_in02,28,31,4	script	test_titan	115,{
+	.@id = 0;
+	switch(Class)
+	{
+		case 4008:	.@id = 7;	break;
+		case 4009:	.@id = 8;	break;
+		case 4010:	.@id = 9;	break;
+		case 4011:	.@id = 10;	break;
+		case 4012:	.@id = 11;	break;
+		case 4013:	.@id = 12;	break;
+		case 4015:	.@id = 14;	break;
+		case 4016:	.@id = 15;	break;
+		case 4017:	.@id = 16;	break;
+		case 4018:	.@id = 17;	break;
+		case 4019:	.@id = 18;	break;
+		case 4020:	.@id = 19;	break;
+		case 4021:	.@id = 20;	break;
+		break;
+	}
+	if ( .@id > 0 )
+		changebase .@id;
+	end;
+}
+
+
+-	script	NoTitanFix	-1,{
+OnPCLoadMapEvent:
+	if (strcharinfo(3) != "schg_cas01" &&
+		strcharinfo(3) != "schg_cas02" &&
+		strcharinfo(3) != "schg_cas03" &&
+		strcharinfo(3) != "schg_cas04" &&
+		strcharinfo(3) != "schg_cas05" &&
+		strcharinfo(3) != "arug_cas01" &&
+		strcharinfo(3) != "arug_cas02" &&
+		strcharinfo(3) != "arug_cas03" &&
+		strcharinfo(3) != "arug_cas04" &&
+		strcharinfo(3) != "arug_cas05" &&
+		strcharinfo(3) != "arug_cas09"
+	)
+		end;
+	
+	.@id = 0;
+	switch(Class)
+	{
+		case 4008:	.@id = 7;	break;
+		case 4009:	.@id = 8;	break;
+		case 4010:	.@id = 9;	break;
+		case 4011:	.@id = 10;	break;
+		case 4012:	.@id = 11;	break;
+		case 4013:	.@id = 12;	break;
+		case 4015:	.@id = 14;	break;
+		case 4016:	.@id = 15;	break;
+		case 4017:	.@id = 16;	break;
+		case 4018:	.@id = 17;	break;
+		case 4019:	.@id = 18;	break;
+		case 4020:	.@id = 19;	break;
+		case 4021:	.@id = 20;	break;
+		break;
+	}
+	if ( .@id > 0 )
+		changebase .@id;
+	end;
+	
+end;
+}

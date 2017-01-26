@@ -1,0 +1,51 @@
+que_qaru02,234,332,6	script	Baphomets de Attack	736,{
+	mes "^0887B9Baphomets de Ataque^000000";
+	mes " ";
+	mes "¡¡Hola!!";
+	mes "Me han creado para que puedas disfrutar de un item único con esta Quest. ¡¿Te interesa?!";
+	next;
+	menu "¿Qué necesito?",L_required,"¡Claro que sí, aquí están tus items!.",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "^0887B9Baphomets de Ataque^000000";
+		mes " ";
+		mes "^FF00004^000000 Majestic Goat [1]"; //5160
+		mes "^FF000050^000000 Emperium"; //714
+		mes "^FF0000100^000000 Evil Horn"; //923
+		mes "^FF000010^000000 Baphomet Jr. Card"; //4129
+		mes "^FF0000100^000000 Antelope Horn"; //7106
+		close;
+
+	L_check:
+		if(countitem(5160) < 4) goto L_manque;
+		if(countitem(714) < 50) goto L_manque;
+		if(countitem(923) < 100) goto L_manque;
+		if(countitem(4129) <10) goto L_manque;
+		if(countitem(7106) <100) goto L_manque;
+		mes "^0887B9Baphomets de Ataque^000000";
+		mes " ";
+		mes "Aquí está tu Baphomet de Ataque, ¡Disfrútalo!";
+		delitem 5160,4;
+		delitem 714,50;
+		delitem 923,100;
+		delitem 4129,10;
+		delitem 7106,100;
+		getitem 5374,1;
+		close;
+
+	L_manque:
+		mes "^0887B9Baphomets de Ataque^000000";
+		mes " ";
+		mes "Te faltan: ";
+		if(countitem(5160) < 4) mes "^FF0000"+(4 - countitem(5160)) +"^000000 Majestic Goat [1]";
+		if(countitem(714) < 50) mes "^FF0000"+(50 - countitem(714)) +"^000000 Emperium";
+		if(countitem(923) < 100) mes "^FF0000"+(100 - countitem(923)) +"^000000 Evil horn";
+		if(countitem(4129) < 10) mes "^FF0000"+(10 - countitem(4129)) +"^000000 Baphomet Jr. Card";
+		if(countitem(7106) < 100) mes "^FF0000"+(100 - countitem(7106)) +"^000000 Antelope Horn";
+		close;
+
+	L_partir:
+		mes "[^0887B9Baphomets de Ataque^000000]";
+		mes "¡Qué pases un buen día y disfrutes del aniversario de xRO tanto nosotros!";
+		close;
+}

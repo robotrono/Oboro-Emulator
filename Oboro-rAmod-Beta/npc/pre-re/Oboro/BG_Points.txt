@@ -1,0 +1,98 @@
+arena_4,154,109,4	script	BG Points Bank	861,{
+	mes name$;
+	mes " ";
+	set .@option , 0;
+	if ( BG_CON ) { 
+		mes "¡Veo que aun tienes ese sistema feo y viejo!";
+		next;
+		mes name$;
+		mes " ";
+		mes "Tienes : [ ^0174DF " + BG_CON + " ^000000 ] puntos viejos.";
+		mes "¿Deseas convertir tus puntos al nuevo sistema?";
+		if ( select ( " ^0174DF - ^000000 Sí, por supuesto : ^0174DF - ^000000 No, este es para mi colección." ) == 2 ) close;
+		next;
+		mes name$;
+		mes " ";
+		mes "Convirtiendolos....";
+		set #BGPOINTS, #BGPOINTS + BG_CON;
+		set BG_CON , BG_CON - BG_CON;
+		mes "Listo!";
+		close;
+	}
+	mes "No tienes BG Points viejos.";
+	close;
+}
+/*	do {
+		if ( !#BG_POINTS && BG_CON ) {
+			mes "Bienvenido " + strcharinfo(0);
+			do {
+				next;
+				mes name$;
+				mes "  ";
+				mes "¿Deseas abrir una cuenta? ";
+				if ( select ( " ^0174DF - ^000000 Sí : ^0174DF - ^000000 No " ) == 2 ) close;
+				mes "Digite la cantidad a depositar";
+				input .@Cantidad;
+				if ( BG_CON < .@Cantidad ) { 
+					mes "No tienes la cantidad digitada";
+					mes "Solo tienes : ^0174DF [ " + BG_CON + " ] ^000000.";
+					set .@option , 1; 
+				} else {
+					set .@option , 0;
+					set #BG_POINTS , #BG_POINTS + .@Cantidad;
+					set BG_CON , BG_CON - .@Cantidad;
+				}
+			} while(.@option == 1 );
+		} else if ( #BG_POINTS || BG_CON ) { 
+			mes "Bienvenido " + strcharinfo(0);
+			mes "¿Qué deseas hacer?";
+			if ( select (" ^0174DF - ^000000 Retirar puntos : ^0174DF - ^000000 Depositar puntos ") == 2 ) {
+				do {
+					next; 
+					mes name$;
+					mes " ";
+					mes "Digite la cantidad a depositar";
+					input .@Cantidad;
+					if ( BG_CON < .@Cantidad ) { 
+						mes "No tienes la cantidad digitada";
+						mes "Sólo tienes : ^0174DF [ " + BG_CON + " ] ^000000.";
+						set .@option , 1; 
+					} else {
+						set .@option , 0;
+						set BG_CON , BG_CON - .@Cantidad;
+						set #BG_POINTS , #BG_POINTS + .@Cantidad;
+					}
+				} while ( .@option == 1 );
+			} else {
+				do {
+					next; 
+					mes name$;
+					mes " ";
+					mes "Te recuerdo que tienes ^0174DF [ " + #BG_POINTS + " ] ^000000, en el banco.";
+					mes "Digite la cantidad a retirar";
+					input .@Cantidad;
+					if ( .@Cantidad > #BG_POINTS ) {
+						set .@option , 1;
+						next;
+						mes name$;
+						mes " ";
+						mes "No tienes la cantidad digitada"; 
+					} else {
+						set .@option , 0;
+						set #BG_POINTS , #BG_POINTS - .@Cantidad;
+						set BG_CON , BG_CON + .@Cantidad;
+					}
+				} while( .@option == 1 );
+			}
+		} else {
+			mes "Lo lamento pero mis servicios sólo son para los que tienen puntos de BG."; 
+			close;
+		}
+	} while ( .@option == 1 );
+	next;
+	mes name$;
+	mes " ";
+	mes "¡Gracias por usar nuestro banco!";
+	atcommand "@myinfo " +  strcharinfo(0);
+	close;
+}	*/

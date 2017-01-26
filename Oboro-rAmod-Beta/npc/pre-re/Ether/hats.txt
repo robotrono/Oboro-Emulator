@@ -1,0 +1,162 @@
+prontera,155,155,4	script	Random Hat	911,{
+	Oninit:
+	set .@hat1, 18791; // HAT 1
+	set .@hat2, 18793; // HAT 2
+	set .@hat3, 18794; // HAT 3
+	set .@hat4, 18803; // HAT 4
+	set .@hat5, 18848; // HAT 5
+	set .@hat6, 18849; // HAT 6
+	set .@hat7, 18852; // HAT 7
+	set ##hat, 1;
+
+
+	if ( getgmlevel() > 99) {
+	mes "Hola Administrador, en que puedo ayudarte?";
+	next;
+	switch(select("Cambiar Hat:Nada:Volver al hat 1")) {
+
+case 1:
+	if (##hat == 10) {
+	mes "Ya pasaro la semana y no se puede seguir cambiando.";
+	}
+	else {
+	set ##hat, ##hat + 1;
+	message strcharinfo(0), "Hat cambiado";
+	end;
+	}
+
+
+case 2:
+	mes "Adios!";
+	close;
+
+case 3:
+	set ##hat, 1;
+	message strcharinfo(0), "Ha vuelto a 1.";
+	end;
+	}
+
+
+
+
+}
+
+else 	{
+
+mes "Que tal aventurero!";
+mes "Dime, en que puedo ayudarte?";
+switch(select("Tengo los items necesarios:Nada, gracias...")) 	{
+
+//============================ CONF QUEST =============================//
+
+case 1: // PROCEDER
+	if (##hat == 1) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 1";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat1, 1;
+	close;
+
+
+			}
+
+
+	else if (##hat == 2) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 2";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat2, 1;
+	close;
+				}
+
+
+	else if (##hat == 3) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 3";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat3, 1;
+	close;
+				}
+
+
+	else if (##hat == 4) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 4";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";	
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat4, 1;
+	close;
+				}
+
+
+	else if (##hat == 5) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 5";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";	
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat5, 1;
+	close;
+				}
+
+
+	else if (##hat == 6) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 6";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";	
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat6, 1;
+	close;
+				}
+
+
+	else if (##hat == 7) 	{
+	mes "Bien, el hat que te puedo dar ahora es el hat numero 7";
+	mes "Pero recuerda que necesitas los siguientes items:";
+	mes "caca x1";	
+	next;
+	mes "Muy bien, dejame ver si tienes lo necesario...";
+	if (countitem(512) < 1 || countitem(513) < 1) goto L_Noitem;
+	mes "Enhorabuena, tienes lo necesario, aqui esta tu premio!";
+	getitem .@hat7, 1;
+	close;
+
+				}
+
+// =============== FIN CONF QUEST ========================//
+
+
+
+case 2:
+	mes "Adios!";
+	close;
+
+									}
+
+	}
+
+
+L_Noitem:
+	mes "No tienes lo necesario, hasta luego.";
+	close;
+}

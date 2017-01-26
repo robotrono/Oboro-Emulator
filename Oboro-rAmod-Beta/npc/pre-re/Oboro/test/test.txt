@@ -1,0 +1,5 @@
+sec_in02,28,31,4	script	ttestr	115,{
+	title();
+	mes "hola";
+	changebase 11;
+}

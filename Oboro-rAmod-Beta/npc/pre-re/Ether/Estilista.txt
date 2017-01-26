@@ -1,0 +1,161 @@
+// +-------------------------------------------+
+// | Advanced Stylist								 |
+// +-------------------------------------------+
+// | By: Hudelf									 |
+// +-------------------------------------------+
+// | Current Version: 2.1						 |
+// +-------------------------------------------+
+// | Description:									 |
+// |	This is the traditional stylist with	 |
+// |	several new features. You can now scroll|
+// |	backwards or forwards, and save up to	 |
+// |	three palettes while logged in			 |
+// +-------------------------------------------+
+// | Changelog:									 |
+// |	02/08/07 - 1.0 - Script finished		 |
+// |	06/04/07 - 2.0 - Rewrote entire script	 |
+// |						Added new features	 |
+// |	11/07/07 - 2.1 - Changed var types		 |
+// | 					  Fixed minor text issues |
+// +-------------------------------------------+
+
+prontera,165,189,4	script	Estilista	503,{
+	cutin "jpn_chrome01",2;
+	set .@name$,"[ ^FF8000Estilista^000000 ]";
+	setarray .@max[1],553,40,76;		// Number of cloths, haircolors, hairstyles in client
+	//setarray .@blacklist[0];
+										//,0,188,143,261;	// NPC will skip any cloth colors in this array.
+										//  	Use for palettes that cause errors or just plain look bad.
+										//		Leave first value at 0 to disable.
+	setarray .@type[1],7,6,1;			// DO NOT EDIT
+	set .@style,1;
+	
+	mes .@name$;
+	mes "Puedo cambiarte la apariencia si tú quieres.";
+	mes "Sólo elige qué es lo que quieres hacer:";
+	next;
+	set .@s,select("> Color de ropa",
+				"> Color de pelo",
+				"> Peinado");
+	
+	mes .@name$;
+	mes "Muy bien, cómo te gustaría buscar?";
+	next;
+	cutin "jpn_chrome01",255;
+	menu "Empezar por el principio",L_start,
+		"Elegir por donde empezar",-;
+	// CHOOSE WHERE TO START =====================================================
+	mes .@name$;
+	mes "Muy bien, elige un estilo entre ^0000FF1 y " +.@max[.@s]+ "^000000.";
+	next;
+	input .@style;
+	
+	if (.@style < 1 || .@style > .@max[.@s]) {
+		mes .@name$;
+		mes "El estilo elegido está fuera de rango.";
+		close;
+	}
+
+  L_start:
+	setarray @revert[1],getlook(.@type[.@s]),1,1;
+	mes .@name$;
+	mes "Muy bien, allá vamos, empezando en el estilo ^007700" +.@style+ "^000000.";
+	next;
+	
+  // BEGINNING OF STYLE MENU LOOP ================================================
+  L_menuloop:
+	if (.@blacklist[0]) {
+		for (set .@f,0; .@f < getarraysize(.@blacklist); set .@f,.@f+1) {
+			if (.@style == .@blacklist[.@f] && .@previous == 1 && .@s == 1) {
+				message strcharinfo(0),"GM Message - Color " +.@style+ " fue removido.";
+				set .@style, .@style - 1;
+				goto L_menuloop;
+			} else if (.@style == .@blacklist[.@f] && .@s == 1) {
+				message strcharinfo(0),"GM Message - Color " +.@style+ " fue removido.";
+				set .@style, .@style +1;
+				goto L_menuloop;
+			}
+		}
+	}
+	setlook .@type[.@s],.@style;
+	mes "Éste es el estilo número ^007700" +.@style+ "^000000.";
+	
+	set .@next, .@style + 1;
+	set .@prev, .@style - 1;
+	
+	// MAXIMUM MENU
+	if (.@style == .@max[.@s]) {
+		set .@next,1;
+		message strcharinfo(0),"Límite Alcanzado";
+	}
+	
+	// MINIMUM MENU ==============================================================
+	if (.@style == 1) {
+		set .@prev,.@max[.@s];
+		message strcharinfo(0),"Principio Alcanzado";
+	}
+	
+	// PREVIOUS MENU =============================================================
+	if (.@previous) {
+		menu "^FF0000Anterior - " +.@prev+ "^000000",L_prev,
+			"^0000FFSiguiente - " +.@next+ "^000000",L_next,
+			"Saltar a",L_jump,
+			"Guardar",L_save,
+			"Cargar",L_load;
+	}
+	
+	// DEFAULT MENU ==============================================================
+	menu "^0000FFSiguiente - " +.@next+ "^000000",L_next,
+		"^FF0000Anterior - " +.@prev+ "^000000",L_prev,
+		"Saltar a",L_jump,
+		"Guardar",L_save,
+		"Cargar",L_load;
+		
+  L_next:
+	set .@previous,0;
+	set .@style, .@next;
+	goto L_menuloop;
+
+  L_prev:
+	set .@previous,1;
+	set .@style, .@prev;
+	goto L_menuloop;
+	
+  L_jump:
+	next;
+	mes .@name$;
+	mes "Elige el estilo al que quieres saltar:";
+	next;
+	input .@style;
+	if (.@style < 1 || .@style > .@max[.@s]) {
+		mes .@name$;
+		mes "El estilo escogido está fuera de rango.";
+		close;
+	}
+	goto L_menuloop;
+	
+  L_save:
+	next;
+	mes .@name$;
+	mes "Elige la ranura donde quieres guardar:";
+	set .@x, select("Ranura 1 - [" +@revert[1]+ "]",
+					"Ranura 2 - [" +@revert[2]+ "]",
+					"Ranura 3 - [" +@revert[3]+ "]");
+					
+	setarray @revert[.@x], .@style;
+	goto L_menuloop;
+	
+  L_load:
+	next;
+	mes .@name$;
+	mes "Elige la ranura que quieres cargar:";
+	set .@x, select("Ranura 1 - [" +@revert[1]+ "]",
+					"Ranura 2 - [" +@revert[2]+ "]",
+					"Ranura 3 - [" +@revert[3]+ "]");
+					
+	set .@style, @revert[.@x];
+	goto L_menuloop;
+}
+
+prt_are02,156,156,3	duplicate(Estilista)	Estilista#02	503
+core,146,167,6	duplicate(Estilista)	Estilista#03	503

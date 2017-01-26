@@ -1,0 +1,113 @@
+prontera,155,167,5	script	Wiki Event	439,{
+
+	setarray .@Size$[0],"Small","Medium","Large";
+	setarray .@Race$[0],"Formless","Undead","Brute","Plant","Insect","Fish","Demon","Demi Human","Angel","Dragon";
+	setarray .@Element$[0],"Neutral","Water","Earth","Fire","Wind","Poison","Holy","Dark","Spirit","Undead";
+
+	if ( .event == 1 ) 
+	{
+		set .@Guess$, 0;
+		if( getgmlevel() >= 80 ) 
+			mes "Respuesta : ^FF0000"+.Answer$+"^000000";
+
+		switch( .Mode )
+		{
+			Case 0:
+				mes "Cual es el ^FF0000 Nombre ^000000 del mob.";
+			break;
+	
+			Case 1:	
+				mes "Cual es el ^FF0000 Nivel ^000000 del mob.";
+				set .Hint,getmonsterinfo( .MonsterID,1 ) - rand(30);
+				mes "^FF0000Pista^000000 : # entre "+( (( .Hint ) < 1 )?"0":.Hint)+" & "+( getmonsterinfo( .MonsterID,1 ) + rand(30) )+" ";
+			break;
+	
+			Case 2:
+				mes "Cual es el ^FF0000Tamaño^000000 del mob.";
+				mes "Opciones:";
+				set .@option, select ( " ^0000FF[ > ] Small ^000000 : ^0000FF[ > ] Medium ^000000 : ^0000FF[ > ] Large ^000000");
+				set .@Guess$, .@Size$[.@option];
+				mes .@Guess$;
+				next;
+			break;
+		
+			Case 3:
+				mes "Cual es el ^FF0000 RACE ^000000 del mob.";
+				set .@Menu$, "";
+				for( set .@i,0; .@i < getarraysize( .@Race$ ); set .@i,.@i + 1 )
+					set .@Menu$, .@Menu$ + " ^0000FF[ > ]" + .@Race$[.@i] + "^000000" + ":";
+				set .@option, select(.@Menu$);
+				set .@Guess$, .@Race$[.@option];
+				mes .@Guess$;
+				next;
+			break;
+	
+			Case 4:	
+				mes "Cual es el ^FF0000 elemento ^000000 del mob.";
+				set .@Menu$, "";
+				for( set .@i,0; .@i < getarraysize( .@Element$ ); set .@i,.@i + 1 ) {
+					set .@Menu$, .@Menu$ + " ^0000FF[ > ]" + .@Element$[.@i] + "^000000" + ":";
+				set .@option, select(.@Menu$);
+				set .@Guess$, .@Element$[.@option];
+				mes .@Guess$;
+				next;	
+			break;
+		}
+	
+		if ( .@Guess$ == 0 )
+			input .@Guess$;
+
+		if( .MonsterID == 0 || .@Guess$ != .Answer$ )
+			mes_with_close "La respuesta es ^FF0000 incorrecta ^000000 o ^FF0000 fuera de tiempo ^000000";
+
+		getitem 7539, 10;
+		close2;
+			setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+			announce "[ "+strcharinfo(0)+" ]: ganó, respuesta [ "+.Answer$+" ]",bc_npc,0xED1ADC;
+			set .MonsterID,0;
+		end;
+	}
+end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() <= 90 ) end;
+
+	set .round, 10;
+	donpcevent "Wiki Event::OnStart";
+end;
+
+OnStart:
+	set .event, 1;
+	set .round, .round - 1;
+	if( .round <= 0 )
+	{
+
+		mapannounce .Map$,"[Monster Wiki]: ha terminado, gracias por participar.",bc_map,0x7766EE;
+		set .event, 0;
+		setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+		end;
+	}
+		
+	npctalk "Ronda [ "+ .round +" ] Comenzará en 5 segundos.";
+	sleep2 5000;
+
+	do { set .MonsterID,rand( 1001,2380 ); } while( getmonsterinfo( .MonsterID,0 ) == "null" || getmonsterinfo( .MonsterID,0 ) == "" || getmonsterinfo( .MonsterID,1 ) == -1 );
+	set .Mode,rand(5);
+
+	switch( .Mode )
+	{
+		case 0:	set .Answer$, getmonsterinfo( .MonsterID,0 );	break;	// Name
+		case 1:	set .Answer$, getmonsterinfo( .MonsterID,1 );	break;	// Level
+		case 2:	set .Answer$, .Size$[ getmonsterinfo( .MonsterID,18 ) ];	break;	// Size
+		case 3:	set .Answer$, .Race$[ getmonsterinfo( .MonsterID,19 ) ];	break;	// Race
+		case 4:	set .Answer$, .Element$[ getmonsterinfo( .MonsterID,20 ) ];	break;	// Element
+	}
+
+	setnpcdisplay( strnpcinfo(0), .MonsterID );
+	npctalk "Para responder dame Click";
+}
+end;
+
+	
+	
+}

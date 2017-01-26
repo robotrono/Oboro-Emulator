@@ -1,0 +1,164 @@
+﻿Build started 23/01/2017 12:10:18 p.m..
+     1>Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\map-server.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "map-server\Release\map-server.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\3rdparty\mysql\include /I..\3rdparty\zlib\include /I..\3rdparty\pcre\include /I..\3rdparty\msinttypes\include /I..\3rdparty\mt19937ar /I..\3rdparty\libconfig /Zi /nologo /W3 /WX- /MP /O2 /Ob2 /Oi /Ot /Oy /GT /GL /D WIN32 /D _WIN32 /D __WIN32 /D NDEBUG /D PCRE_SUPPORT /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D FD_SETSIZE=4096 /D LIBCONFIG_STATIC /D YY_USE_CONST /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"map-server\Release\\" /Fd"map-server\Release\vc100.pdb" /Gd /TC /wd4018 /wd4100 /wd4800 /analyze- /errorReport:prompt ..\3rdparty\libconfig\grammar.c ..\3rdparty\libconfig\libconfig.c ..\3rdparty\libconfig\scanctx.c ..\3rdparty\libconfig\scanner.c ..\3rdparty\libconfig\strbuf.c ..\3rdparty\mt19937ar\mt19937ar.c ..\src\common\conf.c ..\src\common\core.c ..\src\common\db.c ..\src\common\des.c ..\src\common\ers.c ..\src\common\grfio.c ..\src\common\malloc.c ..\src\common\mapindex.c ..\src\common\md5calc.c ..\src\common\mempool.c ..\src\common\mutex.c ..\src\common\nullpo.c ..\src\common\raconf.c ..\src\common\random.c ..\src\common\showmsg.c ..\src\common\socket.c ..\src\common\sql.c ..\src\common\strlib.c ..\src\common\thread.c ..\src\common\timer.c ..\src\common\utils.c ..\src\common\msg_conf.c ..\src\common\cli.c ..\src\map\achievement.c ..\src\map\atcommand.c ..\src\map\battle.c ..\src\map\battleground.c ..\src\map\buyingstore.c ..\src\map\cashshop.c ..\src\map\channel.c ..\src\map\chat.c ..\src\map\chrif.c ..\src\map\clif.c ..\src\map\date.c ..\src\map\duel.c ..\src\map\elemental.c ..\src\map\faction.c ..\src\map\guild.c ..\src\map\intif.c ..\src\map\itemdb.c ..\src\map\log.c ..\src\map\mail.c ..\src\map\map.c ..\src\map\mapreg.c ..\src\map\homunculus.c ..\src\map\instance.c ..\src\map\mercenary.c ..\src\map\mob.c ..\src\map\npc.c ..\src\map\npc_chat.c ..\src\map\oboro.c ..\src\map\party.c ..\src\map\path.c ..\src\map\pc.c ..\src\map\pc_groups.c ..\src\map\pet.c ..\src\map\quest.c ..\src\map\region.c ..\src\map\script.c ..\src\map\searchstore.c ..\src\map\skill.c ..\src\map\status.c ..\src\map\storage.c ..\src\map\trade.c ..\src\map\unit.c ..\src\map\vending.c
+         grammar.c
+         libconfig.c
+         scanctx.c
+         scanner.c
+         strbuf.c
+         mt19937ar.c
+         conf.c
+         core.c
+         db.c
+         des.c
+         ers.c
+         grfio.c
+         malloc.c
+         mapindex.c
+         md5calc.c
+         mempool.c
+         mutex.c
+         nullpo.c
+         raconf.c
+         random.c
+         showmsg.c
+         socket.c
+         sql.c
+         strlib.c
+         thread.c
+         timer.c
+         utils.c
+         msg_conf.c
+         cli.c
+         achievement.c
+         atcommand.c
+         battle.c
+         battleground.c
+         buyingstore.c
+         cashshop.c
+         channel.c
+         chat.c
+         chrif.c
+         clif.c
+         date.c
+         duel.c
+         elemental.c
+         faction.c
+         guild.c
+         intif.c
+         itemdb.c
+         log.c
+         mail.c
+         map.c
+         mapreg.c
+         homunculus.c
+         instance.c
+         mercenary.c
+         mob.c
+         npc.c
+         npc_chat.c
+         oboro.c
+         party.c
+         path.c
+         pc.c
+         pc_groups.c
+         pet.c
+         quest.c
+         region.c
+         script.c
+         searchstore.c
+         skill.c
+         status.c
+         storage.c
+         trade.c
+         unit.c
+         vending.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\map-server.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\3rdparty\mysql\lib /LIBPATH:..\3rdparty\zlib\lib /LIBPATH:..\3rdparty\pcre\lib libcmt.lib oldnames.lib ws2_32.lib libmysql.lib zdll.lib pcre.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /MANIFEST /ManifestFile:"map-server\Release\map-server.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"..\map-server.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"..\map-server.lib" /MACHINE:X86 "map-server\Release\grammar.obj"
+         "map-server\Release\libconfig.obj"
+         "map-server\Release\scanctx.obj"
+         "map-server\Release\scanner.obj"
+         "map-server\Release\strbuf.obj"
+         "map-server\Release\mt19937ar.obj"
+         "map-server\Release\conf.obj"
+         "map-server\Release\core.obj"
+         "map-server\Release\db.obj"
+         "map-server\Release\des.obj"
+         "map-server\Release\ers.obj"
+         "map-server\Release\grfio.obj"
+         "map-server\Release\malloc.obj"
+         "map-server\Release\mapindex.obj"
+         "map-server\Release\md5calc.obj"
+         "map-server\Release\mempool.obj"
+         "map-server\Release\mutex.obj"
+         "map-server\Release\nullpo.obj"
+         "map-server\Release\raconf.obj"
+         "map-server\Release\random.obj"
+         "map-server\Release\showmsg.obj"
+         "map-server\Release\socket.obj"
+         "map-server\Release\sql.obj"
+         "map-server\Release\strlib.obj"
+         "map-server\Release\thread.obj"
+         "map-server\Release\timer.obj"
+         "map-server\Release\utils.obj"
+         "map-server\Release\msg_conf.obj"
+         "map-server\Release\cli.obj"
+         "map-server\Release\achievement.obj"
+         "map-server\Release\atcommand.obj"
+         "map-server\Release\battle.obj"
+         "map-server\Release\battleground.obj"
+         "map-server\Release\buyingstore.obj"
+         "map-server\Release\cashshop.obj"
+         "map-server\Release\channel.obj"
+         "map-server\Release\chat.obj"
+         "map-server\Release\chrif.obj"
+         "map-server\Release\clif.obj"
+         "map-server\Release\date.obj"
+         "map-server\Release\duel.obj"
+         "map-server\Release\elemental.obj"
+         "map-server\Release\faction.obj"
+         "map-server\Release\guild.obj"
+         "map-server\Release\intif.obj"
+         "map-server\Release\itemdb.obj"
+         "map-server\Release\log.obj"
+         "map-server\Release\mail.obj"
+         "map-server\Release\map.obj"
+         "map-server\Release\mapreg.obj"
+         "map-server\Release\homunculus.obj"
+         "map-server\Release\instance.obj"
+         "map-server\Release\mercenary.obj"
+         "map-server\Release\mob.obj"
+         "map-server\Release\npc.obj"
+         "map-server\Release\npc_chat.obj"
+         "map-server\Release\oboro.obj"
+         "map-server\Release\party.obj"
+         "map-server\Release\path.obj"
+         "map-server\Release\pc.obj"
+         "map-server\Release\pc_groups.obj"
+         "map-server\Release\pet.obj"
+         "map-server\Release\quest.obj"
+         "map-server\Release\region.obj"
+         "map-server\Release\script.obj"
+         "map-server\Release\searchstore.obj"
+         "map-server\Release\skill.obj"
+         "map-server\Release\status.obj"
+         "map-server\Release\storage.obj"
+         "map-server\Release\trade.obj"
+         "map-server\Release\unit.obj"
+         "map-server\Release\vending.obj"
+         Generating code
+         Finished generating code
+         map-server.vcxproj -> C:\Users\Rafita\Desktop\rAmod\vcproj-10\..\map-server.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\map-server.exe;#1" /manifest "map-server\Release\map-server.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "map-server\Release\map-server.unsuccessfulbuild".
+         Touching "map-server\Release\map-server.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\map-server.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:29.96

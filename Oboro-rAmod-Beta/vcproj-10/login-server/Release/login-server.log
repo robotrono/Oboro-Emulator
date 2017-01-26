@@ -1,0 +1,86 @@
+﻿Build started 23/01/2017 12:10:18 p.m..
+     1>Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\login-server.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "login-server\Release\login-server.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\3rdparty\libconfig /I..\3rdparty\mysql\include /I..\3rdparty\msinttypes\include /I..\3rdparty\mt19937ar /Zi /nologo /W3 /WX- /MP /O2 /Ob2 /Oi /Ot /Oy /GT /GL /D WIN32 /D _WIN32 /D __WIN32 /D NDEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D FD_SETSIZE=4096 /D WITH_SQL /D LIBCONFIG_STATIC /D YY_USE_CONST /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"login-server\Release\\" /Fd"login-server\Release\vc100.pdb" /Gd /TC /wd4100 /wd4800 /analyze- /errorReport:prompt ..\3rdparty\libconfig\grammar.c ..\3rdparty\libconfig\libconfig.c ..\3rdparty\libconfig\scanctx.c ..\3rdparty\libconfig\scanner.c ..\3rdparty\libconfig\strbuf.c ..\3rdparty\mt19937ar\mt19937ar.c ..\src\common\conf.c ..\src\common\mempool.c ..\src\common\mutex.c ..\src\common\raconf.c ..\src\common\thread.c ..\src\common\core.c ..\src\common\db.c ..\src\common\ers.c ..\src\common\malloc.c ..\src\common\md5calc.c ..\src\common\nullpo.c ..\src\common\random.c ..\src\common\showmsg.c ..\src\common\socket.c ..\src\common\sql.c ..\src\common\strlib.c ..\src\common\timer.c ..\src\common\utils.c ..\src\common\msg_conf.c ..\src\common\cli.c ..\src\login\account.c ..\src\login\ipban.c ..\src\login\login.c ..\src\login\loginchrif.c ..\src\login\loginclif.c ..\src\login\logincnslif.c ..\src\login\loginlog.c
+         grammar.c
+         libconfig.c
+         scanctx.c
+         scanner.c
+         strbuf.c
+         mt19937ar.c
+         conf.c
+         mempool.c
+         mutex.c
+         raconf.c
+         thread.c
+         core.c
+         db.c
+         ers.c
+         malloc.c
+         md5calc.c
+         nullpo.c
+         random.c
+         showmsg.c
+         socket.c
+         sql.c
+         strlib.c
+         timer.c
+         utils.c
+         msg_conf.c
+         cli.c
+         account.c
+         ipban.c
+         login.c
+         loginchrif.c
+         loginclif.c
+         logincnslif.c
+         loginlog.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\login-server.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\3rdparty\mysql\lib libcmt.lib oldnames.lib ws2_32.lib libmysql.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /MANIFEST /ManifestFile:"login-server\Release\login-server.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"..\login-server.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"..\login-server.lib" /MACHINE:X86 "login-server\Release\grammar.obj"
+         "login-server\Release\libconfig.obj"
+         "login-server\Release\scanctx.obj"
+         "login-server\Release\scanner.obj"
+         "login-server\Release\strbuf.obj"
+         "login-server\Release\mt19937ar.obj"
+         "login-server\Release\conf.obj"
+         "login-server\Release\mempool.obj"
+         "login-server\Release\mutex.obj"
+         "login-server\Release\raconf.obj"
+         "login-server\Release\thread.obj"
+         "login-server\Release\core.obj"
+         "login-server\Release\db.obj"
+         "login-server\Release\ers.obj"
+         "login-server\Release\malloc.obj"
+         "login-server\Release\md5calc.obj"
+         "login-server\Release\nullpo.obj"
+         "login-server\Release\random.obj"
+         "login-server\Release\showmsg.obj"
+         "login-server\Release\socket.obj"
+         "login-server\Release\sql.obj"
+         "login-server\Release\strlib.obj"
+         "login-server\Release\timer.obj"
+         "login-server\Release\utils.obj"
+         "login-server\Release\msg_conf.obj"
+         "login-server\Release\cli.obj"
+         "login-server\Release\account.obj"
+         "login-server\Release\ipban.obj"
+         "login-server\Release\login.obj"
+         "login-server\Release\loginchrif.obj"
+         "login-server\Release\loginclif.obj"
+         "login-server\Release\logincnslif.obj"
+         "login-server\Release\loginlog.obj"
+         Generating code
+         Finished generating code
+         login-server.vcxproj -> C:\Users\Rafita\Desktop\rAmod\vcproj-10\..\login-server.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\login-server.exe;#1" /manifest "login-server\Release\login-server.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "login-server\Release\login-server.unsuccessfulbuild".
+         Touching "login-server\Release\login-server.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\login-server.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.36

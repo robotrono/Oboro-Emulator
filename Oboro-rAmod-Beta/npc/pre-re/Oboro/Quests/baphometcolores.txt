@@ -1,0 +1,138 @@
+que_qaru02,258,347,3	script	Baphomet de Colores	429,{	
+	mes "[^069AC8Baphomet de Colores^000000]";
+	mes "¡Hola usuario de xRO!";
+	mes "Puedo colorear tu Large Baphomet sin quitarle el refine, ni el enchant. ¿Te interesa?";
+	next;
+	menu "¿Qué necesito?",L_required,"Claro que sí, aquí están tus items.",L_check,"¿Cuáles son los colores disponibles?",L_colores,"Salir",L_partir;
+
+	L_required:
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "^FF000050^000000 White Dyestuff"; //982
+		mes "^FF000050^000000 Black Dyestuff"; //983
+		mes "^FF000050^000000 Scarlet Dyestuff"; //975
+		mes "^FF0000200^000000 Blue Feather"; //7441
+		mes "^FF0000100^000000 Red Bijou"; //7447
+		mes "^FF0000100^000000 Witherless Rose"; //748
+		mes "^FF00001^000000 Baphomet Horn (Defensa)"; //5518
+		close;
+
+	L_colores:
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "Amarillo, Azul claro, Azul oscuro, Blanco, "; 
+		mes "Dorado, Lila, Negro, Rojo, "; 
+		mes "Rosa, Ruby, Verde claro y Verde."; 
+		close;
+
+	L_check:
+		if(countitem(982) < 50) goto L_manque;
+		if(countitem(983) < 50) goto L_manque;
+		if(countitem(975) < 50) goto L_manque;
+		if(countitem(7441) < 200) goto L_manque;
+		if(countitem(7447) < 100) goto L_manque;
+		if(countitem(748) < 100) goto L_manque;
+		if(getequipid(1)!=5518) goto L_equipado;
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "¿De qué color lo quieres?";
+		menu "Amarillo",amarillo,"Azul Claro",azulclaro,"Azul",azul,"Blanco",blanco,"Dorado",dorado,"Lila",lila,"Negro",negro,"Rojo",rojo,"Rosa",rosa,"Ruby",ruby,"Verde Claro",verdeclaro,"Verde",verde,"He cambiado de opinión",L_partir;
+		
+
+	amarillo:
+		mes "Elegiste Amarillo, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30020;
+		goto todos;
+	azulclaro:
+		mes "Elegiste Azul Claro, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30021;
+		goto todos;
+	azul:
+		mes "Elegiste Azul, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30022;
+		goto todos;
+	blanco:
+		mes "Elegiste Blanco, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30023;
+		goto todos;
+	dorado:
+		mes "Elegiste Dorado, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30024;
+		goto todos;
+	lila:
+		mes "Elegiste Lila, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30025;
+		goto todos;
+	negro:
+		mes "Elegiste Negro, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30026;
+		goto todos;
+	rojo:
+		mes "Elegiste Rojo, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30027;
+		goto todos;
+	rosa:
+		mes "Elegiste Rosa, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30028;
+		goto todos;
+
+	ruby:
+		mes "Elegiste Ruby, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30029;
+		goto todos;
+
+	verdeclaro:
+		mes "Elegiste Verde Claro, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30030;
+		goto todos;
+
+	verde:
+		mes "Elegiste Verde, ¿estás seguro?";
+		menu "Sí, por favor.",-,"No, me equivoqué.",L_partir;
+		set @id,30031;
+		goto todos;
+
+	todos:
+   		set @R,getequiprefinerycnt(1);
+   		set .@Ench,getequipcardid(1,3);
+		delitem 982,50;
+		delitem 983,50;
+		delitem 975,50;
+		delitem 7441,200;
+		delitem 7447,100;
+		delitem 748,100;
+		unequip(1);
+		delitem2 5518,1,1,@R,0,0,0,0,.@Ench;
+		getitem2 @id,1,1,@R,0,0,0,0,.@Ench;
+		close;
+
+	L_manque:
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "Te faltan: ";
+		if(countitem(982) < 50) mes "^FF0000"+(50 - countitem(982)) +"^000000 White Dyestuff";
+		if(countitem(983) < 50) mes "^FF0000"+(50 - countitem(983)) +"^000000 Black Dyestuff";
+		if(countitem(975) < 50) mes "^FF0000"+(50 - countitem(975)) +"^000000 Scarlet Dyestuff";
+		if(countitem(7441) < 200) mes "^FF0000"+(200 - countitem(7441)) +"^000000 Blue Feather";
+		if(countitem(7447) < 100) mes "^FF0000"+(100 - countitem(7447)) +"^000000 Red Bijou";
+		if(countitem(748) < 100) mes "^FF0000"+(100 - countitem(748)) +"^000000 Witherless Rose";
+		if(countitem(5518) < 1) mes "^FF0000"+(1 - countitem(5518)) +"^000000 Baphomet Horn (Defensa)";
+		close;
+
+	L_equipado:
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "No llevas tu Large Baphomet equipado.";
+		close;
+
+	L_partir:
+		mes "[^069AC8Baphomet de Colores^000000]";
+		mes "¡Qué tengas un buen día en xRO, y disfruta del Servidor! Muchas gracias por completar la quest.";
+		close;
+}
