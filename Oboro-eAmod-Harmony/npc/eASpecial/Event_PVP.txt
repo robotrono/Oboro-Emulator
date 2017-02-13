@@ -1,0 +1,57 @@
+// ****************************
+// * Eventos PVP Terra Online *
+// ****************************
+force_1-1	mapflag	pvp_event	82,82,117,117
+force_1-1	mapflag	nobranch
+force_1-1	mapflag	nomemo
+force_1-1	mapflag	nopenalty
+force_1-1	mapflag	noreturn
+force_1-1	mapflag	nosave	SavePoint
+force_1-1	mapflag	noteleport
+force_1-1	mapflag	nowarp
+force_1-1	mapflag	nowarpto
+force_1-1	mapflag	partylock
+force_1-1	mapflag	party_max	6
+
+-	script	PVPEvent	-1,{
+	end;
+
+OnInit:
+OnClock2000:
+OnClock2100:
+	if( gettime(4) == 5 )
+	{
+		if( gettime(3) >= 20 && gettime(3) < 21 )
+			goto OnStartPVPEvent;
+		if( gettime(3) == 21 )
+			goto OnStopPvPEvent;
+	}
+	end;
+
+OnClock1959:
+	if( gettime(4) == 5 )
+		announce "--- [ PVP Event - Un minuto para Iniciar ] ---",8;
+	end;
+
+OnStartPVPEvent:
+	announce "--- [ PVP Event ha Iniciado ] ---",8;
+	maprespawnguildid "force_1-1",0,3;
+	initnpctimer;
+	donpcevent "PVPEventMC::OnIniciar";
+	donpcevent "PVPEventBI::OnStart";
+	deletearray $pvpevent_reward[0],10;
+	deletearray $pvpevent_id[0],10;
+	deletearray $pvpevent_fame[0],10;
+	deletearray $pvpevent_name$[0],10;
+	set $pvpevent_count, 0;
+	pvpeventstart;
+	end;
+
+OnStopPVPEvent:
+	announce "--- [ PVP Event ha Finalizado ] ---",8;
+	stopnpctimer;
+	donpcevent "PVPEventMC::OnDetener";
+	donpcevent "PVPEventBI::OnStop";
+	pvpeventstop;
+	end;
+}

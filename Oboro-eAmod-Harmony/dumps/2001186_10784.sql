@@ -1,0 +1,26 @@
+-- Character Information --
+INSERT INTO `char` (`char_id`,`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`, `str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`, `option`, `karma`, `manner`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `head_top`, `head_mid`, `head_bottom`, `last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`, `partner_id`, `online`, `father`, `mother`, `child`, `fame`, `playtime`) VALUES ('10784','2001186', '14', 'impe2', '0', '36', '10', '68', '86349', '55000', '5', '5', '5', '5', '5', '5', '225', '225', '48', '52', '217', '9', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'prt_in', '86', '66', 'prontera', '155', '187', '0', '0', '0', '0', '0', '0', '938');
+
+-- Character Inventory --
+
+INSERT INTO `inventory` (`char_id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, `card0`, `card1`, `card2`, `card3`, `expire_time`, `serial`, `bound`) VALUES ('10784', '1201', '1', '0', '1', '0', '0', '0', '0', '0', '0', '0', '54797', '0');
+INSERT INTO `inventory` (`char_id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, `card0`, `card1`, `card2`, `card3`, `expire_time`, `serial`, `bound`) VALUES ('10784', '2301', '1', '0', '1', '0', '0', '0', '0', '0', '0', '0', '11815', '0');
+
+-- Character Cart Inventory --
+
+
+-- Character Skills --
+
+INSERT INTO `skill` (`char_id`, `id`, `lv`) VALUES ('10784', '1', '0');
+
+-- Character Global Reg Value --
+
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'Mission_Completed', '1', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'Mission_Ended', '1', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'Mission_Points', '1', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'Mission_Rank', '1', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'Mission_Tick', '1485778641', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'warpmap$', 'prt_sewb2', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'warpmapN$', 'Prontera Culvert F2', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'warpmapx', '19', '3', '0');
+INSERT INTO `global_reg_value` (`char_id`, `str`, `value`, `type`, `account_id`) VALUES ('10784', 'warpmapy', '19', '3', '0');

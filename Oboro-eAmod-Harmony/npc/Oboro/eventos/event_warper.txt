@@ -1,0 +1,591 @@
+prontera,132,185,6	script	Cartelito	837,{
+	end;
+
+OnInit:
+	delwaitingroom;
+	waitingroom "",0;
+	sleep 500; 
+	delwaitingroom;
+	waitingroom "- Event Warper -",0;
+end;
+}
+
+prontera,135,184,6	script	Eventos	45,2,2,{
+OnWhisperGlobal:
+	if ( getgmlevel() > 90 ) {
+		if ( @whispervar0$ == "activar" ) {
+			mes name$; mes ""; mes "Dime el evento que deseas iniciar.";
+			mes "^10B2D2 [ 1 ] ^000000 Casillas";
+			mes "^10B2D2 [ 2 ] ^000000 Laberinto";
+			mes "^10B2D2 [ 3 ] ^000000 Novice";
+			mes "^10B2D2 [ 4 ] ^000000 Poring";
+			input $loadevent;
+			close2;
+			switch ( $loadevent ) {
+				case 1: goto Anunciar_Casillas; break;
+				case 2: goto Anunciar_Laberinto; break;
+				case 3: goto Anunciar_Novice; break;
+				case 4: goto Anunciar_Poring; break;
+				default: next; mes name$; mes ""; mes "No existe ese evento"; break;
+			}
+			end;
+		} else dispbottom "activar | desactivar";
+	}
+end;
+
+OnTouch:
+	switch ( $loadevent ) {
+		case 1: warp "quiz_01",55,90; break;
+		case 2: atcommand "@storeall"; warp "force_1-3",19,189; break;
+		case 3: 
+			if(BaseLevel == 1 && JobLevel == 1 && Class == 0) {
+				atcommand "@storeall";
+				warp "quiz_01",42,369;
+			} else mes name$; mes "No eres novice 1/1";
+			break; 
+		case 4: warp "poring_w01",102,101; break;
+		default: dispbottom "No hay evento aún, pásate cuando se anuncie en el broadcast.";
+	}
+	close;
+end;
+	
+OnClock0000:
+OnClock1400:
+	goto Anunciar_Casillas;
+end;	
+OnClock1500:
+OnClock2200:
+	goto Anunciar_Laberinto;
+end;
+
+OnClock1000:
+OnClock1100:
+	goto Anunciar_Novice;
+end;
+
+//OnClock1800:
+//OnClock2341:
+//	goto Anunciar_Poring;
+//end;
+	
+Anunciar_Casillas:
+	set $loadevent, 1;
+	hideoffnpc "Eventos";
+	announce "Casillas: El evento de las Casillas va a comenzar en Prontera, y dará 10 Event Coins.",bc_npc,0x00ffff;
+	sleep 90000;
+	announce "Casillas: El portal para el evento de las Casillas ha sido cerrado.",bc_npc,0x00ffff;
+	hideonnpc "Eventos";
+	set $loadevent, 0;
+	donpcevent "Asistente Casillas::OnCasillas";
+	end;
+	
+Anunciar_Laberinto:
+	set $loadevent, 2;
+	hideoffnpc "Eventos";
+	announce "Laberinto: El evento del Laberinto va a comenzar en Prontera, y dará 10 Event Coins.",bc_npc,0x00ffff;
+	sleep 90000;
+	announce "Laberinto: El portal para el evento del Laberinto ha sido cerrado.",bc_npc,0x00ffff;
+	hideonnpc "Eventos";
+	set $loadevent, 0;
+	donpcevent "Asistente Laberinto::OnLaberinto";
+	end;
+	
+Anunciar_Novice:
+	set $loadevent, 3;
+	killmonsterall "quiz_01";
+	hideoffnpc "Eventos";
+	announce "Novice vs Zombie: El evento de Novice vs Zombies va a comenzar en Prontera, y dará 10 Event Coins.",bc_npc,0x00ffff;
+	sleep 90000;
+	announce "Novice vs Zombie: El portal para el evento de Novice vs Zombie ha sido cerrado.",bc_npc,0x00ffff;
+	hideonnpc "Eventos";
+	set $loadevent, 0;
+	donpcevent "Asistente Novice::OnNovice";
+	end;
+	
+Anunciar_Poring:
+	set $loadevent, 4;
+	killmonsterall "poring_w01";
+	hideoffnpc "Eventos";
+	announce "Poring: El evento del Poring falso va a comenzar en Prontera, y dará 10 Event Coins.",bc_npc,0x00ffff;
+	sleep 90000;
+	announce "Poring: El portal para el evento de Poring falsos ha sido cerrado.",bc_npc,0x00ffff;
+	hideonnpc "Eventos";
+	set $loadevent, 0;
+	donpcevent "Asistente Poring::OnFakePoring";
+	end;
+}
+
+
+quiz_01,55,98,4	script	Asistente Casillas	715,{
+
+	if( $@winner == 1 && $@winnertime > gettimetick(2) ) {
+		set $@winner, 0;
+		set $winnertime, 0;
+		set $@charname$, strcharinfo(0);
+		mes name$;
+		mes "Que suerte has tenido "+strcharinfo(0)+"!";
+		mes "Tienes bien merecido el premio.";
+		getitem 7539,6;
+		set EventPoints, EventPoints + 1;
+		close2;
+		announce "Casillas: El ganador del evento Casillas ha sido "+$@charname$+", ¡Felicidades!",bc_all,0x00ffff;
+		hideonnpc "Asistente Casillas";
+		warp "prontera",155,183;
+		end;
+	}
+	end;
+
+OnInit:
+	hideonnpc "Asistente Casillas";
+end;
+
+OnCasillas:
+	sleep2 5000;
+	mapannounce "quiz_01","Casillas: Se elegirá un número entre 1 y 4 al azár. El número que sea anunciado, será el ganador.",bc_map,0xff8000;
+	sleep2 5000;
+	mapannounce "quiz_01","Casillas: Repetiré una y otra vez la elección de números hasta que solo quede una persona en el mapa.",bc_map,0xff8000;
+	sleep2 5000;
+	
+Seleccionar_Numero:
+	if(getmapusers("quiz_01") == 1) {
+		mapannounce "quiz_01","Casillas: Muy bien, ¡Has ganado! Habla con el NPC que está en el centro para reclamar tu premio.",bc_map,0xff8000;
+		hideoffnpc "Asistente Casillas";
+		set $@winner, 1;
+		set $@winnertime, gettimetick(2)+125;
+		sleep2 5000;
+		mapannounce "quiz_01","Casillas: El premio será anulado si no lo reclamas antes de 2 minutos.",bc_map,0xff8000;
+		sleep2 120000;
+		if($@winner == 1){
+			mapannounce "quiz_01","Casillas: Premio anulado.",bc_map,0xff8000;
+			set $@winner, 0;
+			set $@winnertime, 0;
+			hideonnpc "Asistente Casillas";
+			sleep2 5000;
+			mapwarp "quiz_01","prontera",155,183;
+			announce "Casillas: Nadie ha reclamado el premio del evento de las Casillas por lo que ha sido anulado.",bc_npc,0x00ffff;
+			end;
+		}
+		end;
+	}
+	if(getmapusers("quiz_01") < 1){
+		announce "Casillas: Lastima, nadie ha ganado el evento de las Casillas.",bc_npc,0x00ffff;
+		end;
+	}
+	if(getmapusers("quiz_01") > 1){
+		mapannounce "quiz_01","Casillas: 3 segundos.",bc_map,0xff8000;
+			sleep2 1000;
+		mapannounce "quiz_01","Casillas: 2 segundos.",bc_map,0xff8000;
+			sleep2 1000;
+		mapannounce "quiz_01","Casillas: 1 segundo.",bc_map,0xff8000;
+			sleep2 1000;
+		set $@random, rand(1,4);
+			mapannounce "quiz_01","Casillas: ¡La Casilla ganadora es la número "+$@random+"!",bc_map,0xff8000;
+		if($@random == 1){
+			areawarp "quiz_01",33,81,41,59,"quiz_01",55,90;		//Casilla 1 Gana
+			areawarp "quiz_01",45,81,53,59,"prontera",155,183;	//Casilla 2 Pierde
+			areawarp "quiz_01",57,81,65,59,"prontera",155,183;	//Casilla 3 Pierde
+			areawarp "quiz_01",69,81,77,59,"prontera",155,183;	//Casilla 4 Pierde
+			goto Continuar;
+		}
+		if($@random == 2) {
+			areawarp "quiz_01",33,81,41,59,"prontera",155,183;	//Casilla 1 Pierde
+			areawarp "quiz_01",45,81,53,59,"quiz_01",55,90;		//Casilla 2 Gana
+			areawarp "quiz_01",57,81,65,59,"prontera",155,183;	//Casilla 3 Pierde
+			areawarp "quiz_01",69,81,77,59,"prontera",155,183;	//Casilla 4 Pierde
+			goto Continuar;
+		}
+		if($@random == 3) {
+			areawarp "quiz_01",33,81,41,59,"prontera",155,183;	//Casilla 1 Pierde
+			areawarp "quiz_01",45,81,53,59,"prontera",155,183;	//Casilla 2 Pierde
+			areawarp "quiz_01",57,81,65,59,"quiz_01",55,90;		//Casilla 3 Gana
+			areawarp "quiz_01",69,81,77,59,"prontera",155,183;	//Casilla 4 Pierde
+			goto Continuar;
+		}
+		if($@random == 4){
+			areawarp "quiz_01",33,81,41,59,"prontera",155,183;	//Casilla 1 Pierde
+			areawarp "quiz_01",45,81,53,59,"prontera",155,183;	//Casilla 2 Pierde
+			areawarp "quiz_01",57,81,65,59,"prontera",155,183;	//Casilla 3 Pierde
+			areawarp "quiz_01",69,81,77,59,"quiz_01",55,90;		//Casilla 4 Gana
+			goto Continuar;
+		}
+Continuar:
+	areawarp "quiz_01",32,94,78,86,"prontera",155,183;	//Zona Centro
+	areawarp "quiz_01",36,85,38,82,"prontera",155,183;	//Entrada 1
+	areawarp "quiz_01",48,85,50,82,"prontera",155,183;	//Entrada 2
+	areawarp "quiz_01",60,85,62,82,"prontera",155,183;	//Entrada 3
+	areawarp "quiz_01",72,85,74,82,"prontera",155,183;	//Entrada 4
+	sleep2 5000;
+	mapannounce "quiz_01","Casillas: Quedan "+getmapusers("quiz_01")+" participantes en el mapa.",bc_map,0xff8000;
+	sleep2 5000;
+	goto Seleccionar_Numero;
+	end;
+	}
+}
+
+-	script	ForceWarps#01::forwarp	45,2,2,{
+
+OnTouch:
+	if( $nowarpyet == 0 )
+		end;
+
+	set $@random, rand(1,16);
+	if($@random == 1) {	warp "force_1-3",19,146;	end;}
+	if($@random == 2) {	warp "force_1-3",19,50;		end;}
+	if($@random == 3) {	warp "force_1-3",20,10;		end;}
+	if($@random == 4) {	warp "force_1-3",60,29;		end;}
+	if($@random == 5) {	warp "force_1-3",109,99;	end;}
+	if($@random == 6) {	warp "force_1-3",69,138;	end;}
+	if($@random == 7) {	warp "force_1-3",100,128;	end;}
+	if($@random == 8) {	warp "force_1-3",100,10;	end;}
+	if($@random == 9) {	warp "force_1-3",100,164;	end;}
+	if($@random == 10){	warp "force_1-3",130,19;	end;}
+	if($@random == 11){	warp "force_1-3",140,50;	end;}
+	if($@random == 12){	warp "force_1-3",180,128;	end;}
+	if($@random == 13){	warp "force_1-3",170,179;	end;}
+	if($@random == 14){	warp "force_1-3",180,50;	end;}
+	if($@random == 15){	warp "force_1-3",170,99;	end;}
+	if($@random == 16){	warp "force_1-3",19,189;	end;}
+	end;
+
+OnInit:
+	set $nowarpyet, 0;
+	hideonnpc "ForceWarps#02";
+	hideonnpc "ForceWarps#03";
+	hideonnpc "ForceWarps#04";
+	hideonnpc "ForceWarps#05";
+	hideonnpc "ForceWarps#06";
+	hideonnpc "ForceWarps#07";
+	hideonnpc "ForceWarps#08";
+	hideonnpc "ForceWarps#09";
+	hideonnpc "ForceWarps#10";
+	hideonnpc "ForceWarps#11";
+	hideonnpc "ForceWarps#12";
+	hideonnpc "ForceWarps#13";
+	hideonnpc "ForceWarps#14";
+	hideonnpc "ForceWarps#15";
+	hideonnpc "ForceWarps#16";
+	hideonnpc "ForceWarps#17";
+	hideonnpc "ForceWarps#18";
+	hideonnpc "ForceWarps#19";
+	hideonnpc "ForceWarps#20";
+	hideonnpc "ForceWarps#21";
+	hideonnpc "ForceWarps#22";
+	hideonnpc "ForceWarps#23";
+	hideonnpc "ForceWarps#24";
+	hideonnpc "ForceWarps#25";
+	end;
+}
+force_1-3,10,99,0	duplicate(forwarp)	ForceWarps#02	45,2,2
+force_1-3,29,99,0	duplicate(forwarp)	ForceWarps#03	45,2,2
+force_1-3,60,69,0	duplicate(forwarp)	ForceWarps#04	45,2,2
+force_1-3,69,60,0	duplicate(forwarp)	ForceWarps#05	45,2,2
+force_1-3,20,29,0	duplicate(forwarp)	ForceWarps#06	45,2,2
+force_1-3,69,20,0	duplicate(forwarp)	ForceWarps#07	45,2,2
+force_1-3,60,109,0	duplicate(forwarp)	ForceWarps#08	45,2,2
+force_1-3,60,90,0	duplicate(forwarp)	ForceWarps#09	45,2,2
+force_1-3,60,128,0	duplicate(forwarp)	ForceWarps#10	45,2,2
+force_1-3,90,137,0	duplicate(forwarp)	ForceWarps#11	45,2,2
+force_1-3,109,138,0	duplicate(forwarp)	ForceWarps#12	45,2,2
+force_1-3,100,147,0	duplicate(forwarp)	ForceWarps#13	45,2,2
+force_1-3,90,59,0	duplicate(forwarp)	ForceWarps#14	45,2,2
+force_1-3,109,59,0	duplicate(forwarp)	ForceWarps#15	45,2,2
+force_1-3,179,29,0	duplicate(forwarp)	ForceWarps#16	45,2,2
+force_1-3,130,99,0	duplicate(forwarp)	ForceWarps#17	45,2,2
+force_1-3,139,109,0	duplicate(forwarp)	ForceWarps#18	45,2,2
+force_1-3,130,137,0	duplicate(forwarp)	ForceWarps#19	45,2,2
+force_1-3,139,147,0	duplicate(forwarp)	ForceWarps#20	45,2,2
+force_1-3,180,170,0	duplicate(forwarp)	ForceWarps#21	45,2,2
+force_1-3,170,59,0	duplicate(forwarp)	ForceWarps#22	45,2,2
+force_1-3,179,109,0	duplicate(forwarp)	ForceWarps#23	45,2,2
+force_1-3,179,90,0	duplicate(forwarp)	ForceWarps#24	45,2,2
+force_1-3,29,179,0	duplicate(forwarp)	ForceWarps#25	45,2,2
+
+//==========================================
+// Asistente Laberinto
+//==========================================
+force_1-3,100,186,4	script	Asistente Laberinto	803,{
+
+	if($@winner == 1)
+		end;
+
+	set $@winner, 1;
+	mes name$;
+	mes "Muy bien hecho "+strcharinfo(0)+", has ganado!";
+	announce "Laberinto: El ganador del evento del Laberinto es "+strcharinfo(0)+", ¡Felicidades!",bc_all,0x00ffff;
+	hideonnpc "ForceWarps#02";
+	hideonnpc "ForceWarps#03";
+	hideonnpc "ForceWarps#04";
+	hideonnpc "ForceWarps#05";
+	hideonnpc "ForceWarps#06";
+	hideonnpc "ForceWarps#07";
+	hideonnpc "ForceWarps#08";
+	hideonnpc "ForceWarps#09";
+	hideonnpc "ForceWarps#10";
+	hideonnpc "ForceWarps#11";
+	hideonnpc "ForceWarps#12";
+	hideonnpc "ForceWarps#13";
+	hideonnpc "ForceWarps#14";
+	hideonnpc "ForceWarps#15";
+	hideonnpc "ForceWarps#16";
+	hideonnpc "ForceWarps#17";
+	hideonnpc "ForceWarps#18";
+	hideonnpc "ForceWarps#19";
+	hideonnpc "ForceWarps#20";
+	hideonnpc "ForceWarps#21";
+	hideonnpc "ForceWarps#22";
+	hideonnpc "ForceWarps#23";
+	hideonnpc "ForceWarps#24";
+	hideonnpc "ForceWarps#25";
+	sleep2 1000;
+	mes "Ten tu premio, ¡Enhorabuena!";
+	getitem 7539,6;
+	set EventPoints, EventPoints + 1;
+
+	close2;
+	hideonnpc "Asistente Laberinto";
+	set $nowarpyet, 0;
+	set $@winner, 0;
+	sleep2 1000;
+	mapwarp "force_1-3","prontera",155,183;
+	end;
+
+OnInit:
+	hideonnpc "Asistente Laberinto";
+	end;
+	
+OnLaberinto:
+	sleep2 5000;
+	mapannounce "force_1-3","Laberinto: El evento consiste en que deben encontrar el NPC llamado Asistente Laberinto que se encuentra en la parte principal del mapa.",bc_map,0xff8000;
+	sleep2 5000;
+	mapannounce "force_1-3","Laberinto: ¡¡A Correr!!",bc_map,0xff8000;
+	set $nowarpyet, 1;
+	hideoffnpc "Asistente Laberinto";
+	hideoffnpc "ForceWarps#02";
+	hideoffnpc "ForceWarps#03";
+	hideoffnpc "ForceWarps#04";
+	hideoffnpc "ForceWarps#05";
+	hideoffnpc "ForceWarps#06";
+	hideoffnpc "ForceWarps#07";
+	hideoffnpc "ForceWarps#08";
+	hideoffnpc "ForceWarps#09";
+	hideoffnpc "ForceWarps#10";
+	hideoffnpc "ForceWarps#11";
+	hideoffnpc "ForceWarps#12";
+	hideoffnpc "ForceWarps#13";
+	hideoffnpc "ForceWarps#14";
+	hideoffnpc "ForceWarps#15";
+	hideoffnpc "ForceWarps#16";
+	hideoffnpc "ForceWarps#17";
+	hideoffnpc "ForceWarps#18";
+	hideoffnpc "ForceWarps#19";
+	hideoffnpc "ForceWarps#20";
+	hideoffnpc "ForceWarps#21";
+	hideoffnpc "ForceWarps#22";
+	hideoffnpc "ForceWarps#23";
+	hideoffnpc "ForceWarps#24";
+	hideoffnpc "ForceWarps#25";
+	end;
+	
+OnMinute10:
+	if( getmapusers("force_1-3") > 0 ) {
+		mapannounce "force_1-3","Laberinto: Lo sentimos, el tiempo del evento ha terminado. Participa en otra ocasión.",bc_map,0xff8000;
+		set $nowarpyet, 0;
+		hideonnpc "Asistente Laberinto";
+		hideonnpc "ForceWarps#02";
+		hideonnpc "ForceWarps#03";
+		hideonnpc "ForceWarps#04";
+		hideonnpc "ForceWarps#05";
+		hideonnpc "ForceWarps#06";
+		hideonnpc "ForceWarps#07";
+		hideonnpc "ForceWarps#08";
+		hideonnpc "ForceWarps#09";
+		hideonnpc "ForceWarps#10";
+		hideonnpc "ForceWarps#11";
+		hideonnpc "ForceWarps#12";
+		hideonnpc "ForceWarps#13";
+		hideonnpc "ForceWarps#14";
+		hideonnpc "ForceWarps#15";
+		hideonnpc "ForceWarps#16";
+		hideonnpc "ForceWarps#17";
+		hideonnpc "ForceWarps#18";
+		hideonnpc "ForceWarps#19";
+		hideonnpc "ForceWarps#20";
+		hideonnpc "ForceWarps#21";
+		hideonnpc "ForceWarps#22";
+		hideonnpc "ForceWarps#23";
+		hideonnpc "ForceWarps#24";
+		hideonnpc "ForceWarps#25";
+		sleep2 5000;
+		mapwarp "force_1-3","prontera",155,183;
+		end;
+	}
+	end;
+}
+
+quiz_01,42,369,4	script	Asistente Novice	729,{
+
+	mes name$;
+	mes "Muy bien hecho "+strcharinfo(0)+"!";
+	mes "Te mereces este premio.";
+	announce "Novice vs Zombie: El ganador del evento de Novice vs Zombie ha sido [ "+strcharinfo(0)+" ], ¡Felicidades!",bc_all,0x00ffff;
+	next;
+	mes name$;
+	mes "¡Ahí tienes!";
+	mes "Bye bye!";
+	getitem 7539,6;
+	set EventPoints, EventPoints + 1;
+
+	close2;
+	hideonnpc "Asistente Novice";
+	mapwarp "quiz_01","prontera",155,183;
+	end;
+
+OnInit:
+	killmonsterall "quiz_01";
+	hideonnpc "Asistente Novice";
+end;
+	
+OnNovice:
+	set $nozombie, 0;
+	sleep2 5000;
+	mapannounce "quiz_01","Novice vs Zombie: El ganador será el ultimo en sobrevivir a los zombies.",bc_map,0xff8000;
+	sleep2 5000;
+	mapannounce "quiz_01","Novice vs Zombie: Eso es todo, ojalá se diviertan ¡Y que gane el más escurridizo!",bc_map,0xff8000;
+	sleep2 10000;
+	
+Invocar_Zombie:
+	if($nozombie == 1 || getmapusers("quiz_01") == 0 || getmapusers("quiz_01") < 1 ) {
+		killmonsterall "quiz_01";
+		announce "Nadie ganó el evento novice vs zombies",bc_all;
+		end;
+	}
+	
+	if(getmapusers("quiz_01") == 1) {
+		killmonsterall "quiz_01";
+		set $nozombie, 1;
+		mapannounce "quiz_01","Novice vs Zombie: ¡Muy bien! has ganado, habla con el NPC en el centro para reclamar tu premio.",bc_map,0xff8000;
+		hideoffnpc "Asistente Novice";
+		end;
+	}
+	mapannounce "quiz_01","Novice vs Zombie: ¡Se ha invocado un Zombie en la zona!",bc_map,0xff8000;
+	set .numzom, .numzom +1;
+	areamonster "quiz_01",40,371,44,367,"Zombie",1015,.numzom;
+	sleep2 15000;
+	goto Invocar_Zombie;
+	
+OnPCDieEvent:
+	getmapxy .@mapnvz$,.@xnvz,.@ynvz,0;
+	if ( .@mapnvz$ == "quiz_01" ) {
+		sleep2 1;
+		warp "prontera",155,183;
+		atcommand "@alive "+ strcharinfo(0);
+		dispbottom "Has muerto!";
+		mapannounce "quiz_01","Novice vs Zombie: Quedan "+getmapusers("quiz_01")+" Participantes.",bc_map,0xff8000;
+	}
+	sleep2 1000;
+	if(.@mapnvz$ == "quiz_01" && getmapusers("quiz_01") == 1) {
+		killmonsterall "quiz_01";
+		set $nozombie, 1;
+		mapannounce "quiz_01","Novice vs Zombie: ¡Muy bien! has ganado, habla con el NPC en el centro para reclamar tu premio.",bc_map,0xff8000;
+		hideoffnpc "Asistente Novice";
+		mapwarp "force_1-3","prontera",155,183;
+		end;
+	}
+}
+
+-	script	Asistente Poring	-1,{
+
+OnFakePoring:
+	sleep2 5000;
+	mapannounce "poring_w01","Poring: El evento consiste en encontrar el poring real en una infinidad de porings.",bc_map,0xff8000;
+	sleep2 5000;
+	mapannounce "poring_w01","Poring: Eso es todo, ojalá se diviertan ¡Y que gane el que mejor vista tenga!.",bc_map,0xff8000;
+	sleep2 10000;
+	monster "poring_w01",0,0,"P0r1ng",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Pouring",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Puring",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Paring",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Poryng",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Poringd",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Piring",1725,75,"Asistente Poring::OnFakePoringDeath";
+	monster "poring_w01",0,0,"Poring",1725,1,"Asistente Poring::OnRealPoringDeath";
+	set $poringtime, 1;
+	sleep2 300000;
+	if( $poringtime == 1 ) {
+		mapannounce "poring_w01","Poring: Se ha acabado el tiempo, el evento ha terminado. Vuelve a participar en otra ocasión.",bc_map,0xff8000;
+		killmonsterall "poring_w01";
+		set $poringtime, 0;
+		sleep2 5000;
+		mapwarp "force_1-3","prontera",155,183;
+		announce "Poring: Lastima, nadie ha ganado el evento de los Porings falsos.",bc_npc,0x00ffff;	
+		end;
+	}
+end;
+	
+OnFakePoringDeath:
+	dispbottom "¡Ese NO era el Poring original!";
+end;
+	
+OnRealPoringDeath:
+	getitem 7539,6;
+	mapannounce "poring_w01","Poring: ¡El Poring original ha muerto!",bc_map,0xff8000;
+	set $poringtime, 0;
+	killmonsterall "poring_w01";
+	sleep2 5000;
+	announce "Poring: El ganador del evento de los Poring falsos es "+strcharinfo(0)+", Felicidades.",bc_all,0x00ffff;
+	set EventPoints, EventPoints + 1;
+
+	sleep2 5000;
+	mapwarp "force_1-3","prontera",155,183;
+	end;
+}
+
+
+poring_w01	mapflag	noexp
+poring_w01	mapflag	nomemo
+poring_w01	mapflag	noloot
+poring_w01	mapflag	nopenalty
+poring_w01	mapflag	pvp	off
+poring_w01	mapflag	noreturn
+poring_w01	mapflag	nosave	SavePoint
+poring_w01	mapflag	noteleport
+poring_w01	mapflag	novending
+poring_w01	mapflag	nowarpto
+
+quiz_01	mapflag	noexp
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	noloot
+quiz_01	mapflag	nopenalty
+quiz_01	mapflag	pvp	off
+quiz_01	mapflag	noreturn
+quiz_01	mapflag	nosave	SavePoint
+quiz_01	mapflag	noskill
+quiz_01	mapflag	noteleport
+quiz_01	mapflag	novending
+quiz_01	mapflag	nowarpto
+quiz_01	mapflag	nocommand
+
+force_1-3	mapflag	noexp
+force_1-3	mapflag	nomemo
+force_1-3	mapflag	noloot
+force_1-3	mapflag	nopenalty
+force_1-3	mapflag	pvp	off
+force_1-3	mapflag	noreturn
+force_1-3	mapflag	nosave	SavePoint
+force_1-3	mapflag	noskill
+force_1-3	mapflag	noteleport
+force_1-3	mapflag	novending
+force_1-3	mapflag	nowarpto
+force_1-3	mapflag	nocommand
+quiz_01	mapflag	noexp
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	noloot
+quiz_01	mapflag	nopenalty
+quiz_01	mapflag	pvp	off
+quiz_01	mapflag	noreturn
+quiz_01	mapflag	nosave	SavePoint
+quiz_01	mapflag	noskill
+quiz_01	mapflag	noteleport
+quiz_01	mapflag	novending
+quiz_01	mapflag	nowarpto
+quiz_01	mapflag	nocommand

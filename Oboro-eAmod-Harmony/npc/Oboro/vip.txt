@@ -1,0 +1,149 @@
+itemmall,171,85,6	script	VIP	405,{
+	set .@name$, "[ ^0257ABVIP Guy^000000 ]";
+
+	if ( is_VIP() == 0 || is_VIP() == 10 ) { 
+		do {
+			mes .@name$;
+			mes " ";
+
+			mes " Bienvenido!, Yo te puedo dar una cuenta ^0257ABVIP^000000 !!!";
+			set .@select, select ( " ^0257AB > ^000000 ¿Qué es una cuenta VIP? : ^0257AB > ^000000 Comprar cuenta VIP : ^0257AB > ^000000 Nada, Gracias" );
+			switch(.@select) {
+				case 1:
+					next;
+					mes .@name$;
+					mes " ";
+					mes " Una cuenta VIP es una adición, que te permite adentrarte a descuentos en NPC's así como a funciones y comandos propios";
+					next;
+					mes .@name$;
+					mes " ";
+					mes "Hay diferentes tipos de cuentas VIP's, del 1 al 9, entre mayor número sea tu cuenta VIP más caracteristas y mejoras podrás obtener:";
+					next;
+					mes .@name$;
+					mes " ";
+					mes " ^0257AB VIP 1: ^000000 No se quiebran las armaduras";
+					mes " ^0257AB VIP X: ^000000 2 * X% que salga enchant";
+					mes " ^0257AB VIP X: ^000000 Descuento X% en costumes";
+					break;
+				case 2:
+					next;
+					mes .@name$;
+					mes " ";
+					mes "¿Qué cuenta VIP quieres comprar?";
+					mes "El nivel de VIP se multiplica por 2k de ^0257AB CashPoints ^000000, para sacar su valor total";
+					set .@VIP, select("^0257AB VIP 1 ^000000 Basic VIP :^0257AB VIP 2 ^000000 Normal :^0257AB VIP 3 ^000000 Premium:^0257AB VIP 4 ^000000 Easy:^0257AB VIP 5 ^000000 Mega Pack");
+					next;
+		
+					mes .@name$;
+					mes " ";
+					mes "Digita cuantas ^0257AB Horas ^000000 deseas la cuenta premium";
+					mes " Cada hora equivale a 400 de CP";
+					input .@horas;
+					next;
+		
+					mes .@name$;
+					mes " ";
+	
+					set .@cantidad, .@VIP * 2000;
+					set .@totHoras, .@horas * 400;
+					if ( .@totHoras == 0 )
+						mes_with_close "daahh... una lástima";
+		
+					set .@TOTAL, .@cantidad + .@totHoras;
+	
+					mes " Muy bien tendrá un total de: "+.@TOTAL+" CP";
+					if ( select (" ^0257AB > ^000000 Comprar : ^0257AB > ^000000 Mejor No" ) == 2 ) close;
+		
+					if ( #CASHPOINTS < .@TOTAL )
+						mes_with_close "que estabas pensando, sin tener cashpoints...";
+		
+					set #CASHPOINTS, #CASHPOINTS - .@TOTAL; 
+	
+					SetVIP(.@horas,.@VIP,0);
+					close;
+				case 3:
+					close;
+			}
+			next;
+		} while( .@select != 3 );
+		
+		close;
+	} else {	
+		do {
+			mes "^E96D07"+strcharinfo(0)+" CP's^000000.";
+			mes " ";
+			mes " == Estadísticas == ";
+			mes " ";
+			mes " [ > ] Tipo : " + is_VIP();
+	
+			if ( GetVipTime(3) > 0 )
+				mes " [ > ] Tiempo: " + GetVipTime(3) + " días restantes";
+			else if ( GetVipTime(2) > 0 )
+				mes " [ > ] Tiempo: " + GetVipTime(2) + " horas restantes";
+			else if ( GetVipTime(1) > 0 )
+				mes " [ > ] Tiempo: " + GetVipTime(1) + " minutos restantes";
+			else
+				mes " [ > ] Tiempo: " + GetVipTime(0) + " segundos restantes";
+	
+			set .@select, select ( " ^0257AB > ^000000 Cambiar VIP X: ^0257AB > ^000000 Aumentar tiempo : ^0257AB > ^000000 Salir" );
+			switch(.@select) {
+				case 1:
+					next;
+					mes .@name$;
+					mes " ";
+					if ( is_VIP() == 5 ) mes_with_close "De momento ya no se puede aumentar más";
+
+					set .@menu$, " ";
+					for ( set .@i, is_VIP(); .@i < 5; set .@i, .@i+1 ) 
+						set .@menu$, .@menu$ +  "^0257AB > ^000000 VIP " + (.@i + 1) + ": ";
+					set .@select, select(.@menu$) + is_VIP();
+				
+					set .@cantidad, (.@select * 2000) - ( is_VIP() * 2000 );
+					mes "Muy bien esto tendrá un costo de: " + .@cantidad + " CP";
+
+					if ( select (" ^0257AB > ^000000 Comprar : ^0257AB > ^000000 Mejor No" ) == 2 ) close;
+	
+					if ( #CASHPOINTS < .@cantidad )
+						mes_with_close "que estabas pensando, sin tener cashpoints...";
+		
+					set #CASHPOINTS, #CASHPOINTS - .@cantidad; 
+
+					// te regalamos 2 horas de cuenta premium
+					if ( GetVipTime(2) <= 0 )
+						set .@regalia, 2;
+					else
+						set .@regalia, GetVipTime(2) + 2;
+					 
+					SetVIP(.@regalia, .@select, 0);
+				break;
+				case 2:
+					next;
+					mes .@name$;
+					mes " ";
+					mes "Digita cuantas ^0257AB Horas ^000000 deseas la cuenta premium";
+					mes " Cada hora equivale a 400 de CP";
+					input .@horas;
+					next;
+			
+					mes .@name$;
+					mes " ";
+
+					set .@totHoras, .@horas * 400;
+	
+					mes " Muy bien tendrá un total de: "+.@totHoras+" CP";
+					if ( select (" ^0257AB > ^000000 Comprar : ^0257AB > ^000000 Mejor No" ) == 2 ) close;
+			
+					if ( #CASHPOINTS < .@totHoras )
+						mes_with_close "que estabas pensando, sin tener cashpoints...";
+		
+					set #CASHPOINTS, #CASHPOINTS - .@totHoras; 
+		
+					SetVIP(.@horas,is_VIP(),1);
+				break;
+				case 3: break;
+			}
+
+		} while ( .@select != 3 );
+		close;
+	}
+}

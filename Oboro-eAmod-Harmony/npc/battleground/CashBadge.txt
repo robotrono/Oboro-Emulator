@@ -1,0 +1,52 @@
+-	script	Randy	-1,{
+
+	setarray .@BadGID[0],7828,7829,7773;
+	setarray .@BadG[0],10,10,12;
+	set .@name$ , "^CC0033[  Randy  ]^000000";
+
+	mes .@name$;
+	mes "     ";
+	mes "Hola "+strcharinfo(0)+", ¿qué medallas deseas cambiar a ^009900Cash Points^000000?";
+	for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 )
+		mes "^FF9900 - ^000000" + getitemname(.@BadGID[.@i]) + " : " + .@BadG[.@i];
+	
+	for( set .@i, 0; .@i < getarraysize(.@BadGID); set .@i, .@i + 1 )
+		set .@Menu$, .@Menu$ + " Cambiar ^009900" + getitemname(.@BadGID[.@i]) + "^000000:";
+	set .@j, select(.@Menu$ + " Cambiar todas mis medallas") - 1;
+
+	switch( .@j ) {
+		case 3:
+			next;
+			mes .@name$;
+			mes " ";			
+			mes "^FF9900 Actualmente tienes^000000";
+			for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 )
+				mes " ^3333FF - ^000000 " + getitemname(.@BadGID[.@i]) + " " + countitem(.@BadGID[.@i]);
+			if ( select( "Continuar :Mejor no" ) == 2 ) close;
+			for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 ) {
+				set .@TOTAL , .@TOTAL + countitem(.@BadGID[.@i]) * .@BadG[.@i];
+				delitem .@BadGID[.@i],countitem(.@BadGID[.@i]);
+			}
+			set #CASHPOINTS,#CASHPOINTS + .@TOTAL;
+		break;
+		case 0:
+		case 1:
+		case 2:
+			next;
+			mes .@name$;
+			mes "¿Cuántas quieres cambiar?";
+			input .@badge;
+			if ( .@badge <= 0 || .@badge > 9999 || countitem( .@BadGID[ .@j ] ) < .@badge )
+				mes " No jueges conmigo porfavor";
+			else if( countitem( .@BadGID[.@j] ) >= .@badge ) {	
+				delitem .@BadGID[.@j],.@badge;
+				set #CASHPOINTS,#CASHPOINTS + .@badge * .@BadG[.@j];
+			}
+		break;
+	}
+	close2;
+		dispbottom "Tienes un Total de: [ "+#CASHPOINTS+" ] Cash Points.";
+	end;
+}
+
+arena_4,152,105,4	duplicate(Randy)	Randy#01	967

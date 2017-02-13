@@ -1,0 +1,54 @@
+﻿Build started 12/02/2017 09:42:39 p.m..
+     1>Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "common\Release\common.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\src\common /I..\3rdparty\msinttypes\include /I..\3rdparty\mt19937ar /I..\3rdparty\zlib\old\include /Zi /nologo /W3 /WX- /MP /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D FD_SETSIZE=4096 /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"common\Release\\" /Fd"common\Release\vc100.pdb" /Gd /TC /wd4996 /FIconfig.vc.h /analyze- /errorReport:prompt ..\3rdparty\mt19937ar\mt19937ar.c ..\src\common\core.c ..\src\common\db.c ..\src\common\des.c ..\src\common\ers.c ..\src\common\grfio.c ..\src\common\harmonycore.c ..\src\common\lock.c ..\src\common\malloc.c ..\src\common\mapindex.c ..\src\common\md5calc.c ..\src\common\nullpo.c ..\src\common\plugins.c ..\src\common\random.c ..\src\common\showmsg.c ..\src\common\socket.c ..\src\common\strlib.c ..\src\common\timer.c ..\src\common\utils.c
+         mt19937ar.c
+         core.c
+         db.c
+         des.c
+         ers.c
+         grfio.c
+         harmonycore.c
+         lock.c
+         malloc.c
+         mapindex.c
+         md5calc.c
+         nullpo.c
+         plugins.c
+         random.c
+         showmsg.c
+         socket.c
+         strlib.c
+         timer.c
+         utils.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"common\Release\common.lib" ws2_32.lib zdll.lib /LIBPATH:..\3rdparty\zlib\old\lib /NOLOGO /NODEFAULTLIB /LTCG common\Release\mt19937ar.obj
+         common\Release\core.obj
+         common\Release\db.obj
+         common\Release\des.obj
+         common\Release\ers.obj
+         common\Release\grfio.obj
+         common\Release\harmonycore.obj
+         common\Release\lock.obj
+         common\Release\malloc.obj
+         common\Release\mapindex.obj
+         common\Release\md5calc.obj
+         common\Release\nullpo.obj
+         common\Release\plugins.obj
+         common\Release\random.obj
+         common\Release\showmsg.obj
+         common\Release\socket.obj
+         common\Release\strlib.obj
+         common\Release\timer.obj
+         common\Release\utils.obj /ignore:4006 /ignore:4221 
+         common.vcxproj -> C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common\Release\common.lib
+       FinalizeBuildStatus:
+         Deleting file "common\Release\common.unsuccessfulbuild".
+         Touching "common\Release\common.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.46

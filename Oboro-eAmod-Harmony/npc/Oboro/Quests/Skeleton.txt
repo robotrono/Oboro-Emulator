@@ -1,0 +1,43 @@
+poring_w01,92,105,5	script	Skeleton Manteau	997,{
+	mes "[^000000Skeleton Manteau^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte una Skeleton Manteau, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Skeleton Manteau^000000]";
+		mes "^FF0000100^000000 Old Manteau"; //7207
+		mes "^FF00003^000000 Skull Ring"; //2609
+		mes "^FF000020^000000 Piece of Shield"; //7108
+		mes "^0000FF10000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(7207) < 100) goto L_manque;
+		if(countitem(2609) < 10) goto L_manque;
+		if(countitem(7108) < 10) goto L_manque;
+		if(Zeny < 10000000) goto L_manque;
+		mes "[^000000Skeleton Manteau^000000]";
+		mes "Aquí está tu Skeleton Manteau";
+		delitem 7207,100;
+		delitem 2609,10;
+		delitem 7108,10;
+		set Zeny, Zeny - 10000000;
+		getitem 2511,1;
+		close;
+
+	L_manque:
+		mes "[^000000Skeleton Manteau^000000]";
+		mes "Te faltan: ";
+		if(countitem(7207) < 100) mes "^FF0000"+(100 - countitem(7207)) +"^000000 Old Mnateau";
+		if(countitem(2609) < 10) mes "^FF0000"+(10 - countitem(2609)) +"^000000 Skull Ring";
+		if(countitem(7108) < 10) mes "^FF0000"+(10 - countitem(7108)) +"^000000 Piece of Shield";
+		if(Zeny < 10000000) mes "^0000FF"+(10000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Skeleton Manteau^000000]";
+		mes "Buen día";
+		close;
+}

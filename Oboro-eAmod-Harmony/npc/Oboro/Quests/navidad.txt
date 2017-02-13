@@ -1,0 +1,47 @@
+prontera,156,174,4	script	Quest de Navidad	714,{
+	mes "[^000000Navidad xRO^000000]";
+	mes "Hola!";
+	mes "Esta quest es especial de Navidad para XRO, te interesa hacerla?";
+	next;
+	menu "¿Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Navidad XRO^000000]";
+		mes "^FF0000100^000000 Ice Cubic"; //7066
+		mes "^FF000050^000000 Red Muffler"; //7216
+		mes "^FF000010^000000 Magician Hat"; //5045
+		mes "^FF00001^000000 Carrot"; //515
+		mes "^0000FF5000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(7066) < 100) goto L_manque;
+		if(countitem(7216) < 50) goto L_manque;
+		if(countitem(5045) < 10) goto L_manque;
+		if(countitem(515) < 1) goto L_manque;
+		if(Zeny < 5000) goto L_manque;
+		mes "[^000000Navidad XRO^000000]";
+		mes "Aquí está tu item de Navidad.";
+		delitem 7066,100;
+		delitem 7216,50;
+		delitem 5045,10;
+		delitem 515,1;
+		set Zeny, Zeny - 5000;
+		getitem 5738,1;
+		close;
+
+	L_manque:
+		mes "[^000000Navidad XRO^000000]";
+		mes "Te faltan: ";
+		if(countitem(7066) < 100) mes "^FF0000"+(100 - countitem(7066)) +"^000000 Ice Cubic";
+		if(countitem(7216) < 50) mes "^FF0000"+(50 - countitem(7216)) +"^000000 Red Muffler";
+		if(countitem(5045) < 10) mes "^FF0000"+(10 - countitem(5045)) +"^000000 Magician Hat";
+		if(countitem(515) < 1) mes "^FF0000"+(1 - countitem(515)) +"^000000 Carrot";
+		if(Zeny < 5000) mes "^0000FF"+(5000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Navidad XRO^000000]";
+		mes "Que pases una feliz navidad y disfruta del Servidor.";
+		close;
+}

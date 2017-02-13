@@ -1,0 +1,8 @@
+new_reborn,0,0,0,0	monster	Creamy	1018,10,0,0,0
+new_reborn,0,0,0,0	monster	Fabre	1007,20,0,0,0
+new_reborn,0,0,0,0	monster	Pupa	1008,30,0,0,0
+new_reborn,0,0,0,0	monster	Lunatic	1063,30,0,0,0
+new_reborn,0,0,0,0	monster	Poring	1002,40,0,0,0
+new_reborn,0,0,0,0	monster	Hornet	1004,70,0,0,0
+new_reborn,227,212,0,0	monster	Shining Plant	1083,1,1800000,900000,1
+new_reborn,285,138,10,10	monster	Green Plant	1080,5,360000,180000,1

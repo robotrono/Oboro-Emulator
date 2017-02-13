@@ -1,0 +1,47 @@
+poring_w01,88,99,5	script	Blackrock Shooter	405,{
+	mes "[^000000Blackrock Shooter^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Blackrock Shooter (str+3, def+1, middle equipment) , te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Blackrock Shooter^000000]";
+		mes "^FF00001^000000 Sunglasses[1]"; //2202
+		mes "^FF0000100^000000 Flame Heart"; //994
+		mes "^FF000030^000000 Blue Feather"; //7441
+		mes "^FF000050^000000 Feather"; //949
+		mes "^0000FF5000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(2202) < 1) goto L_manque;
+		if(countitem(994) < 100) goto L_manque;
+		if(countitem(7441) < 30) goto L_manque;
+		if(countitem(949) < 50) goto L_manque;
+		if(Zeny < 5000000) goto L_manque;
+		mes "[^000000Blackrock Shooter^000000]";
+		mes "Aquí está tu Blackrock Shooter";
+		delitem 2202,1;
+		delitem 994,100;
+		delitem 7441,30;
+		delitem 949,50;
+		set Zeny, Zeny - 5000000;
+		getitem 30045,1;
+		close;
+
+	L_manque:
+		mes "[^000000Blackrock Shooter^000000]";
+		mes "Te faltan: ";
+		if(countitem(2202) < 1) mes "^FF0000"+(1 - countitem(7447)) +"^000000 Sunglasses[1]";
+		if(countitem(994) < 100) mes "^FF0000"+(100 - countitem(994)) +"^000000 Flame Heart";
+		if(countitem(7441) < 30) mes "^FF0000"+(30 - countitem(7441)) +"^000000 Blue Feather";
+		if(countitem(949) < 50) mes "^FF0000"+(50 - countitem(949)) +"^000000 Feather";
+		if(Zeny < 5000000) mes "^0000FF"+(5000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Blackrock Shooter^000000]";
+		mes "Buen día";
+		close;
+}

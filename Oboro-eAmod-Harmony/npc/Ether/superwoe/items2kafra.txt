@@ -1,0 +1,347 @@
+//===== eAthena Script ======================================= 
+//= Item2Kafra
+//===== By: ================================================== 
+//= EroPnd
+//===== Current Version: ===================================== 
+//= 0.1
+//===== Compatible With: ===================================== 
+//= eAthena
+//===== Description: ========================================= 
+//= Items to Storage
+//= Позволяет заполнить расходом/необходимым лутом кафру
+//===== Additional Comments: ================================= 
+//= 0.1-PreAlfa Version
+//= 0.2-Beta Version
+//= 0.3 lag free version [mao]
+//============================================================ 
+
+//Заполнение Кафры предметами по списку
+
+-	Script	Items2Kafra	101,{
+switch(select("Potions:Boxes & Scrolls:Food:Skill Consumables:Resist:Chants:Close")){
+case 1:
+	callfunc("i2k",1);
+break;
+	
+case 2:
+	callfunc("i2k",2);
+break;	
+
+case 3:
+	callfunc("i2k",3);
+break;	
+	
+case 4:
+	callfunc("i2k",4);
+break;	
+
+case 5:
+	callfunc("i2k",5);
+break;	
+
+case 6:
+	callfunc("i2k",6);
+break;	
+	
+case 7:
+	close;
+break;	
+}
+
+if (#mylanguage){
+	emotion 13;					
+	mes "All items are in your kafra storage ^_^";
+	close2;
+	openstorage;
+end;
+}
+	else{
+	emotion 13;					
+	mes "Все предметы находятся у вас в кафре ^_^";
+	close2;
+	openstorage;
+end;	
+}
+
+OnInit:
+waitingroom "Items to Kafra",0;
+end;
+}
+
+// Duplicates:
+prt_are02,151,149,3	duplicate(Items2Kafra)	Items2Kafra#1	867
+
+
+
+// function:
+function	script	i2k	{
+
+switch(getarg(0)){
+
+case 1: 
+switch(select("White Slim Potion:Mastela Fruit:Royal Jelly:Aloe Leafet:Concentration Potion:Awakering Potion:Berserk Potion")){
+	case 1:
+		setarray .@items[0],
+		547,
+		525,
+		506,
+		11502,
+		662,
+		602;
+	break;
+		
+	case 2:
+		setarray .@items[0],
+		522,
+		525,
+		506,
+		11502,
+		662,
+		602;
+	break;	
+		
+	case 3:
+		setarray .@items[0],
+		526,
+		525,
+		506,
+		11502,
+		662,
+		602;
+	break;	
+	
+	case 4:
+		setarray .@items[0],
+		521,
+		525,
+		506,
+		11502,
+		662,
+		602;
+	break;	
+	
+	case 5:	setarray .@items[0],645; break;	
+	case 6: setarray .@items[0],656; break;
+	case 7: setarray .@items[0],657; break;
+
+}
+break;	
+
+case 2: 	
+switch(select("Box of Resentment:Box of Gloom:Box Of Drowsiness:Aloevera:3 lvl Earth Spike:5 lvl Earth Spike:5 lvl Fire Wall:5 lvl Frost Driver:5 lvl Cold Bolt:5 lvl Lightning Bolt:5 lvl Fire Bolt")){
+
+case 1: setarray .@items[0],12030; break;
+case 2: setarray .@items[0],12029; break;
+case 3: setarray .@items[0],12031; break;
+case 4: setarray .@items[0],606; break;
+case 5: setarray .@items[0],686; break;
+case 6: setarray .@items[0],687; break;
+case 7:	setarray .@items[0],699; break;
+case 8: setarray .@items[0],12000; break;
+case 9: setarray .@items[0],689; break;
+case 10: setarray .@items[0],693; break;
+case 11: setarray .@items[0],691; break;
+}
+break;
+
+case 3:
+switch(select("All:Str:Agi:Vit:Int:Dex:Luk")){
+	case 1: setarray .@items[0],12072,12087,12082,12077,12092,12097; break;
+	case 2: setarray .@items[0],12072; break;
+	case 3:	setarray .@items[0],12087; break;
+	case 4: setarray .@items[0],12082; break;
+	case 5: setarray .@items[0],12077; break;
+	case 6: setarray .@items[0],12092; break;
+	case 7: setarray .@items[0],12097; break;
+}	
+break;
+	
+case 4:
+switch(Class) {
+default:
+if(#mylanguage){
+mes "Your class doesn't require any loot for skill's";
+}
+else{
+mes "Ваша профессия не нуждается в каком-либо луте для скиллов";
+}
+close;
+break;
+
+case 10:
+case 4011:
+	setarray .@items[0],
+	756,
+	998,
+	999,
+	1002;
+break;	
+
+case 9:
+case 4010:
+	setarray .@items[0],
+	7321,
+	715,
+	716,	
+	717;
+break;
+	
+case 8:	
+case 4009:
+	setarray .@items[0],
+	523,
+	717;
+break;	
+		
+case 4013:
+	setarray .@items[0],
+	678,
+	1771;
+break;	
+	
+case 16:
+case 4017:
+	setarray .@items[0],
+	715,
+	716,
+	1025,
+	717;
+break;	
+
+case 18:
+case 4019:
+	setarray .@items[0],
+	7136,
+	7135,
+	7139,
+	7142,
+	7138,
+	7137,
+	12040;
+break;
+
+case 25:
+	setarray .@items[0],
+//Shurikenes
+	13250,
+	13251,
+	13252,
+	13253,
+	13254,
+	13255,
+	13256,
+	13257,
+	13258,
+	13259,
+//Ninja Stones
+	7521,
+	7522,
+	7523,
+	7524;
+break;	
+
+
+case 4018:
+	setarray .@items[0],
+//Ninja Stones
+	7521,
+	7522,
+	7523,
+	7524;
+break;	
+
+case 24:
+	setarray .@items[0],
+//Bullets
+	13200,
+	13201,
+	13202,
+	13203,
+	13204,
+	13205,
+	13206,
+	13207;
+break;	
+
+case 11:
+case 19:
+case 20:
+case 4012:
+case 4020:
+case 4021:
+	setarray .@items[0],
+//Arrowz
+	1750,
+	1751,
+	1752,
+	1753,
+	1754,
+	1755,
+	1756,
+	1757,
+	1758,
+	1759,
+	1760,
+	1761,
+	1762,
+	1763,
+	1764,
+	1765,
+	1766,
+	1767,
+	1768,
+	1769,
+	1770,
+	1772,
+//колчаны
+	12183,
+	12005,
+	12011,
+	12012,
+	12008,
+	12007,
+	12015,
+	12006,
+	12009,
+	12010,
+	12013,
+	12014;
+break;
+}
+break;
+
+
+case 5:
+switch(select("Fire:Wind:Water:Earth")){
+case 1:	setarray .@items[0],12118;	break;
+case 2:	setarray .@items[0],12121;	break;
+case 3:	setarray .@items[0],12119;	break;
+case 4:	setarray .@items[0],12120;	break;
+}
+break;
+
+case 6:
+switch(select("Cursed:Fire:Wind:Water:Earth")){
+case 1:	setarray .@items[0],12020;	break;
+case 2:	setarray .@items[0],12114;	break;
+case 3:	setarray .@items[0],12117;	break;
+case 4:	setarray .@items[0],12115;	break;
+case 5:	setarray .@items[0],12116;	break;
+}
+break;
+
+}
+
+for (set .@i,0; .@i < getarraysize(.@items); set .@i,.@i+1)					
+	{
+		set .@id,.@items[.@i];
+		set .@tmp_var,checkstorage(.@id);
+		set .@delta,5000-.@tmp_var;		
+		if (.@delta > 0 )
+		{
+			getstorageitem (.@id,.@delta); 											
+		}
+	}
+
+return;
+}

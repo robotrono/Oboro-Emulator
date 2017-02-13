@@ -1,0 +1,128 @@
+/*
+	OBORO CONTROL PANEL EVENT
+	j-isaac10@hotmail.com
+*/
+
+-	script	mvpevent	-1,{
+OnWhisperGlobal:
+	if ( getgmlevel() >= 60 ) 
+	{
+		if (@whispervar0$ == "activar")
+			donpcevent "mvpevent::OnWatingRoom";
+	}
+end;
+
+OnInit:
+	setarray $@MVP[0],1096,1388,1582,1120,1511,1785,1630,1399,1039,2068,
+	1272,1719,1046,1389,1112,1115,1492,1418,1871,1252,1086,1688,1373,1147,
+	1059,1150,1087,1190,1038,1157,1159,1623,1583,1312,1685,1658,1734;
+	set $@Event, 0;
+	disablenpc "Evento MVP";
+end;
+
+OnPCDieEvent:
+	getmapxy .@map$,.@x,.@y,0;
+	if ( .@map$ != "poring_w01" ) 
+		end;
+		
+	sleep2 100;
+	warp .@map$,111,136;
+	atcommand "@alive "+ strcharinfo(0);
+	sc_start 32,  240000, 10;
+	sc_start 30, 240000, 10;
+	percentheal 100,100; repairall;
+end;		
+
+
+OnClock1300:
+OnClock1600:
+OnClock1900:
+OnClock2100:
+OnWatingRoom:
+	set $@Event, 1; //iniciado
+	killmonsterall "poring_w01";
+	enablenpc "Evento MVP";
+	
+	announce " [MvP Event]: El evento comenzará pronto! en  prontera aparecerá un warp que te llevará al evento",bc_all;
+	donpcevent "mvpevent::OnSpawnMVP";
+end;
+
+
+OnSpawnMVP:
+	if ( $@Event >= 6 || $@Event == 0 )
+		end;
+	switch($@Event)
+	{
+		case 2:
+		case 3:
+		case 4:
+			announce " [MvP Event]: Están arrasando los MVP's!!! Veamos si pueden con este!",bc_all;
+		break;
+		case 5:
+			announce " [MvP Event]: Bueno esta será la última ronda, mucha suerte",bc_all;
+		break;
+	}
+	
+	mobevent "poring_w01", 0, 0,"[MVP EVENT]", $@MVP[(rand(0,getarraysize($@MVP)))], 0, 1, 0, 0, 500000, 0, 0, 1, 0, 0, 0, 0, 0, "mvpevent::OnMVPDead";
+	initnpctimer;
+	initnpctimer "MVP_TICK";
+end;
+
+OnMVPDead:
+	stopnpctimer;
+	stopnpctimer "MVP_TICK";
+	
+	switch($@Event)
+	{
+		case 1: set .item, 671; set .cantidad, 1; break;
+		case 2:	set .item, 672; set .cantidad, 2; break;
+		case 3: set .item, 673; set .cantidad, 3; break;
+		case 4: set .item, 674; set .cantidad, 4; break;
+		case 5: set .item, 675; set .cantidad, 5; break;
+	}
+
+	set $@Event, $@Event + 1;
+	getitem_map(.item, .cantidad, "poring_w01");
+	donpcevent "mvpevent::OnSpawnMVP";
+end;
+
+
+}
+
+-	script	MVP_TICK	-1,{
+	end;
+
+OnTimer120000:
+	mapannounce "poring_w01","-- 2 Minutos Han pasado y no lo han matado!!? --",1,0xFFA500;
+end;
+
+OnTimer240000:
+	mapannounce "poring_w01","-- Solo falta 1 minuto para que puedan matar este MvP --",1,0xFFA500;
+end;
+
+OnTimer300000:
+	set $@Event, 0;
+	stopnpctimer;
+	stopnpctimer "MVP_TICK";
+	mapannounce "poring_w01","-- Una lástima no han podido matar al MVP --",1,0xFFA500;
+end;
+
+}
+	
+prontera,142,169,5	script	Evento MVP	45,2,2,{
+	if ( $@Event >= 1 )
+		warp "poring_w01",113,134;
+	end;
+}
+
+poring_w01,110,139,5	script	MVP Healer	475,10,10,{
+OnTouch:
+	if (readparam(5) == 0 )
+		atcommand "@alive";
+	
+	sc_start 32,  240000, 10;
+	sc_start 30, 240000, 10;
+	percentheal 105,105;
+	repairall;
+end;
+}

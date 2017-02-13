@@ -1,0 +1,30 @@
+-	script	dual_mac	-1,{
+ 
+OnPCLoadMapEvent:
+	getmapxy .@map$, .@x, .@y, 0;
+	if ( .@map$=="ordeal_1-1"  || .@map$=="arena_4" || .@map$=="new_5-4" || .@map$=="guild_vs1" ||  .@map$=="bat_room" || .@map$=="schg_cas06" || .@map$=="schg_cas07" || .@map$=="schg_cas08" || .@map$=="arug_cas06" || .@map$=="arug_cas07" || .@map$=="arug_cas08" || .@map$=="rush_cas01" || .@map$=="rush_cas02" || .@map$=="rush_cas03" || .@map$=="rush_cas04" ) {
+		if(harm_map_multicount("bat_room")>1 || harm_map_multicount("arena_4")>1 || harm_map_multicount("new_5-4")>1 || harm_map_multicount("guild_vs1")>1 || harm_map_multicount("ordeal_1-1")>1 ||  harm_map_multicount("rush_cas01")>1 || harm_map_multicount("rush_cas02")>1 || harm_map_multicount("rush_cas03")>1 || harm_map_multicount("rush_cas04")>1 || harm_map_multicount("schg_cas06")>1 || harm_map_multicount("schg_cas07")>1 || harm_map_multicount("schg_cas08")>1 || harm_map_multicount("arug_cas06")>1 || harm_map_multicount("arug_cas07")>1 || harm_map_multicount("arug_cas08")>1 ){
+		dispbottom "[ Mac Security ]";
+		dispbottom "Double Login esta prohinido en  mapas de Eventos y Battlegrounds Maps";
+		atcommand "@kick "+strcharinfo(0);
+		end;
+		}
+	}
+	end;
+}
+
+bat_room	mapflag	loadevent
+schg_cas06	mapflag	loadevent
+schg_cas07	mapflag	loadevent
+schg_cas08	mapflag	loadevent
+arug_cas06	mapflag	loadevent
+arug_cas07	mapflag	loadevent
+arug_cas08	mapflag	loadevent
+rush_cas01	mapflag	loadevent
+rush_cas02	mapflag	loadevent
+rush_cas03	mapflag	loadevent
+rush_cas04	mapflag	loadevent
+ordeal_1-1	mapflag	loadevent
+new_5-4	mapflag	loadevent
+guild_vs1	mapflag	loadevent
+arena_4	mapflag	loadevent

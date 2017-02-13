@@ -1,0 +1,114 @@
+que_qaru02,257,333,3	script	Cash Coins#1	833,{
+	mes "[^FFA500Easy Coins^000000]";
+	mes "Oh... interesado en las Cash Coins. Estas monedas son una forma útil de convertir Cash Points en items para comercio, y puedes venir aquí a comprarlas o venderlas siempre por el mismo valor.";
+	next;
+			switch( select("Comprar Monedas:Vender mis Monedas:Información") )
+			{
+				case 1:
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Hola, ^E96D07"+strcharinfo(0)+"^000000. ¿Qué monedas deseas comprar?";
+					mes "Actualmente tienes " + #CASHPOINTS + " Cash Points.";
+					next;
+					set .@Coin, 8902 + select("Gold Coin x 10.000 Cash Points:Silver Coin x 5.000 Cash Points:Bronze Coin x 1.000 Cash Points");
+					set .@Value, 0;
+
+					switch( .@Coin )
+					{
+						case 8903: set .@Value, 10000; break;
+						case 8904: set .@Value, 5000; break;
+						case 8905: set .@Value, 1000; break;
+					}
+
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Cuantas " + getitemname(.@Coin) + " deseas comprar?";
+					mes "(Minimo 1, Maximo 10)";
+					next;
+					input .@Amount;
+
+					if( .@Amount < 1 || .@Amount > 10 )
+					{
+						mes "[^FFA500Cash Coins^000000]";
+						mes "Disculpa, pero sólo puedo venderte de 1 a 10 Coins a la vez.";
+						close;
+					}
+
+					set .@Cost, .@Amount * .@Value;
+					if( #CASHPOINTS < .@Cost )
+					{
+						mes "[^FFA500Cash Coins^000000]";
+						mes "No tienes suficientes Cash Points para la compra. Lo lamento.";
+						mes "La cantidad que necesitas es de " + .@Cost + " Cash Points.";
+						close;
+					}
+
+					getitem .@Coin, .@Amount;
+					set #CASHPOINTS, #CASHPOINTS - .@Cost;
+					{
+
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Aquí tienes tus Cash Coins, ¡suerte con tus negocios!";
+					close;
+					}
+
+				case 2:
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Que monedas deseas venderme?";
+					mes "Actualmente tienes:";
+					mes "- " + countitem(8903) + " Gold Coins.";
+					mes "- " + countitem(8904) + " Silver Coins.";
+					mes "- " + countitem(8905) + " Bronze Coins.";
+					next;
+					set .@Coin, 8902 + select("Gold Coin x 10.000 Cash Points:Silver Coin x 5.000 Cash Points:Bronze Coin x 1.000 Cash Points");
+					set .@Value, 0;
+
+					switch( .@Coin )
+					{
+						case 8903: set .@Value, 10000; break;
+						case 8904: set .@Value, 5000; break;
+						case 8905: set .@Value, 1000; break;
+					}
+
+					mes "[^FFA500Cash Coins^000000]";
+					mes "¿Cuántas " + getitemname(.@Coin) + " deseas venderme?";
+					mes "(Mínimo 1, Máximo 10)";
+					next;
+					input .@Amount;
+
+					if( .@Amount < 1 || .@Amount > 10 )
+					{
+						mes "[^FFA500Cash Coins^000000]";
+						mes "Disculpa, pero sólo puedo comprarte de 1 a 10 Coins a la vez.";
+						close;
+					}
+
+					if( countitem(.@Coin) < .@Amount )
+					{
+						mes "[^FFA500Cash Coins^000000]";
+						mes "No tienes suficientes Coins en tu inventario para venderme la cantidad que elegiste.";
+						close;
+					}
+
+					set .@Cost, .@Amount * .@Value;
+					delitem .@Coin, .@Amount;
+					set #CASHPOINTS, #CASHPOINTS + .@Cost;
+					{
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Aquí tienes tus Cash Coins, ¡suerte con tus negocios!";
+					close;
+					}
+				case 3:
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Verás, existen 3 tipos de Cash Coins.";
+					mes "Gold Coin que la puedes comprar o vender por 10.000 Cash Points.";
+					mes "Silver Coin, por 5.000 Cash Points y Bronze Coin por 1.000 Cash Points.";
+					next;
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Por ejemplo, tu puedes comprar algunas Coins y ponerlas en venta con alguna tienda.";
+					mes "El jugador que las compre, podrá vendermelas a mi nuevamente y recibir el Cash Point original.";
+					next;
+					mes "[^FFA500Cash Coins^000000]";
+					mes "Los jugadores tienen el comando @gcash para transferir Cash Points, pero este método es más seguro.";
+					mes "Espero lo utilices, nos vemos!.";
+					close;
+				}
+	}

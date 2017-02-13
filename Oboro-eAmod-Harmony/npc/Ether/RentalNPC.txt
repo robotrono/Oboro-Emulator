@@ -1,0 +1,105 @@
+//===== eAthena Script =======================================
+//= Custom Free Breeder aka Universal Renter (not reccomended)
+//===== By: ==================================================
+//= eAthena Team
+//===== Current Version: =====================================
+//= 1.6
+//===== Compatible With: =====================================
+//= eAthena 1.0 Final +
+//===== Description: =========================================
+//= A Free PecoPeco and Falcon Breeder
+//===== Additional Comments: =================================
+//= 1.1 FIXED checkriding/cart/falcon funcs [Lupus]
+//= 1.2 Added Rebirth/Advanced Class support [Mass Zero]
+//= 1.3 Simplified the checks of job [Silentdragon]
+//= 1.3a Fixed a Typo Error. [Samuray22]
+//	-Thanks to ~AnnieRuru~.
+//= 1.4 Optimized Script. No need for 50 million Labels. [Spre]
+//= Added renting of Dragons . [The Quality Maker]
+//= 1.5 Added option for Gryphons and fixed problem with Peco and Rune Knight. [Ryo-Kun]
+//= 1.6 Added provisory renting of Magic Gear. [Viktus]
+//= 1.7 Added option of Warg for Rangers and modified Rune Knight for color selection. [stragy]
+//============================================================
+
+prontera,164,168,4	script	Universal Rental Npc	726,{
+	mes "^B42100[ Universal Rental Npc ]^000000";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Aquí podrás alquilar lo que necesites dependiendo de tu clase de Job. Podrás elegir entre: Peco, Carros o Falcons.";
+	//, Wargs, Dragons, Gryphons or Magic Gears.";
+	next;
+	switch(select("> ^954B00Cart^000000:> ^6B4B75Falcon^000000:> ^DB7107Peco^000000")){
+		case 1:
+			if((BaseClass == Job_Merchant || BaseJob == Job_SuperNovice) && checkcart() == 0 && getskilllv("MC_PUSHCART")>0) {
+				setcart;
+				close;
+			}else{
+				mes "^B42100[ Universal Rental Npc ]^000000";
+				mes "Lo siento " + strcharinfo(0) + ", por favor asegúrate de que eres de clase Merchant y que tienes la skill de Pushcart.";
+				close;
+			}
+		case 2:
+			if(BaseJob != Job_Archer && BaseClass == Job_Archer && checkfalcon() == 0 && getskilllv("HT_FALCON")>0) {
+				setfalcon;
+				close;
+			}else{
+				mes "^B42100[ Universal Rental Npc ]^000000";
+				mes "Lo siento " + strcharinfo(0) + ", por favor asegúrate de que eres de clase Hunter/Sniper y que tienes la skill Falcon Mastery.";
+				close;
+			}
+		case 3:
+			if (BaseJob != Job_Swordman && BaseClass == Job_Swordman && checkriding() == 0 && getskilllv("KN_RIDING")>0 && Class != 4054 && Class != 4060 && Class != 4066 && Class != 4073) {
+				setriding;
+				close;
+			}else{
+				mes "^B42100[ Universal Rental Npc ]^000000";
+				mes "Lo siento " + strcharinfo(0) + ", por favor asegúrate de que eres de clase Knight/Crusader/Lord Knight/Paladin y que tienes la skill Peco Riding.";
+				close;
+			}
+//		case 4:
+//			if (BaseJob != Job_Swordman && BaseClass == Job_Swordman && checkriding() == 0 && getskilllv("RK_DRAGONTRAINING")>0) {
+//				mes "^B42100[ Universal Rental Npc ]^000000";
+//				mes "Alright what color dragon would you like?";
+//				menu "Green",greenp,"Black",blackp,"White",whitep,"Blue",bluep,"Red",redp,"Nevermind",-;
+//				close;
+//			greenp: atcommand "@mount 1"; close;
+//			blackp: atcommand "@mount 2"; close;
+//			whitep: atcommand "@mount 3"; close;
+//			bluep: atcommand "@mount 4"; close;
+//			redp: atcommand "@mount 5"; close;
+//			}else{
+//				mes "^B42100[ Universal Rental Npc ]^000000";
+//				mes "Sorry " + strcharinfo(0) + ", Please make sure you are the required job and have the required skill.";
+//				close;
+//			}
+//		case 5:
+//			if (BaseJob != Job_Swordman && BaseClass == Job_Swordman && checkriding() == 0 && getskilllv("KN_RIDING")>0 && Class == 4073 || Class == 4066) {
+//				setriding;
+//				close;
+//			}else{
+//				mes "^B42100[ Universal Rental Npc ]^000000";
+//				mes "Sorry " + strcharinfo(0) + ", Please make sure you are the required job and have the required skill.";
+//				close;
+//			}
+//		case 6:
+//			if (BaseJob != Job_Merchant && BaseClass == Job_Merchant && checkriding() == 0 && getskilllv("NC_MADOLICENCE")>0 && Class == 4064 || Class == 4058) {
+//				atcommand "@mount";
+//				close;
+//			}else{
+//				mes "^B42100[ Universal Rental Npc ]^000000";
+//				mes "Sorry " + strcharinfo(0) + ", Please make sure you are the required job and have the required skill.";
+//				close;
+//			}
+					//decided to use getwarg from project 3CeAM, it's a custom command
+//		case 7:
+//			if (Class == 4056 || Class == 4062 && getskilllv("RA_WUGMASTERY")==1) {
+//				atcommand "@getwarg";
+//				close;
+//			}else{
+//				mes "^B42100[ Universal Rental Npc ]^000000";
+//				mes "Sorry " + strcharinfo(0) + ", Please make sure you are the required job and have the required skill.";
+//				close;
+//			}
+	}
+}
+
+//prt_are02,153,157,3	duplicate(Universal Rental Npc)	Universal Rental Npc#02	726

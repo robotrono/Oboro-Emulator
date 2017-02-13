@@ -1,0 +1,116 @@
+/* ====================================== 
+
+		ISAACHJK
+	    HappyHour 2016
+        j-isaac10@hotmail.com
+
+   ====================================== */ 
+-	script	HH	-1,{
+	end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() < 90 ) end; 
+OnInit:
+	bindatcmd("ha", strnpcinfo(3)+"::OnHHStart");
+	bindatcmd("hd", strnpcinfo(3)+"::OnHHStop");
+	bindatcmd("he", strnpcinfo(3)+"::OnHHStatus");
+	bindatcmd("hp", strnpcinfo(3)+"::OnHHAumentar");
+end;
+
+
+OnHHStart:
+	if ( getgmlevel() < 90 ) end;
+
+	title("Happy Hour");
+	mes " Dijite % de medallas a dar.";
+	mes " ejemplo: ^4CF39F 80 ^000000";
+	input .porciento;
+	next;
+
+	title("Happy Hour");
+	mes " Dijite Hora de finalizar , en hora militar ejemplo : 22 ";
+	mes " ejemplo: ^4CF39F 22 ^000000";
+	input .fin;
+	next;
+
+	announce " [ Happy Hour ]: El evento ha comenzado, apartir de este momento battleground dará "+.porciento+" %  mas en medallas ",0,0x00BFFF;
+
+	set .porcientoreal , .porciento + 100; // el 100 es el regular si se pone 20 en .@porciento se sumara al 100 normal haciendo 120 .
+	setbattleflag "bg_reward_rates",.porcientoreal;
+	setbattleflag "bg_ranked_mode",1;
+	close;
+end;
+
+OnHHStop:
+	if ( getgmlevel() < 90 ) end;
+
+	announce " [ Happy Hour ]: El evento ha terminado, gracias a todos por participar. ",0,0x00BFFF;
+
+	setbattleflag "bg_reward_rates",100; // Normal Rates
+	setbattleflag "bg_ranked_mode",0;
+	set .porcientoreal, 0;
+	set .porciento, 0;
+	set .porciento_aumento, 0;
+
+
+end;
+
+OnHHStatus:
+	if ( .porciento > 0 )
+		dispbottom "[ Happy Hour]: actualmente estamos a " + .porciento + "%";
+	else
+		dispbottom "[ Happy Hour]: actualmente no hay Custom de HH";		
+end;
+
+OnHHAumentar:
+	if ( getgmlevel() < 90 ) end; 
+
+	title("Happy Hour");
+	mes " Dijite % a aumentar.";
+	input .porciento_aumento;
+	next;
+
+	set .porciento, .porciento + .porciento_aumento;
+	set .porcientoreal, .porciento + 100;
+
+	announce " [ Happy Hour ]: Gracias por sus votos, HH aumenta a "+.porciento+" %  mas en medallas ",0,0x00BFFF;
+
+	setbattleflag "bg_reward_rates",.porcientoreal;
+	setbattleflag "bg_ranked_mode",1;
+	close;
+end;
+
+
+OnClock0000:
+OnClock0100:
+OnClock0200:
+OnClock0300:
+OnClock0400:
+OnClock0500:
+OnClock0600:
+OnClock0700:
+OnClock0800:
+OnClock0900:
+OnClock1000:
+OnClock1100:
+OnClock1200:
+OnClock1300:
+OnClock1400:
+OnClock1500:
+OnClock1600:
+OnClock1700:
+OnClock1800:
+OnClock1900:
+OnClock2000:
+OnClock2100:
+OnClock2200:
+OnClock2300:
+	if( gettime(3) != .fin )
+		end;
+
+	announce " [ Happy Hour ]: El evento ha terminado, gracias a todos por participar. ",0,0x00BFFF;
+	setbattleflag "bg_reward_rates",100; // Normal Rates
+	setbattleflag "bg_ranked_mode",0;
+end;
+
+}

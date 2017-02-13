@@ -1,0 +1,25 @@
+gr_1,61,70,3	script	WoE xRO::DBexit3	430,{
+	mes "^0770E9[  WoE xRO  ]^000000";
+	mes "¿Ir al Castillo de WoE?";
+	next;
+	if(select("Sí.:Mejor no.") == 2){
+		close;
+	}
+	warp "arug_cas02",139,31;
+	end;
+}
+
+gr_2,61,70,3	duplicate(DBexit3)	WoE xRO#44-1	430
+gr_3,61,70,3	duplicate(DBexit3)	WoE xRO#45-1	430
+gr_4,61,70,3	duplicate(DBexit3)	WoE xRO#46-1	430
+gr_5,61,70,3	duplicate(DBexit3)	WoE xRO#47-1	430
+gr_6,61,70,3	duplicate(DBexit3)	WoE xRO#48-1	430
+gr_7,61,70,3	duplicate(DBexit3)	WoE xRO#49-1	430
+gr_8,61,70,3	duplicate(DBexit3)	WoE xRO#50-1	430
+gr_9,61,70,3	duplicate(DBexit3)	WoE xRO#51-1	430
+gr_10,61,70,3	duplicate(DBexit3)	WoE xRO#52-1	430
+gr_11,61,70,3	duplicate(DBexit3)	WoE xRO#53-1	430
+gr_12,61,70,3	duplicate(DBexit3)	WoE xRO#54-1	430
+gr_13,61,70,3	duplicate(DBexit3)	WoE xRO#55-1	430
+gr_14,61,70,3	duplicate(DBexit3)	WoE xRO#56-1	430
+gr_15,61,70,3	duplicate(DBexit3)	WoE xRO#57-1	430

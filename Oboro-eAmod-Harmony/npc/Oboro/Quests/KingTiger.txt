@@ -1,0 +1,43 @@
+poring_w01,107,104,4	script	King Tiger Doll Hat	505,{
+	mes "[^000000King Tiger Doll Hat^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un King Tiger Doll Hat, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000King Tiger Doll Hat^000000]";
+		mes "^FF00001^000000 Pipe"; //2268
+		mes "^FF000050^000000 Leopard Skin"; //7171
+		mes "^FF000030^000000 Leopard Claw"; //7172
+		mes "^0000FF3000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(2268) < 1) goto L_manque;
+		if(countitem(7171) < 50) goto L_manque;
+		if(countitem(7172) < 30) goto L_manque;
+		if(Zeny < 3000000) goto L_manque;
+		mes "[^000000King Tiger Doll Hat^000000]";
+		mes "Aquí está tu King Tiger Doll Hat";
+		delitem 2268,1;
+		delitem 7171,50;
+		delitem 7172,30;
+		set Zeny, Zeny - 3000000;
+		getitem 5497,1;
+		close;
+
+	L_manque:
+		mes "[^000000King Tiger Doll Hat^000000]";
+		mes "Te faltan: ";
+		if(countitem(2268) < 1) mes "^FF0000"+(1 - countitem(2268)) +"^000000 Pipe";
+		if(countitem(7171) < 50) mes "^FF0000"+(50 - countitem(7171)) +"^000000 Leopard Skin";
+		if(countitem(7172) < 30) mes "^FF0000"+(30 - countitem(7172)) +"^000000 Leopard Claw";
+		if(Zeny < 3000000) mes "^0000FF"+(3000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000King Tiger Doll Hat^000000]";
+		mes "Buen día";
+		close;
+}

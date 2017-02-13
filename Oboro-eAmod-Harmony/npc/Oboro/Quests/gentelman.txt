@@ -1,0 +1,44 @@
+ra_temple,56,139,6	script	Gentelmans Pipe	505,{
+	mes "[^000000Gentelmans Pipe^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte una Gentelmans Pipe, te interesa?";
+	mes "Este item se sitúa en Low y da 2% resistencia demi-human.";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Gentelmans Pipe^000000]";
+		mes "^FF00005^000000 Tiger's Footskin"; //1030
+		mes "^FF00003^000000 Pipe"; //2268
+		mes "^FF00001^000000 Morrigane's Pendant"; //2651
+		mes "^FF00005^000000 Matchstick"; //7035
+		close;
+
+	L_check:
+		if(countitem(1030) < 5) goto L_manque;
+		if(countitem(2268) < 3) goto L_manque;
+		if(countitem(2651) < 1) goto L_manque;
+		if(countitem(7035) < 5) goto L_manque;
+		mes "[^000000Gentelmans Pipe^000000]";
+		mes "Aquí está tu Gentelmans Pipe";
+		delitem 1030,5;
+		delitem 2268,3;
+		delitem 2651,1;
+		delitem 7035,5;
+		getitem 5377,1;
+		close;
+
+	L_manque:
+		mes "[^000000SGentelmans Pipe^000000]";
+		mes "Te faltan: ";
+		if(countitem(1030) < 5) mes "^FF0000"+(5 - countitem(1030)) +"^000000 Tiger's Footskin";
+		if(countitem(2268) < 3) mes "^FF0000"+(3 - countitem(2268)) +"^000000 Pipe";
+		if(countitem(2651) < 1) mes "^FF0000"+(1 - countitem(2651)) +"^000000 Morrigane's Pendant";
+		if(countitem(7035) < 5) mes "^FF0000"+(5 - countitem(7035)) +"^000000 Matchstick";
+		close;
+
+	L_partir:
+		mes "[^000000Gentelmans Pipe^000000]";
+		mes "Disfruta de tu nuevo item, que tengas un buen día en xRO.";
+		close;
+}

@@ -1,0 +1,32 @@
+﻿Build started 12/02/2017 09:42:40 p.m..
+     1>Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\login-server_sql.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "login-server_sql\Release\login-server_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\src\common /I..\3rdparty\msinttypes\include /Zi /nologo /W3 /WX- /MP /O2 /Oy- /GL /D WIN32 /D NDEBUG /D WITH_SQL /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"login-server_sql\Release\\" /Fd"login-server_sql\Release\vc100.pdb" /Gd /TC /wd4100 /wd4800 /wd4996 /FIconfig.vc.h /analyze- /errorReport:prompt ..\src\login\account_sql.c ..\src\login\ipban_sql.c ..\src\login\login.c ..\src\common\harmonycore.c ..\src\login\loginlog_sql.c
+         account_sql.c
+         ipban_sql.c
+         login.c
+         harmonycore.c
+         loginlog_sql.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\login-server_sql.exe" /INCREMENTAL:NO /NOLOGO libcmt.lib oldnames.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /MANIFEST /ManifestFile:"login-server_sql\Release\login-server_sql.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"..\login-server_sql.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /NXCOMPAT /IMPLIB:"..\login-server_sql.lib" /MACHINE:X86 "login-server_sql\Release\account_sql.obj"
+         "login-server_sql\Release\ipban_sql.obj"
+         "login-server_sql\Release\login.obj"
+         "login-server_sql\Release\harmonycore.obj"
+         "login-server_sql\Release\loginlog_sql.obj"
+         "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common\Release\common.lib"
+         "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
+         Generating code
+         Finished generating code
+         login-server_sql.vcxproj -> C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\..\login-server_sql.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\login-server_sql.exe;#1" /manifest "login-server_sql\Release\login-server_sql.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "login-server_sql\Release\login-server_sql.unsuccessfulbuild".
+         Touching "login-server_sql\Release\login-server_sql.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\login-server_sql.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.65

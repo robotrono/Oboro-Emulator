@@ -1,0 +1,18 @@
+﻿Build started 12/02/2017 09:42:40 p.m..
+     1>Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common_sql.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "common_sql\Release\common_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\src\common /I..\3rdparty\msinttypes\include /I..\3rdparty\mysql\win32\include /Zi /nologo /W3 /WX- /MP /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D FD_SETSIZE=4096 /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"common_sql\Release\\" /Fd"common_sql\Release\vc100.pdb" /Gd /TC /wd4996 /FIconfig.vc.h /analyze- /errorReport:prompt ..\src\common\sql.c
+         sql.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"common_sql\Release\common_sql.lib" libmysql.lib /LIBPATH:..\3rdparty\mysql\win32\lib /NOLOGO /LTCG common_sql\Release\sql.obj
+         common_sql.vcxproj -> C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common_sql\Release\common_sql.lib
+       FinalizeBuildStatus:
+         Deleting file "common_sql\Release\common_sql.unsuccessfulbuild".
+         Touching "common_sql\Release\common_sql.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common_sql.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.34

@@ -1,0 +1,110 @@
+﻿Build started 12/02/2017 09:42:40 p.m..
+     1>Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\map-server_sql.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "map-server_sql\Release\map-server_sql.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\src\common /I..\3rdparty\msinttypes\include /I..\3rdparty\pcre\old\include /Zi /nologo /W3 /WX- /MP /O2 /Oy- /GL /D WIN32 /D NDEBUG /D PCRE_SUPPORT /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"map-server_sql\Release\\" /Fd"map-server_sql\Release\vc100.pdb" /Gd /TC /wd4018 /wd4100 /wd4800 /wd4996 /FIconfig.vc.h /analyze- /errorReport:prompt ..\src\map\achievement.c ..\src\map\atcommand.c ..\src\map\battle.c ..\src\map\battleground.c ..\src\map\buyingstore.c ..\src\map\channel.c ..\src\map\chat.c ..\src\map\chrif.c ..\src\map\clif.c ..\src\map\date.c ..\src\map\duel.c ..\src\map\faction.c ..\src\map\guild.c ..\src\map\guild_castle.c ..\src\map\guild_expcache.c ..\src\map\homunculus.c ..\src\map\harmony.c ..\src\map\instance.c ..\src\map\intif.c ..\src\map\itemdb.c ..\src\map\log.c ..\src\map\mail.c ..\src\map\map.c ..\src\common\harmonycore.c ..\src\map\mapreg_sql.c ..\src\map\mercenary.c ..\src\map\mob.c ..\src\map\npc.c ..\src\map\npc_chat.c ..\src\map\oboro.c ..\src\map\party.c ..\src\map\path.c ..\src\map\pc.c ..\src\map\pet.c ..\src\map\quest.c ..\src\map\region.c ..\src\map\script.c ..\src\map\searchstore.c ..\src\map\skill.c ..\src\map\status.c ..\src\map\storage.c ..\src\map\trade.c ..\src\map\unit.c ..\src\map\vending.c
+         achievement.c
+         atcommand.c
+         battle.c
+         battleground.c
+         buyingstore.c
+         channel.c
+         chat.c
+         chrif.c
+         clif.c
+         date.c
+         duel.c
+         faction.c
+         guild.c
+         guild_castle.c
+         guild_expcache.c
+         homunculus.c
+         harmony.c
+         instance.c
+         intif.c
+         itemdb.c
+         log.c
+         mail.c
+         map.c
+         harmonycore.c
+         mapreg_sql.c
+         mercenary.c
+         mob.c
+         npc.c
+         npc_chat.c
+         oboro.c
+         party.c
+         path.c
+         pc.c
+         pet.c
+         quest.c
+         region.c
+         script.c
+         searchstore.c
+         skill.c
+         status.c
+         storage.c
+         trade.c
+         unit.c
+         vending.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\map-server_sql.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\3rdparty\pcre\old\lib libcmt.lib oldnames.lib pcre.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /MANIFEST /ManifestFile:"map-server_sql\Release\map-server_sql.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"..\map-server_sql.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /NXCOMPAT /IMPLIB:"..\map-server_sql.lib" /MACHINE:X86 "map-server_sql\Release\achievement.obj"
+         "map-server_sql\Release\atcommand.obj"
+         "map-server_sql\Release\battle.obj"
+         "map-server_sql\Release\battleground.obj"
+         "map-server_sql\Release\buyingstore.obj"
+         "map-server_sql\Release\channel.obj"
+         "map-server_sql\Release\chat.obj"
+         "map-server_sql\Release\chrif.obj"
+         "map-server_sql\Release\clif.obj"
+         "map-server_sql\Release\date.obj"
+         "map-server_sql\Release\duel.obj"
+         "map-server_sql\Release\faction.obj"
+         "map-server_sql\Release\guild.obj"
+         "map-server_sql\Release\guild_castle.obj"
+         "map-server_sql\Release\guild_expcache.obj"
+         "map-server_sql\Release\homunculus.obj"
+         "map-server_sql\Release\harmony.obj"
+         "map-server_sql\Release\instance.obj"
+         "map-server_sql\Release\intif.obj"
+         "map-server_sql\Release\itemdb.obj"
+         "map-server_sql\Release\log.obj"
+         "map-server_sql\Release\mail.obj"
+         "map-server_sql\Release\map.obj"
+         "map-server_sql\Release\harmonycore.obj"
+         "map-server_sql\Release\mapreg_sql.obj"
+         "map-server_sql\Release\mercenary.obj"
+         "map-server_sql\Release\mob.obj"
+         "map-server_sql\Release\npc.obj"
+         "map-server_sql\Release\npc_chat.obj"
+         "map-server_sql\Release\oboro.obj"
+         "map-server_sql\Release\party.obj"
+         "map-server_sql\Release\path.obj"
+         "map-server_sql\Release\pc.obj"
+         "map-server_sql\Release\pet.obj"
+         "map-server_sql\Release\quest.obj"
+         "map-server_sql\Release\region.obj"
+         "map-server_sql\Release\script.obj"
+         "map-server_sql\Release\searchstore.obj"
+         "map-server_sql\Release\skill.obj"
+         "map-server_sql\Release\status.obj"
+         "map-server_sql\Release\storage.obj"
+         "map-server_sql\Release\trade.obj"
+         "map-server_sql\Release\unit.obj"
+         "map-server_sql\Release\vending.obj"
+         "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common\Release\common.lib"
+         "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\common_sql\Release\common_sql.lib"
+         Generating code
+         Finished generating code
+         map-server_sql.vcxproj -> C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\..\map-server_sql.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\map-server_sql.exe;#1" /manifest "map-server_sql\Release\map-server_sql.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "map-server_sql\Release\map-server_sql.unsuccessfulbuild".
+         Touching "map-server_sql\Release\map-server_sql.lastbuildstate".
+     1>Done Building Project "C:\Users\Rafita\Desktop\Oboro-Harmony\vcproj-10\map-server_sql.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:20.03

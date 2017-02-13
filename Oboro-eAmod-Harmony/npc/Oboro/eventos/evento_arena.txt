@@ -1,0 +1,364 @@
+-	script	Cek	-1,{
+
+OnWhisperGlobal:
+	if( getgmlevel() > 89 && getmapusers("ordeal_1-1") == 0 ) 
+	{
+		Announce "Se cerraron las puertas de la Arena",8,0xFF0000;
+		enablenpc "Event Healer";
+		set $status,1;
+		killmonsterall "ordeal_1-1";
+		end;
+	}
+end;
+
+OnInit:
+OnTimer30000:
+	if( getmapusers("ordeal_1-1") == 0 ) 
+	{
+		Announce "Se cerraron las puertas de la Arena",8,0xFF0000;
+		enablenpc "Event Healer";
+		set $status,1;
+		killmonsterall "ordeal_1-1";
+		end;
+	}
+
+	mapannounce "ordeal_1-1",  "["+ getmapusers("ordeal_1-1") +"] jugadores aun resisten en la Arena",8,0x00FF00;
+	initnpctimer;
+	end;
+}
+
+ordeal_1-1,149,25,3	script	HiddenNpc	100,{
+OnPCLoadMapEvent:
+	if ( harm_map_multicount( "ordeal_1-1" ) > 1 )
+		warp "prontera",155,187;
+end;
+
+OnClock1755:
+OnClock2115:
+OnClock1355:
+	Announce "¡La Arena abrirá sus puertas en 15 minutos!",8,0x00FF00;
+end;
+
+OnClock1805:
+OnClock2125:
+OnClock1405:
+	Announce "¡La Arena abrirá sus puertas en 5 minutos!",8,0x00FF00;
+end;
+
+OnClock1809:
+OnClock2129:
+OnClock1409:
+	Announce "¡La Arena abrirá sus puertas en 1 minuto!",8,0x00FF00;
+end;
+
+OnWhisperGlobal:
+	if( getgmlevel() < 89 )
+		end;
+OnClock1810:
+OnClock1410:
+OnClock2130:
+	Announce "¡La Arena abrio sus puertas! Estaran abiertas durante 1 minuto",8,0x00FF00;
+	disablenpc "Final Arena";
+	disablenpc "fase1";
+	setwall "ordeal_1-1",266,161,30,4,0,"WallInicio";
+	initnpctimer;
+	set $inf,1;
+	set $status,0;
+	killmonsterall "ordeal_1-1";
+end;
+
+OnTimer60000:
+	Announce "La Arena empezara en 1 minuto",8,0x00FF00;
+end;
+
+OnTimer120000:
+	Announce "¡La Arena ha empezado!",8,0x00FF00;
+	sleep2 4000;
+	mapannounce "ordeal_1-1","Arena : Su misiones es derrotar a todos los mob en la arena, y recuperar el Corazón de midgard.",8,0x09E8E8;
+	sleep2 4000;
+	mapannounce "ordeal_1-1","Ahhh se me olvidaba, no olviden desequipar la evil druid",8,0x09E8E8;
+	sleep2 4000;
+	mapannounce "ordeal_1-1","Arena : La Arena empezara en 3...",8,0x09E8E8;
+	sleep2 4000;
+	mapannounce "ordeal_1-1","Arena : 2.",8,0x09E8E8;
+	sleep2 1000;
+	mapannounce "ordeal_1-1","Arena : 1.",8,0x09E8E8;
+	sleep2 1000;
+	disablenpc "Event Healer";
+	delwall "WallInicio";
+	initnpctimer "Cek";
+	set $inf,0;
+	set $mob,75;
+	set $status, 2; // en progreso ... isaac... 
+
+	setarray .@RandMVP[0],1511,1785,1630,1039,1272,1719,1046,1389,1112,1115,1418,1252,1086,1885,1492,1734,1251,1373,1147,1059,1150,1087,1190,1038,1157,1159,1623,1583,1312,1685;
+	setarray .@RandMVP2[0],1511,1785,1630,1039,1272,1719,1046,1389,1112,1115,1418,1252,1086,1885,1492,1734,1251,1373,1147,1059,1150,1087,1190,1038,1157,1159,1623,1583,1312,1685;
+
+	set .@MVPSelect,.@RandMVP[rand(getarraysize(.@RandMVP))];
+	set .@MVPName$,getmonsterinfo(.@MVPSelect,0); 
+
+	set .@MVPSelect2,.@RandMVP[rand(getarraysize(.@RandMVP2))];
+	set .@MVPName2$,getmonsterinfo(.@MVPSelect2,0); 
+
+	areamonster "ordeal_1-1",43,147,84,147,.@MVPName2$,.@MVPSelect2,2,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,148,261,148,.@MVPName$,.@MVPSelect,2,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,151,261,151,"SEYREN WINDSOR",1634,20,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,151,261,151,"SOLDIER SKELETON",1028,20,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,151,261,151,"ORC ARCHER",1189,20,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,151,261,151,"SANDWAN",1165,20,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,148,261,148,"ARCHER SKELETON",1016,19,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,148,261,148,"MINOROUS",1149,23,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,148,261,148,"REQUIEM",1164,23,"HiddenNpc::Ondevildead";
+	areamonster "ordeal_1-1",211,148,261,148,"KRAKEN LEG",2206,8,"HiddenNpc::Ondevildead";
+	mobevent "ordeal_1-1",211,148,"ATROCE",1785,2,1,0,1,1500000,0,0,0,0,0,0,0,0,"HiddenNpc::Ondevildead";
+end;
+ 
+Ondevildead:
+	if ($status == 1) 
+		end;
+
+	.@anun = 0;
+	$mob--;
+
+
+	switch ( $mob ) 
+	{
+		case 50: 
+		case 25:
+			.@anun = 1;
+		break;
+		case 15:
+			areamonster "ordeal_1-1",211,151,261,151,"GARGOYLE",1253,18,"HiddenNpc::Ondevildead";
+			areamonster "ordeal_1-1",211,151,261,151,"ALARM",1193,16,"HiddenNpc::Ondevildead";
+			areamonster "ordeal_1-1",211,151,261,151,"HIGH ORC",1213,16,"HiddenNpc::Ondevildead";
+			areamonster "ordeal_1-1",211,148,261,148,"INJUSTICE",1257,14,"HiddenNpc::Ondevildead";
+			areamonster "ordeal_1-1",211,148,261,148,"MIMIC",1191,16,"HiddenNpc::Ondevildead";
+			areamonster "ordeal_1-1",211,148,261,148,"WRAITH",1192,9,"HiddenNpc::Ondevildead";
+		break;
+		case 0:
+	 		$mob = 1000;
+	 		mapannounce "ordeal_1-1","Arena : ¡Destruyan las Murallas!",8,0x09E8E8;
+			set $wal1,4;
+			monster "ordeal_1-1",201,151,"Wall#1",1906,1,"HiddenNpc::Onwalldead1";
+			monster "ordeal_1-1",199,151,"Wall#2",1906,1,"HiddenNpc::Onwalldead1";
+			monster "ordeal_1-1",201,148,"Wall#3",1906,1,"HiddenNpc::Onwalldead1";
+			monster "ordeal_1-1",199,148,"Wall#4",1906,1,"HiddenNpc::Onwalldead1";
+		break;
+	}
+
+	if ( .anun == 1 )
+		mapannounce "ordeal_1-1","Arena : " + $mob + " monstruos para destruir la muralla",8,0x09E8E8;
+end;
+
+
+Onwalldead1:
+	if ($status == 1) 
+		end;
+
+	$wal1--;
+	
+	if( $wal1 == 0 ) 
+	{
+		enablenpc "fase1";
+		mapannounce "ordeal_1-1","Arena : Se ah abierto el warp a la siguiente sala",8,0x09E8E8;
+		sleep2 1000;
+		atcommand "@raisemap";
+		sleep2 1000;
+		mapannounce "ordeal_1-1","Arena : En esta fase tienen la tarea de derrotar al guardian y avanzar hasta la ultima sala de la Arena",8,0x09E8E8;
+
+		$boss1 = 1;
+		areamonster "ordeal_1-1",43,152,84,152,.@MVPName2$,.@MVPSelect2,2,0;
+		areamonster "ordeal_1-1",43,152,84,152,.@MVPName$,.@MVPSelect,1,0;
+		areamonster "ordeal_1-1",43,152,84,152,"ANOLIAN",1206,15,0;
+		areamonster "ordeal_1-1",43,152,84,152,"HIGH PRIEST MARGARETHA",1643,1,0;
+		areamonster "ordeal_1-1",43,152,84,152,"WANDERER",1208,10,0;
+		areamonster "ordeal_1-1",43,152,84,152,"DEVIRUCHI",1109,13,0;
+		areamonster "ordeal_1-1",43,147,84,147,"JOKER",1131,14,0;
+		areamonster "ordeal_1-1",43,147,84,147,"CHAMPION CHEN",2224,2,0;
+		areamonster "ordeal_1-1",43,147,84,147,"MOONLIGHT",1150,2,0;
+		areamonster "ordeal_1-1",43,147,84,147,"DARK ILLUSION",1302,2,0;
+		mobevent "ordeal_1-1",40,144,"PORING LIDER",2100,2,1,0,1,254000,0,0,0,0,0,0,0,0,"HiddenNpc::Onbossdead1";
+	}
+end;
+
+Onbossdead1:
+	if ($status == 1) 
+		end;
+	
+	$boss1--;
+	
+	if($boss1 == 0)
+		mapannounce "ordeal_1-1","Arena : El guardian a muerto, destruyan la muralla para abrir paso a la ultima etapa de la Arena",8,0x09E8E8;
+	sleep2 3000;
+	
+	atcommand "@raisemap";
+	areamonster "ordeal_1-1",37,161,44,139,"GARGOYLE",1253,5,0;
+	areamonster "ordeal_1-1",37,161,44,139,"ALARM",1193,7,0;
+	areamonster "ordeal_1-1",37,161,44,139,"HIGH ORC",1213,7,0;
+	areamonster "ordeal_1-1",37,161,44,139,"INJUSTICE",1257,6,0;
+	areamonster "ordeal_1-1",37,161,44,139,"MIMIC",1191,7,0;
+	areamonster "ordeal_1-1",37,161,44,139,"WRAITH",1192,6,0;
+
+	$wall2 = 4;
+
+	monster "ordeal_1-1",22,153,"Wall#5",1906,1,"HiddenNpc::Onwalldead2";
+	monster "ordeal_1-1",30,153,"Wall#6",1906,1,"HiddenNpc::Onwalldead2";
+	monster "ordeal_1-1",22,146,"Wall#7",1906,1,"HiddenNpc::Onwalldead2";
+	monster "ordeal_1-1",30,146,"Wall#8",1906,1,"HiddenNpc::Onwalldead2";
+end;
+ 
+Onwalldead2:
+	if ($status == 1) 
+		end;
+
+	$wall2--;
+	if($wall2 == 0) 
+	{
+		$elemental = 36;
+		areamonster "ordeal_1-1",43,152,84,152,.@MVPName$,.@MVPSelect,1,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",155,144,155,154,"GUARDIAN SOLDIER",1286,9,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",153,144,153,154,"GUARDIAN ARCHER",1285,9,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",153,144,153,154,"NATH ARCHER",1830,4,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",153,144,153,154,"CECIL DAMON",1638,6,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",155,144,155,154,"ASSASIN EREMES",1641,2,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",153,144,153,154,"SNIPER CECIL",1644,2,"HiddenNpc::OnInvokeElemntal";
+		areamonster "ordeal_1-1",155,144,155,154,"HIGH PRIEST MARGARETHA",1643,1,"HiddenNpc::OnInvokeElemntal";
+		mobevent "ordeal_1-1",150,148,"BYORGUE NATH",1839,2,2,0,1,40000,0,0,0,0,0,0,0,0,"HiddenNpc::OnInvokeElemntal";
+		
+		atcommand "@raisemap";
+
+		mapannounce "ordeal_1-1","Arena : Han peleado de forma extraordinaria, pero ahora sigue lo mas dificil!!",8,0x09E8E8;
+		sleep2 3000;
+		mapannounce "ordeal_1-1","Arena : En 30 segundos serán teleportados a la fase final sin derecho a retorno!!",8,0x09E8E8;
+		sleep2 20000;
+		mapannounce "ordeal_1-1","Arena : 10 Segundos para ser warpeados!!",8,0x09E8E8;
+		sleep2 7000;
+		mapannounce "ordeal_1-1","Arena :  3!!!!",8,0x09E8E8;
+		sleep2 1000;
+		mapannounce "ordeal_1-1","Arena :  2!!!!",8,0x09E8E8;
+		sleep2 1000;
+		mapannounce "ordeal_1-1","Arena :  1!!!!!!!",8,0x09E8E8;
+		
+		mapwarp "ordeal_1-1","ordeal_1-1",172,150;
+	}
+end;
+
+OnInvokeElemntal:
+	$elemental--;
+	switch ( $elemental )
+	{
+		case 0:
+			sleep2 3000;
+			mapannounce "ordeal_1-1","Arena : La Princesa Elemental ha caido, es nuestra oportunidad Alzaos Guerreros!!!",8,0xFF0000;
+			//atcommand "@raisemap";
+			mobevent "ordeal_1-1",150,149,"Heart",1915,2,1,0,1,1000,0,1,0,0,0,0,0,0,"HiddenNpc::Oncristaldead";
+		break;
+		case 1:
+			atcommand "@raisemap";
+			mapannounce "ordeal_1-1","Arena : La Princesa Elemental ha aparecido!!!",8,0xFF0000;
+			mobevent "ordeal_1-1",150,148,"Princesa Elemental",1651,2,1,0,1,450000,0,0,0,0,0,0,0,0,"HiddenNpc::OnInvokeElemntal";
+		break;
+			
+		case 2:
+		case 5:
+		case 10:
+		case 15:
+		case 20:
+		case 25:
+		case 30:
+		case 34:
+			atcommand "@raisemap";
+		break;
+	}
+end;
+
+Oncristaldead:
+	if ($status == 1) 
+		end;
+
+	Announce "Arena : Felicidades a los sobrevivientes a la Arena, pueden reclamar su premio ",8,0xFF0000;
+	enablenpc "Final Arena";
+end;
+
+}
+
+ordeal_1-1	mapflag	nowarp
+ordeal_1-1	mapflag	nowarpto
+ordeal_1-1	mapflag	noteleport
+ordeal_1-1	mapflag	nosave	SavePoint
+ordeal_1-1	mapflag	nomemo
+ordeal_1-1	mapflag	nobranch
+ordeal_1-1	mapflag	nopenalty
+ordeal_1-1	mapflag	noloot
+ordeal_1-1	mapflag	restricted	5
+ordeal_1-1	mapflag	monster_noteleport
+ordeal_1-1	mapflag	loadevent
+
+
+ordeal_1-1,147,150,8	script	Final Arena	108,{
+	title();
+	mes "felicidades han logrado derrotar la arena";
+	close2;
+		getitem 7829,120;
+		getitem 7828,120;
+		getitem 7773,110;
+		getitem 7539,12;
+		warp "prontera",156,183;
+	end;
+}
+
+
+prontera,147,165,6	script	Arena Guard	109,{
+	title();
+	mes "Bienvenido a la puerta de entrada a la ^FF0000 Arena^000000.";
+	mes "¿Quieres porbar tu valentia?, ¿Poner a prueba tu resistencia y habilidad?. Si te atrevez acepta el desafio?.";
+	next;
+	switch( select("[ > ] Entrar :[ > ] Información:[ > ] Cancelar") ) {
+		case 3: 
+			close2; 
+		break;
+		case 1:
+			title();
+			if ( $status == 1 )
+				mclose "Las puertas de la arena están cerradas.";
+
+			if ( $status == 2 )
+				mclose "La arena está en progreso.";
+
+			if( Baselevel < 90 ) 
+				mclose "Nivel minimo de base 90.";
+
+			if ( getmapusers("ordeal_1-1") >= 180 ) 
+				mclose "Ya hay muchos usuarios en la sala.";
+
+			if ( harm_map_multicount( "ordeal_1-1" ) > 0 )
+				mclose "No se puede hacer doble login en este mapa.";
+
+			percentheal 100,100;
+			warp "ordeal_1-1",274,150;
+   		break;
+		case 2:
+			title();
+			mes "La Arena tiene 3 niveles, en el que encontraras enemigos.";
+			mes "Cada nivel tiene monstruos mas fuertes.";
+			mes "Si superan los 3 niveles y derrotan al Boss, seran recompensados.";
+			close2;
+		break;
+	}
+	end;
+
+	OnInit:
+		waitingroom "Arena Ground Event",0;
+	end;
+}
+
+ordeal_1-1,277,154,5	script	Event Healer	480,7,7,{
+	sc_start 32,  240000, 10;  // Increase Agi
+	sc_start 30, 240000, 10; // Blessing
+	percentheal 100,100;
+	skilleffect 29,0; // Increase Agi
+	skilleffect 34,0; // Blessing
+	specialeffect2 312;
+}
+
+ordeal_1-1,199,150,0	warp	fase1	1,1,ordeal_1-1,95,150

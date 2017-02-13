@@ -1,0 +1,114 @@
+// Healer By iSaaC ===========================================
+prontera,162,192,3	script	Healer::Buffer	501,10,10,{
+OnTouch:
+	if (readparam(5) == 0 )
+		atcommand "@alive";
+	
+	sc_start 32,  240000, 10;
+	sc_start 30, 240000, 10;
+	percentheal 105,105;
+	
+	skilleffect 34,0;
+	skilleffect 29,0;
+
+	repairall;
+	
+	if ( Class == 4049 )
+	{
+		sc_start4 sc_spirit, 360000, 5, 461,0,0;
+		skilleffect 461, 5;
+		skilleffect 28,999999;
+	}
+
+	getinventorylist;
+	set @identify, 0;
+	for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+		if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+	}
+	if (@identify == 0) end;	
+	getinventorylist;
+	set @identified, 0;
+	for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+		if (@inventorylist_identify[@i] == 0) {
+			if ( zeny > 100 ) set Zeny, Zeny - 100;		
+			delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+			getitem @inventorylist_id[@i],1;
+			set @identified, @identified + 1;
+		}
+	}
+
+	end;
+}
+
+
+morocc,164,92,4	duplicate(Buffer)	Healer#02	501,5,5
+payon,176,107,4	duplicate(Buffer)	Healer#03	475,5,5
+payon,164,229,4	duplicate(Buffer)	Healer#04	501,5,5
+geffen,115,70,5	duplicate(Buffer)	Healer#05	501,5,5
+amatsu,222,234,6	duplicate(Buffer)	Healer#06	501,5,5
+gonryun,153,120,6	duplicate(Buffer)	Healer#07	501,5,5
+umbala,149,161,3	duplicate(Buffer)	Healer#08	501,5,5
+rachel,107,136,5	duplicate(Buffer)	Healer#09	501,5,5
+izlude,123,142,5	duplicate(Buffer)	Healer#10	501,5,5
+aldebaran,145,122,3	duplicate(Buffer)	Healer#11	501,5,5
+xmas,153,133,4	duplicate(Buffer)	Healer#12	501,5,5
+comodo,190,153,4	duplicate(Buffer)	Healer#13	501,5,5
+ayothaya,201,190,6	duplicate(Buffer)	Healer#14	501,5,5
+hugel,91,149,5	duplicate(Buffer)	Healer#15	501,5,5
+moscovia,228,195,4	duplicate(Buffer)	Healer#16	501,5,5
+dicastes01,194,192,6	duplicate(Buffer)	Healer#17	501,5,5
+arena_4,143,105,5	duplicate(Buffer)	Healer BG#18	501,5,5
+brasilis,203,220,4	duplicate(Buffer)	Healer#19	501,5,5
+splendide,195,151,5	duplicate(Buffer)	Healer#20	501,5,5
+mid_camp,213,239,5	duplicate(Buffer)	Healer#21	501,5,5
+new_1-1,51,114,6	duplicate(Buffer)	Healer#22	501,5,5
+manuk,273,199,4	duplicate(Buffer)	Healer#23	501,5,5
+lighthalzen,166,94,4	duplicate(Buffer)	Healer#24	501,5,5
+louyang,220,109,4	duplicate(Buffer)	Healer#25	501,5,5
+alberta,113,60,6	duplicate(Buffer)	Healer#26	501,5,5
+yuno,155,198,6	duplicate(Buffer)	Healer#27	501,5,5
+dewata,198,183,6	duplicate(Buffer)	Healer#28	501,5,5
+Hyrule,131,189,6	duplicate(Buffer)	Healer#29	501,5,5
+veins,209,128,6	duplicate(Buffer)	Healer#30	501,5,5
+mora,104,109,6	duplicate(Buffer)	Healer#66	475,5,5
+
+//Healer en DeadBranch Room
+//1@dbroom,12,185,5	duplicate(Buffer)	Healer#30	501,5,5
+// GR Rooms Healer
+gr_1,50,65,6	duplicate(Buffer)	Healer#31	501,5,5
+gr_2,50,65,6	duplicate(Buffer)	Healer#32	501,5,5
+gr_3,50,65,6	duplicate(Buffer)	Healer#33	501,5,5
+gr_4,50,65,6	duplicate(Buffer)	Healer#34	501,5,5
+gr_5,50,65,6	duplicate(Buffer)	Healer#35	501,5,5
+gr_6,50,65,6	duplicate(Buffer)	Healer#36	501,5,5
+gr_7,50,65,6	duplicate(Buffer)	Healer#37	501,5,5
+gr_8,50,65,6	duplicate(Buffer)	Healer#38	501,5,5
+gr_9,50,65,6	duplicate(Buffer)	Healer#39	501,5,5
+gr_10,50,65,6	duplicate(Buffer)	Healer#40	501,5,5
+gr_11,50,65,6	duplicate(Buffer)	Healer#41	501,5,5
+gr_12,50,65,6	duplicate(Buffer)	Healer#42	501,5,5
+gr_13,50,65,6	duplicate(Buffer)	Healer#43	501,5,5
+gr_14,50,65,6	duplicate(Buffer)	Healer#44	501,5,5
+gr_15,50,65,6	duplicate(Buffer)	Healer#45	501,5,5
+gr_16,50,65,6	duplicate(Buffer)	Healer#46	501,5,5
+gr_17,50,65,6	duplicate(Buffer)	Healer#47	501,5,5
+gr_18,50,65,6	duplicate(Buffer)	Healer#48	501,5,5
+gr_19,50,65,6	duplicate(Buffer)	Healer#49	501,5,5
+gr_20,50,65,6	duplicate(Buffer)	Healer#50	501,5,5
+gr_21,50,65,6	duplicate(Buffer)	Healer#51	501,5,5
+gr_22,50,65,6	duplicate(Buffer)	Healer#52	501,5,5
+gr_23,50,65,6	duplicate(Buffer)	Healer#53	501,5,5
+gr_24,50,65,6	duplicate(Buffer)	Healer#54	501,5,5
+gr_25,50,65,6	duplicate(Buffer)	Healer#55	501,5,5
+gr_26,50,65,6	duplicate(Buffer)	Healer#56	501,5,5
+gr_27,50,65,6	duplicate(Buffer)	Healer#57	501,5,5
+gr_28,50,65,6	duplicate(Buffer)	Healer#58	501,5,5
+gr_29,50,65,6	duplicate(Buffer)	Healer#59	501,5,5
+gr_30,50,65,6	duplicate(Buffer)	Healer#60	501,5,5
+core,152,169,4	duplicate(Buffer)	Healer#61	501,5,5
+xromvp,95,53,4	duplicate(Buffer)	Healer#62	501,2,2
+xromvp2,95,53,4	duplicate(Buffer)	Healer#63	501,2,2
+xromvp3,95,53,4	duplicate(Buffer)	Healer#64	501,2,2
+xromvp4,95,53,4	duplicate(Buffer)	Healer#65	501,2,2
+sec_in02,11,30,4	duplicate(Buffer)	Healer#67	501,2,2
+rwc01,60,49,4	duplicate(Buffer)	Healer#68	501,2,2

@@ -1,0 +1,3 @@
+arena_4	mapflag	nodiscount
+quiz_02	mapflag	nodiscount
+arena_4	mapflag	nochat

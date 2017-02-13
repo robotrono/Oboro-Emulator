@@ -1,0 +1,44 @@
+gr_1,64,62,3	script	PvP Room	468,{
+	mes "^0770E9[  PvP xRO  ]^000000";
+	mes "¿Quieres ir a la sala PvP?";
+	next;
+	if(select("Sí.:Mejor no.") == 2){
+		close;
+	}
+	warp "guild_vs3",50,49;
+	end;
+}
+
+
+
+//GuildRoom
+gr_2,64,62,3	duplicate(PvP Room)	PvP Room#GR02	468
+gr_3,64,62,3	duplicate(PvP Room)	PvP Room#GR03	468
+gr_4,64,62,3	duplicate(PvP Room)	PvP Room#GR04	468
+gr_5,64,62,3	duplicate(PvP Room)	PvP Room#GR05	468
+gr_6,64,62,3	duplicate(PvP Room)	PvP Room#GR06	468
+gr_7,64,62,3	duplicate(PvP Room)	PvP Room#GR07	468
+gr_8,64,62,3	duplicate(PvP Room)	PvP Room#GR08	468
+gr_9,64,62,3	duplicate(PvP Room)	PvP Room#GR09	468
+gr_10,64,62,3	duplicate(PvP Room)	PvP Room#GR10	468
+gr_11,64,62,3	duplicate(PvP Room)	PvP Room#GR11	468
+gr_12,64,62,3	duplicate(PvP Room)	PvP Room#GR12	468
+gr_13,64,62,3	duplicate(PvP Room)	PvP Room#GR13	468
+gr_14,64,62,3	duplicate(PvP Room)	PvP Room#GR14	468
+gr_15,64,62,3	duplicate(PvP Room)	PvP Room#GR15	468
+gr_16,64,62,3	duplicate(PvP Room)	PvP Room#GR16	468
+gr_17,64,62,3	duplicate(PvP Room)	PvP Room#GR17	468
+gr_18,64,62,3	duplicate(PvP Room)	PvP Room#GR18	468
+gr_19,64,62,3	duplicate(PvP Room)	PvP Room#GR19	468
+gr_20,64,62,3	duplicate(PvP Room)	PvP Room#GR20	468
+gr_21,64,62,3	duplicate(PvP Room)	PvP Room#GR21	468
+gr_22,64,62,3	duplicate(PvP Room)	PvP Room#GR22	468
+gr_23,64,62,3	duplicate(PvP Room)	PvP Room#GR23	468
+gr_24,64,62,3	duplicate(PvP Room)	PvP Room#GR24	468
+gr_25,64,62,3	duplicate(PvP Room)	PvP Room#GR25	468
+gr_26,64,62,3	duplicate(PvP Room)	PvP Room#GR26	468
+gr_27,64,62,3	duplicate(PvP Room)	PvP Room#GR27	468
+gr_28,64,62,3	duplicate(PvP Room)	PvP Room#GR28	468
+gr_29,64,62,3	duplicate(PvP Room)	PvP Room#GR29	468
+gr_30,64,62,3	duplicate(PvP Room)	PvP Room#GR30	468
+prt_are02,156,144,3	duplicate(PvP Room)	PvP Room#GR31	468

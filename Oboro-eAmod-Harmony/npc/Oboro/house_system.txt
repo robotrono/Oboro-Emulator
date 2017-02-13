@@ -1,0 +1,996 @@
+-	script	OnLVLUP	-1,{
+
+	OnPCJobLvUpEvent:
+	OnPCBaseLvUpEvent:
+	if(BaseLevel >= 1 && JobLevel >= 1) {
+		sc_start 32,  240000, 10;
+		sc_start 30, 240000, 10;
+	}	
+	end;
+}
+
+prontera,165,157,3	script	Casas Info::Casas Info	858,{
+	set .@Cost , 10000;
+	title("Casas MVP");
+	mes "Bienvenido a las casas rentables!";
+	mes " Recuerda que necesecitas : ";
+	mes "^10B2D2 [ ~ ] ^000000 10k de Cashpoints";
+	next; 
+	title("Casas MVP");
+
+	switch ( select( "^10B2D2 [ > ] ^000000 Informacion de una casa :^10B2D2 [ > ] ^000000 Gracias, Adios!" ) ) 
+	{
+		case 1:
+			mes "Introduce el numero de casa";
+			input .@numeroCASA;
+			if ( .@numeroCASA <= 10 && .@numeroCASA >= 1 && getd("$ALQUILADA" + .@numeroCASA ) )
+			{
+				if ( getd( "$ALQUILADA" + .@numeroCASA ) == getcharid(3) ) 
+				{
+					next;
+					mes "Hola administrador de casa : " + .@numeroCASA;
+					mes "Tu actual contraseña es : ^10B2D2 " + getd("$CLAVE" + .@numeroCASA ) + "^000000 .";
+					mes " Que deseas hacer?";
+					if ( select ( " ^10B2D2 [ > ] ^000000 Cambiar Password : ^10B2D2 [ > ] ^000000 Nada" ) == 1 ) 
+					{
+						do {
+							next; 
+							title("Casas MVP");
+							mes "digita la clave de entrada";
+							input .@Clave$;
+							mes "tu clave sera " + .@Clave$;
+							set .@SELECCION , select("^10B2D2 [ > ] ^000000Si:^10B2D2 [ > ] ^000000 Volver a digitar");
+						} while ( .@SELECCION != 1 );
+						setd "$CLAVE" + .@numeroCASA , .@Clave$;
+					}	
+				}
+				next;
+				title("Casas MVP");
+				mes " El dueño de la casa es : ^10B2D2 " + getd("$NOMBREALQ" + .@numeroCASA + "$" ) + "^000000.";
+				mes " Esta casa expira en : ^10B2D2 " + callfunc("Time2Str",getd( "$TIEMPO" + .@numeroCASA )) + "^000000.";
+				
+			} else {
+				next; 
+				title("Casas MVP");
+				mes " El numero de casa es incorrecto o no esta alquilada";		 
+			}
+
+		break;
+		case 3: break;
+	} 
+	close;
+}
+
+prontera,167,160,4	script	rent_casa::rent_casa	45,2,2,{
+OnTouch:
+	setarray .@casas$[1],"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa " ,"Casa ","Casa ";
+	setarray .@casma$[1],"rentb2","rentb3","rentb4","rentb5","rentb6","rentb7","rentb8","rentb9","rentb10","rentb11";
+	set .@precioRENTA , 10000;
+	set .@Time, 1 * 3 * 24 * 60 * 60; // Time in Seconds = 4 weeks, 7 days per week, 24 hours per day, 60 minutes per day, 60 seconds per minute. = 1 month in this sample.
+
+	title("Casas MVP");
+	mes "Bienvenido a las casas rentables!";
+	mes " Recuerda que necesecitas : ";
+	mes "^10B2D2 [ ~ ] ^000000 10k de Cashpoints";
+	next;
+
+	for ( set .@j , 0; .@j < getarraysize(.@casas$); set .@j , .@j + 1 ) 
+	{
+	
+		if ( getd ("$ALQUILADA" + .@j) != 0 )  
+		{
+		
+			 if ( getd( "$TIEMPO"    + .@j ) <= gettimetick(2) ) 
+			 {
+			 
+				setarray .msg$[.@j], .@casas$[.@j] + .@j + "^00FF00 Libre.^000000";
+				setd "$CLAVE"      + .@j , 0;
+				setd "$TIEMPO"     + .@j , 0;
+				setd "$ALQUILADA"  + .@j , 0;
+				setd "$NOMBREALQ$" + .@j , "";
+	
+			} else 
+				setarray .msg$[.@j], .@casas$[.@j] + .@j + "^FF0000 Ocupada.^000000";	
+				
+		} else if ( getd ("$ALQUILADA" + .@j) == 0 ) 
+			setarray .msg$[.@j], .@casas$[.@j] + .@j + "^00FF00 Libre.^000000";
+	}
+
+	for ( set .@i , 1; .@i < getarraysize(.@casas$); set .@i , .@i + 1 )
+		set .@Menu$ , .@Menu$ + "^10B2D2 [ > ] ^000000 " + .msg$[.@i] + ":";
+	set .@ESCOJIDO  , select( .@Menu$ );
+
+	next;
+	title("Casas MVP");
+	
+	if ( getd ( "$ALQUILADA" + .@ESCOJIDO ) )	
+	{
+	
+		input .@claveNOMIEMBRO;
+
+		if ( getd( "$CLAVE" + .@ESCOJIDO ) != .@claveNOMIEMBRO || .@claveNOMIEMBRO == 0 ) 
+			mclose "^10B2D2 [ ~ ] ^000000 Clave incorrecta";
+	
+		mes "Bienvenido a su casa";
+		close2;
+			warp .@casma$[.@ESCOJIDO],24,4;
+		end;
+	}
+	
+	if ( getd ( "$ALQUILADA" + .@ESCOJIDO ) != 0 ) 
+	{
+	
+		mes "^10B2D2 [ ~ ] ^000000 Casa alquilada";
+		mes "^10B2D2 [ ~ ] ^000000 No cuenta premium";
+		close;
+	} else {
+		for ( set .@ncasas , 1; .@ncasas < getarraysize(.@casas$); set .@ncasas , .@ncasas + 1 ) 
+		{
+		
+			if ( getd ( "$ALQUILADA" + .@ncasas ) == getcharid(3) )
+				mclose "Ya posees una casa no puedo alquilarte otra.";
+
+		}
+		
+		mes "Estas seguro de alquilar la Casa # ^10B2D2 " + .@ESCOJIDO + "^000000 ?";
+		if ( select ("^10B2D2 [ > ] ^000000 Proceder:^10B2D2 [ > ] ^000000 Mejor no") == 2 ) close;
+		
+		next;
+		title("Casas MVP");		
+
+		if ( #CASHPOINTS < .@precioRENTA )
+			mclose "No tienes " + .@precioRENTA + " Cash.";
+	
+		do 
+		{
+		
+			next; 
+			title("Casas MVP");
+			mes "digita la clave de entrada(números solamente)";
+			input .@Clave;
+			mes "tu clave sera " + .@Clave;
+			set .@SELECCION , select("^10B2D2 [ > ] ^000000Si:^10B2D2 [ > ] ^000000 Volver a digitar");
+		} while ( .@SELECCION != 1 );
+		
+		setd "$CLAVE"    + .@ESCOJIDO , .@Clave;
+		setd "$TIEMPO"    + .@ESCOJIDO , gettimetick(2) + .@Time;
+		setd "$ALQUILADA" + .@ESCOJIDO , getcharid(3);
+		setd "$NOMBREALQ" + .@ESCOJIDO + "$" , strcharinfo(0);
+		set #CASHPOINTS, #CASHPOINTS - .@precioRENTA;
+		announce "[ "+ strcharinfo(0) +" ] ha alquilado la casa número: " + .@ESCOJIDO,bc_all,0x5EB6E2;
+		close;
+
+	}
+end;
+
+OnPCDieEvent:
+	if ( strcharinfo(3) == "rentb1" ||
+		strcharinfo(3) == "rentb2" ||
+		strcharinfo(3) == "rentb3" ||
+		strcharinfo(3) == "rentb4" ||
+		strcharinfo(3) == "rentb5" ||
+		strcharinfo(3) == "rentb6" ||
+		strcharinfo(3) == "rentb7" ||
+		strcharinfo(3) == "rentb8" ||
+		strcharinfo(3) == "rentb9" ||
+		strcharinfo(3) == "rentb10" ||
+		strcharinfo(3) == "rentb11" ||
+		strcharinfo(3) == "rentb12" ||
+		strcharinfo(3) == "rentb13" ||
+		strcharinfo(3) == "rentb14" ||
+		strcharinfo(3) == "rentb15" ||
+		strcharinfo(3) == "rentb16" ||
+		strcharinfo(3) == "rentb17" ||
+		strcharinfo(3) == "rentb18" ||
+		strcharinfo(3) == "rentb19" ||
+		strcharinfo(3) == "rentb20" ||
+		strcharinfo(3) == "rentb21" ||
+		strcharinfo(3) == "rentb22" ||
+		strcharinfo(3) == "rentb23" ||
+		strcharinfo(3) == "rentb24" ||
+		strcharinfo(3) == "rentb25" ||
+		strcharinfo(3) == "rentb26" ||
+		strcharinfo(3) == "rentb27"
+	) 
+	{
+		sleep2 100;
+		warp strcharinfo(3),16,24;
+		atcommand "@alive "+ strcharinfo(0);
+		sc_start 32,  240000, 10;
+		sc_start 30, 240000, 10;
+		percentheal 100,100;
+		repairall;
+		end;
+	}
+end;
+
+	
+}
+
+-	script	BRent_Closet	-1,{
+    mes "^0000FF[Closet]^000000";
+    set .@Option, select("Normal:Formal:Abrigo:Verano");
+
+    sc_end SC_WEDDING;
+    sc_end SC_XMAS;
+    sc_end SC_SUMMER;
+    switch( .@Option )
+    {
+    case 1: break;
+    case 2: sc_start SC_WEDDING,100,0; break;
+    case 3: sc_start SC_XMAS,100,0; break;
+    case 4: sc_start SC_SUMMER,100,0; break;
+    }
+    close;
+}
+
+
+
+-	script	BRent_PVPSwitch	-1,{
+
+	getmapxy .@map$, .@x, .@y, 1;
+	mes "^0000FFPVP Switch^000000";
+	mes " ";
+	mes " Este control activa/desactiva modalidad PVP en el exterior de su casa. Maneje con cuidado ";
+
+	switch( select("^10B2D2 [ > ] ^000000 Encender:^10B2D2 [ > ] ^000000 Apagar") )
+	{
+	case 1: pvpon .@map$; close;
+	case 2: pvpoff .@map$; close;
+	}
+}
+
+-	script	BRent_Bed	-1,{
+
+	mes "Tomar una siesta?";
+	if( select("^10B2D2 [ > ] ^000000 Sí:^10B2D2 [ > ] ^000000 No") == 2 )
+		close;
+
+	percentheal 100,100;
+	getmapxy .@map$, .@x, .@y, 1;
+
+	if( compare(strnpcinfo(2),"ax") ) { warp .@map$,40,22; }
+	else if( compare(strnpcinfo(2),"ay") ) { warp .@map$,40,22; }
+	else if( compare(strnpcinfo(2),"bx") ) { warp .@map$,7,30; }
+	else if( compare(strnpcinfo(2),"by") ) { warp .@map$,23,31; }
+	else if( compare(strnpcinfo(2),"bz") ) { warp .@map$,30,31; }
+	else if( compare(strnpcinfo(2),"cx") ) { warp .@map$,7,30; }
+	else if( compare(strnpcinfo(2),"cy") ) { warp .@map$,30,32; }
+	else if( compare(strnpcinfo(2),"dx") ) { warp .@map$,33,30; }
+	else if( compare(strnpcinfo(2),"dy") ) { warp .@map$,8,33; }
+	else if( compare(strnpcinfo(2),"ex") ) { warp .@map$,31,32; }
+	else if( compare(strnpcinfo(2),"ey") ) { warp .@map$,8,32; }
+	else if( compare(strnpcinfo(2),"ez") ) { warp .@map$,9,32; }
+	else if( compare(strnpcinfo(2),"fx") ) { warp .@map$,8,32; }
+	else if( compare(strnpcinfo(2),"fy") ) { warp .@map$,17,32; }
+	else if( compare(strnpcinfo(2),"gx") ) { warp .@map$,29,31; }
+	else if( compare(strnpcinfo(2),"gy") ) { warp .@map$,29,31; }
+	else if( compare(strnpcinfo(2),"gz") ) { warp .@map$,32,9; }
+
+	sleep2 2000;
+	emotion e_yawn,1;
+	end;
+}
+
+-	script	BRent_Piano	-1,{
+	
+	mes "^0000FF[Reproductor]^000000";
+	mes "Lista de Pistas Musicales:";
+	mes " ";
+	set .@SoundTrack, select("^10B2D2 [ > ] ^000000 Chaos of Eternity:^10B2D2 [ > ] ^000000 Bragis Poem:^10B2D2 [ > ] ^000000 Ring of Nibelungen:^10B2D2 [ > ] ^000000 Dont Forget Me:^10B2D2 [ > ] ^000000 In To The Abyss:^10B2D2 [ > ] ^000000 Assassin of Sunset");
+	if( getd("$@House_" + strnpcinfo(2) + "_piano") )
+	{
+		mes "^FF0000- Piano Ocupado... -^000000";
+		close;
+	}
+
+	initnpctimer;
+	getmapxy .@map$, .@x, .@y, 1;
+	switch( .@SoundTrack )
+	{
+	case 1: soundeffectall "chaos_of_eternity.wav",0,.@map$,0,0,50,50; break;
+	case 2: soundeffectall "bragis_poem.wav",0,.@map$,0,0,50,50; break;
+	case 3: soundeffectall "ring_of_nibelungen.wav",0,.@map$,0,0,50,50; break;
+	case 4: soundeffectall "dont_forget_me_not.wav",0,.@map$,0,0,50,50; break;
+	case 5: soundeffectall "in_to_the_abyss.wav",0,.@map$,0,0,50,50; break;
+	case 6: soundeffectall "assassin_of_sunset.wav",0,.@map$,0,0,50,50; break;
+	}
+	
+	mes "^FF0000- Reproduciendo... -^000000";
+	close;
+
+OnTimer50000:
+	emotion e_no1;
+	stopnpctimer;
+	end;
+}
+
+-	script	BRent_Storage	-1,{
+
+	if( isPremium() == 1 )
+	{
+		mes "Que storage quieres abrir?";
+		set .@St, select("^10B2D2 [ > ] ^000000Storage Normal","^0000FFStorage Premium^000000") - 1;
+	}
+	close2;
+	if( @St )
+		openrentstorage;
+	else
+		openstorage;
+	end;
+}
+
+-	script	BRent_AppleTree	-1,{
+	if (!#TIMETOPICK || #TIMETOPICK < gettimetick(2) )
+	{ 
+		set #TIMETOPICK , gettimetick(2) + 600;
+		set  $VECESPRECIONADAS , 0;
+	
+	} else if ( #TIMETOPICK > gettimetick(2) && $VECESPRECIONADAS <= 10 ) 
+	{
+		set .@rand , rand(100);
+		if ( .@rand < 10 )	end;
+
+		if ( .@rand < 80 ) 
+		{
+	  	  getitem 512,1; 
+		  specialeffect2 363; 
+		} else if ( .@rand < 90 )
+			flooritem2xy .@map$, rand(.@x - 2,.@x + 2), rand(.@y - 2,.@y + 2), 607 + rand(2), 1;
+		else if ( .@rand == 99 ) 
+			getitem 12103,1;
+			
+		set $VECESPRECIONADAS , $VECESPRECIONADAS + 1;
+		end;
+	} end;
+}
+//============================================================ 
+//= Camas
+//============================================================ 
+
+rentinb1,5,33,0	duplicate(BRent_Bed)	Descansar#bx1	111
+rentinb1,26,34,0	duplicate(BRent_Bed)	Descansar#by1	111
+rentinb1,33,34,0	duplicate(BRent_Bed)	Descansar#bz1	111
+rentinb2,5,33,0	duplicate(BRent_Bed)	Descansar#bx2	111
+rentinb2,26,34,0	duplicate(BRent_Bed)	Descansar#by2	111
+rentinb2,33,34,0	duplicate(BRent_Bed)	Descansar#bz2	111
+rentinb3,5,33,0	duplicate(BRent_Bed)	Descansar#bx3	111
+rentinb3,26,34,0	duplicate(BRent_Bed)	Descansar#by3	111
+rentinb3,33,34,0	duplicate(BRent_Bed)	Descansar#bz3	111
+rentinb4,5,33,0	duplicate(BRent_Bed)	Descansar#bx4	111
+rentinb4,26,34,0	duplicate(BRent_Bed)	Descansar#by4	111
+rentinb4,33,34,0	duplicate(BRent_Bed)	Descansar#bz4	111
+rentinb5,5,33,0	duplicate(BRent_Bed)	Descansar#bx5	111
+rentinb5,26,34,0	duplicate(BRent_Bed)	Descansar#by5	111
+rentinb5,33,34,0	duplicate(BRent_Bed)	Descansar#bz5	111
+rentinb6,5,33,0	duplicate(BRent_Bed)	Descansar#bx6	111
+rentinb6,26,34,0	duplicate(BRent_Bed)	Descansar#by6	111
+rentinb6,33,34,0	duplicate(BRent_Bed)	Descansar#bz6	111
+rentinb7,5,33,0	duplicate(BRent_Bed)	Descansar#bx7	111
+rentinb7,26,34,0	duplicate(BRent_Bed)	Descansar#by7	111
+rentinb7,33,34,0	duplicate(BRent_Bed)	Descansar#bz7	111
+rentinb8,5,33,0	duplicate(BRent_Bed)	Descansar#bx8	111
+rentinb8,26,34,0	duplicate(BRent_Bed)	Descansar#by8	111
+rentinb8,33,34,0	duplicate(BRent_Bed)	Descansar#bz8	111
+rentinb9,5,33,0	duplicate(BRent_Bed)	Descansar#bx9	111
+rentinb9,26,34,0	duplicate(BRent_Bed)	Descansar#by9	111
+rentinb9,33,34,0	duplicate(BRent_Bed)	Descansar#bz9	111
+rentinb10,5,33,0	duplicate(BRent_Bed)	Descansar#bx10	111
+rentinb10,26,34,0	duplicate(BRent_Bed)	Descansar#by10	111
+rentinb10,33,34,0	duplicate(BRent_Bed)	Descansar#bz10	111
+rentinb11,5,33,0	duplicate(BRent_Bed)	Descansar#bx11	111
+rentinb11,26,34,0	duplicate(BRent_Bed)	Descansar#by11	111
+rentinb11,33,34,0	duplicate(BRent_Bed)	Descansar#bz11	111
+rentinb12,5,33,0	duplicate(BRent_Bed)	Descansar#bx12	111
+rentinb12,26,34,0	duplicate(BRent_Bed)	Descansar#by12	111
+rentinb12,33,34,0	duplicate(BRent_Bed)	Descansar#bz12	111
+rentinb13,5,33,0	duplicate(BRent_Bed)	Descansar#bx13	111
+rentinb13,26,34,0	duplicate(BRent_Bed)	Descansar#by13	111
+rentinb13,33,34,0	duplicate(BRent_Bed)	Descansar#bz13	111
+rentinb14,5,33,0	duplicate(BRent_Bed)	Descansar#bx14	111
+rentinb14,26,34,0	duplicate(BRent_Bed)	Descansar#by14	111
+rentinb14,33,34,0	duplicate(BRent_Bed)	Descansar#bz14	111
+rentinb15,5,33,0	duplicate(BRent_Bed)	Descansar#bx15	111
+rentinb15,26,34,0	duplicate(BRent_Bed)	Descansar#by15	111
+rentinb15,33,34,0	duplicate(BRent_Bed)	Descansar#bz15	111
+rentinb16,5,33,0	duplicate(BRent_Bed)	Descansar#bx16	111
+rentinb16,26,34,0	duplicate(BRent_Bed)	Descansar#by16	111
+rentinb16,33,34,0	duplicate(BRent_Bed)	Descansar#bz16	111
+rentinb17,5,33,0	duplicate(BRent_Bed)	Descansar#bx17	111
+rentinb17,26,34,0	duplicate(BRent_Bed)	Descansar#by17	111
+rentinb17,33,34,0	duplicate(BRent_Bed)	Descansar#bz17	111
+rentinb18,5,33,0	duplicate(BRent_Bed)	Descansar#bx18	111
+rentinb18,26,34,0	duplicate(BRent_Bed)	Descansar#by18	111
+rentinb18,33,34,0	duplicate(BRent_Bed)	Descansar#bz18	111
+rentinb19,5,33,0	duplicate(BRent_Bed)	Descansar#bx19	111
+rentinb19,26,34,0	duplicate(BRent_Bed)	Descansar#by19	111
+rentinb19,33,34,0	duplicate(BRent_Bed)	Descansar#bz19	111
+rentinb20,5,33,0	duplicate(BRent_Bed)	Descansar#bx20	111
+rentinb20,26,34,0	duplicate(BRent_Bed)	Descansar#by20	111
+rentinb20,33,34,0	duplicate(BRent_Bed)	Descansar#bz20	111
+rentinb21,5,33,0	duplicate(BRent_Bed)	Descansar#bx21	111
+rentinb21,26,34,0	duplicate(BRent_Bed)	Descansar#by21	111
+rentinb21,33,34,0	duplicate(BRent_Bed)	Descansar#bz21	111
+rentinb22,5,33,0	duplicate(BRent_Bed)	Descansar#bx22	111
+rentinb22,26,34,0	duplicate(BRent_Bed)	Descansar#by22	111
+rentinb22,33,34,0	duplicate(BRent_Bed)	Descansar#bz22	111
+rentinb23,5,33,0	duplicate(BRent_Bed)	Descansar#bx23	111
+rentinb23,26,34,0	duplicate(BRent_Bed)	Descansar#by23	111
+rentinb23,33,34,0	duplicate(BRent_Bed)	Descansar#bz23	111
+rentinb24,5,33,0	duplicate(BRent_Bed)	Descansar#bx24	111
+rentinb24,26,34,0	duplicate(BRent_Bed)	Descansar#by24	111
+rentinb24,33,34,0	duplicate(BRent_Bed)	Descansar#bz24	111
+rentinb25,5,33,0	duplicate(BRent_Bed)	Descansar#bx25	111
+rentinb25,26,34,0	duplicate(BRent_Bed)	Descansar#by25	111
+rentinb25,33,34,0	duplicate(BRent_Bed)	Descansar#bz25	111
+rentinb26,5,33,0	duplicate(BRent_Bed)	Descansar#bx26	111
+rentinb26,26,34,0	duplicate(BRent_Bed)	Descansar#by26	111
+rentinb26,33,34,0	duplicate(BRent_Bed)	Descansar#bz26	111
+rentinb27,5,33,0	duplicate(BRent_Bed)	Descansar#bx27	111
+rentinb27,26,34,0	duplicate(BRent_Bed)	Descansar#by27	111
+rentinb27,33,34,0	duplicate(BRent_Bed)	Descansar#bz27	111
+
+//============================================================ 
+//= Piano
+//============================================================ 
+
+rentinb1,22,16,0	duplicate(BRent_Piano)	Piano#b1	111
+rentinb2,22,16,0	duplicate(BRent_Piano)	Piano#b2	111
+rentinb3,22,16,0	duplicate(BRent_Piano)	Piano#b3	111
+rentinb4,22,16,0	duplicate(BRent_Piano)	Piano#b4	111
+rentinb5,22,16,0	duplicate(BRent_Piano)	Piano#b5	111
+rentinb6,22,16,0	duplicate(BRent_Piano)	Piano#b6	111
+rentinb7,22,16,0	duplicate(BRent_Piano)	Piano#b7	111
+rentinb8,22,16,0	duplicate(BRent_Piano)	Piano#b8	111
+rentinb9,22,16,0	duplicate(BRent_Piano)	Piano#b9	111
+rentinb10,22,16,0	duplicate(BRent_Piano)	Piano#b10	111
+rentinb11,22,16,0	duplicate(BRent_Piano)	Piano#b11	111
+rentinb12,22,16,0	duplicate(BRent_Piano)	Piano#b12	111
+rentinb13,22,16,0	duplicate(BRent_Piano)	Piano#b13	111
+rentinb14,22,16,0	duplicate(BRent_Piano)	Piano#b14	111
+rentinb15,22,16,0	duplicate(BRent_Piano)	Piano#b15	111
+rentinb16,22,16,0	duplicate(BRent_Piano)	Piano#b16	111
+rentinb17,22,16,0	duplicate(BRent_Piano)	Piano#b17	111
+rentinb18,22,16,0	duplicate(BRent_Piano)	Piano#b18	111
+rentinb19,22,16,0	duplicate(BRent_Piano)	Piano#b19	111
+rentinb20,22,16,0	duplicate(BRent_Piano)	Piano#b20	111
+rentinb21,22,16,0	duplicate(BRent_Piano)	Piano#b21	111
+rentinb22,22,16,0	duplicate(BRent_Piano)	Piano#b22	111
+rentinb23,22,16,0	duplicate(BRent_Piano)	Piano#b23	111
+rentinb24,22,16,0	duplicate(BRent_Piano)	Piano#b24	111
+rentinb25,22,16,0	duplicate(BRent_Piano)	Piano#b25	111
+rentinb26,22,16,0	duplicate(BRent_Piano)	Piano#b26	111
+rentinb27,22,16,0	duplicate(BRent_Piano)	Piano#b27	111
+
+//============================================================ 
+//= Armarios
+//============================================================ 
+
+rentinb1,35,24,0	duplicate(BRent_Storage)	Armario#bx1	111
+rentinb1,13,26,0	duplicate(BRent_Storage)	Armario#by1	111
+rentinb2,35,24,0	duplicate(BRent_Storage)	Armario#bx2	111
+rentinb2,13,26,0	duplicate(BRent_Storage)	Armario#by2	111
+rentinb3,35,24,0	duplicate(BRent_Storage)	Armario#bx3	111
+rentinb3,13,26,0	duplicate(BRent_Storage)	Armario#by3	111
+rentinb4,35,24,0	duplicate(BRent_Storage)	Armario#bx4	111
+rentinb4,13,26,0	duplicate(BRent_Storage)	Armario#by4	111
+rentinb5,35,24,0	duplicate(BRent_Storage)	Armario#bx5	111
+rentinb5,13,26,0	duplicate(BRent_Storage)	Armario#by5	111
+rentinb6,35,24,0	duplicate(BRent_Storage)	Armario#bx6	111
+rentinb6,13,26,0	duplicate(BRent_Storage)	Armario#by6	111
+rentinb7,35,24,0	duplicate(BRent_Storage)	Armario#bx7	111
+rentinb7,13,26,0	duplicate(BRent_Storage)	Armario#by7	111
+rentinb8,35,24,0	duplicate(BRent_Storage)	Armario#bx8	111
+rentinb8,13,26,0	duplicate(BRent_Storage)	Armario#by8	111
+rentinb9,35,24,0	duplicate(BRent_Storage)	Armario#bx9	111
+rentinb9,13,26,0	duplicate(BRent_Storage)	Armario#by9	111
+rentinb10,35,24,0	duplicate(BRent_Storage)	Armario#bx10	111
+rentinb10,13,26,0	duplicate(BRent_Storage)	Armario#by10	111
+rentinb11,35,24,0	duplicate(BRent_Storage)	Armario#bx11	111
+rentinb11,13,26,0	duplicate(BRent_Storage)	Armario#by11	111
+rentinb12,35,24,0	duplicate(BRent_Storage)	Armario#bx12	111
+rentinb12,13,26,0	duplicate(BRent_Storage)	Armario#by12	111
+rentinb13,35,24,0	duplicate(BRent_Storage)	Armario#bx13	111
+rentinb13,13,26,0	duplicate(BRent_Storage)	Armario#by13	111
+rentinb14,35,24,0	duplicate(BRent_Storage)	Armario#bx14	111
+rentinb14,13,26,0	duplicate(BRent_Storage)	Armario#by14	111
+rentinb15,35,24,0	duplicate(BRent_Storage)	Armario#bx15	111
+rentinb15,13,26,0	duplicate(BRent_Storage)	Armario#by15	111
+rentinb16,35,24,0	duplicate(BRent_Storage)	Armario#bx16	111
+rentinb16,13,26,0	duplicate(BRent_Storage)	Armario#by16	111
+rentinb17,35,24,0	duplicate(BRent_Storage)	Armario#bx17	111
+rentinb17,13,26,0	duplicate(BRent_Storage)	Armario#by17	111
+rentinb18,35,24,0	duplicate(BRent_Storage)	Armario#bx18	111
+rentinb18,13,26,0	duplicate(BRent_Storage)	Armario#by18	111
+rentinb19,35,24,0	duplicate(BRent_Storage)	Armario#bx19	111
+rentinb19,13,26,0	duplicate(BRent_Storage)	Armario#by19	111
+rentinb20,35,24,0	duplicate(BRent_Storage)	Armario#bx20	111
+rentinb20,13,26,0	duplicate(BRent_Storage)	Armario#by20	111
+rentinb21,35,24,0	duplicate(BRent_Storage)	Armario#bx21	111
+rentinb21,13,26,0	duplicate(BRent_Storage)	Armario#by21	111
+rentinb22,35,24,0	duplicate(BRent_Storage)	Armario#bx22	111
+rentinb22,13,26,0	duplicate(BRent_Storage)	Armario#by22	111
+rentinb23,35,24,0	duplicate(BRent_Storage)	Armario#bx23	111
+rentinb23,13,26,0	duplicate(BRent_Storage)	Armario#by23	111
+rentinb24,35,24,0	duplicate(BRent_Storage)	Armario#bx24	111
+rentinb24,13,26,0	duplicate(BRent_Storage)	Armario#by24	111
+rentinb25,35,24,0	duplicate(BRent_Storage)	Armario#bx25	111
+rentinb25,13,26,0	duplicate(BRent_Storage)	Armario#by25	111
+rentinb26,35,24,0	duplicate(BRent_Storage)	Armario#bx26	111
+rentinb26,13,26,0	duplicate(BRent_Storage)	Armario#by26	111
+rentinb27,35,24,0	duplicate(BRent_Storage)	Armario#bx27	111
+rentinb27,13,26,0	duplicate(BRent_Storage)	Armario#by27	111
+
+//============================================================ 
+//= Activador de PVP en Mapa Outdoor
+//============================================================ 
+
+rentb1,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b1	837
+rentb2,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b2	837
+rentb3,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b3	837
+rentb4,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b4	837
+rentb5,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b5	837
+rentb6,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b6	837
+rentb7,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b7	837
+rentb8,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b8	837
+rentb9,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b9	837
+rentb10,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b10	837
+rentb11,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b11	837
+rentb12,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b12	837
+rentb13,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b13	837
+rentb14,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b14	837
+rentb15,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b15	837
+rentb16,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b16	837
+rentb17,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b17	837
+rentb18,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b18	837
+rentb19,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b19	837
+rentb20,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b20	837
+rentb21,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b21	837
+rentb22,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b22	837
+rentb23,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b23	837
+rentb24,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b24	837
+rentb25,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b25	837
+rentb26,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b26	837
+rentb27,12,27,3	duplicate(BRent_PVPSwitch)	Switch#b27	837
+
+//============================================================ 
+//= Manzano
+//============================================================ 
+
+//rentb1,33,31,0	duplicate(BRent_AppleTree)	Manzano#b1	111
+//rentb2,33,31,0	duplicate(BRent_AppleTree)	Manzano#b2	111
+//rentb3,33,31,0	duplicate(BRent_AppleTree)	Manzano#b3	111
+//rentb4,33,31,0	duplicate(BRent_AppleTree)	Manzano#b4	111
+//rentb5,33,31,0	duplicate(BRent_AppleTree)	Manzano#b5	111
+//rentb6,33,31,0	duplicate(BRent_AppleTree)	Manzano#b6	111
+//rentb7,33,31,0	duplicate(BRent_AppleTree)	Manzano#b7	111
+//rentb8,33,31,0	duplicate(BRent_AppleTree)	Manzano#b8	111
+//rentb9,33,31,0	duplicate(BRent_AppleTree)	Manzano#b9	111
+//rentb10,33,31,0	duplicate(BRent_AppleTree)	Manzano#b10	111
+//rentb11,33,31,0	duplicate(BRent_AppleTree)	Manzano#b11	111
+//rentb12,33,31,0	duplicate(BRent_AppleTree)	Manzano#b12	111
+//rentb13,33,31,0	duplicate(BRent_AppleTree)	Manzano#b13	111
+//rentb14,33,31,0	duplicate(BRent_AppleTree)	Manzano#b14	111
+//rentb15,33,31,0	duplicate(BRent_AppleTree)	Manzano#b15	111
+//rentb16,33,31,0	duplicate(BRent_AppleTree)	Manzano#b16	111
+//rentb17,33,31,0	duplicate(BRent_AppleTree)	Manzano#b17	111
+//rentb18,33,31,0	duplicate(BRent_AppleTree)	Manzano#b18	111
+//rentb19,33,31,0	duplicate(BRent_AppleTree)	Manzano#b19	111
+//rentb20,33,31,0	duplicate(BRent_AppleTree)	Manzano#b20	111
+//rentb21,33,31,0	duplicate(BRent_AppleTree)	Manzano#b21	111
+//rentb22,33,31,0	duplicate(BRent_AppleTree)	Manzano#b22	111
+//rentb23,33,31,0	duplicate(BRent_AppleTree)	Manzano#b23	111
+//rentb24,33,31,0	duplicate(BRent_AppleTree)	Manzano#b24	111
+//rentb25,33,31,0	duplicate(BRent_AppleTree)	Manzano#b25	111
+//rentb26,33,31,0	duplicate(BRent_AppleTree)	Manzano#b26	111
+//rentb27,33,31,0	duplicate(BRent_AppleTree)	Manzano#b27	111
+
+//============================================================ 
+//= Jardín
+//============================================================ 
+
+rentb1,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb1,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb1,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb1,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb1,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb2,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb2,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb2,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb2,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb2,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb3,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb3,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb3,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb3,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb3,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb4,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb4,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb4,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb4,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb4,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb5,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb5,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb5,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb5,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb5,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb6,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb6,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb6,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb6,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb6,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb7,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb7,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb7,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb7,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb7,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb8,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb8,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb8,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb8,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb8,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb9,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb9,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb9,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb9,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb9,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb10,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb10,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb10,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb10,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb10,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb11,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb11,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb11,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb11,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb11,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb12,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb12,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb12,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb12,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb12,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb13,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb13,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb13,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb13,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb13,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb14,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb14,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb14,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb14,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb14,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb15,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb15,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb15,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb15,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb15,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb16,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb16,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb16,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb16,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb16,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb17,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb17,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb17,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb17,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb17,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb18,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb18,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb18,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb18,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb18,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb19,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb19,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb19,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb19,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb19,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb20,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb20,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb20,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb20,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb20,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb21,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb21,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb21,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb21,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb21,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb22,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb22,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb22,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb22,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb22,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb23,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb23,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb23,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb23,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb23,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb24,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb24,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb24,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb24,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb24,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb25,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb25,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb25,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb25,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb25,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb26,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb26,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb26,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb26,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb26,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+rentb27,32,9,3,6	monster	Blue Plant	1079,5,120000,120000,0
+rentb27,32,9,3,6	monster	White Plant	1082,5,120000,120000,0
+rentb27,32,9,3,6	monster	Yellow Plant	1081,5,120000,120000,0
+rentb27,32,9,3,6	monster	Green Plant	1080,5,120000,120000,0
+rentb27,32,9,3,6	monster	Red Plant	1078,5,120000,120000,0
+
+//============================================================ 
+//= Cambio de Ropa
+//============================================================ 
+
+rentinb1,29,34,0	duplicate(BRent_Closet)	Closet#bx1	111
+rentinb2,29,34,0	duplicate(BRent_Closet)	Closet#bx2	111
+rentinb3,29,34,0	duplicate(BRent_Closet)	Closet#bx3	111
+rentinb4,29,34,0	duplicate(BRent_Closet)	Closet#bx4	111
+rentinb5,29,34,0	duplicate(BRent_Closet)	Closet#bx5	111
+rentinb6,29,34,0	duplicate(BRent_Closet)	Closet#bx6	111
+rentinb7,29,34,0	duplicate(BRent_Closet)	Closet#bx7	111
+rentinb8,29,34,0	duplicate(BRent_Closet)	Closet#bx8	111
+rentinb9,29,34,0	duplicate(BRent_Closet)	Closet#bx9	111
+rentinb10,29,34,0	duplicate(BRent_Closet)	Closet#bx10	111
+rentinb11,29,34,0	duplicate(BRent_Closet)	Closet#bx11	111
+rentinb12,29,34,0	duplicate(BRent_Closet)	Closet#bx12	111
+rentinb13,29,34,0	duplicate(BRent_Closet)	Closet#bx13	111
+rentinb14,29,34,0	duplicate(BRent_Closet)	Closet#bx14	111
+rentinb15,29,34,0	duplicate(BRent_Closet)	Closet#bx15	111
+rentinb16,29,34,0	duplicate(BRent_Closet)	Closet#bx16	111
+rentinb17,29,34,0	duplicate(BRent_Closet)	Closet#bx17	111
+rentinb18,29,34,0	duplicate(BRent_Closet)	Closet#bx18	111
+rentinb19,29,34,0	duplicate(BRent_Closet)	Closet#bx19	111
+rentinb20,29,34,0	duplicate(BRent_Closet)	Closet#bx20	111
+rentinb21,29,34,0	duplicate(BRent_Closet)	Closet#bx21	111
+rentinb22,29,34,0	duplicate(BRent_Closet)	Closet#bx22	111
+rentinb23,29,34,0	duplicate(BRent_Closet)	Closet#bx23	111
+rentinb24,29,34,0	duplicate(BRent_Closet)	Closet#bx24	111
+rentinb25,29,34,0	duplicate(BRent_Closet)	Closet#bx25	111
+rentinb26,29,34,0	duplicate(BRent_Closet)	Closet#bx26	111
+rentinb27,29,34,0	duplicate(BRent_Closet)	Closet#bx27	111
+
+rentinb1,5,29,0	duplicate(BRent_Closet)	Closet#by1	111
+rentinb2,5,29,0	duplicate(BRent_Closet)	Closet#by2	111
+rentinb3,5,29,0	duplicate(BRent_Closet)	Closet#by3	111
+rentinb4,5,29,0	duplicate(BRent_Closet)	Closet#by4	111
+rentinb5,5,29,0	duplicate(BRent_Closet)	Closet#by5	111
+rentinb6,5,29,0	duplicate(BRent_Closet)	Closet#by6	111
+rentinb7,5,29,0	duplicate(BRent_Closet)	Closet#by7	111
+rentinb8,5,29,0	duplicate(BRent_Closet)	Closet#by8	111
+rentinb9,5,29,0	duplicate(BRent_Closet)	Closet#by9	111
+rentinb10,5,29,0	duplicate(BRent_Closet)	Closet#by10	111
+rentinb11,5,29,0	duplicate(BRent_Closet)	Closet#by11	111
+rentinb12,5,29,0	duplicate(BRent_Closet)	Closet#by12	111
+rentinb13,5,29,0	duplicate(BRent_Closet)	Closet#by13	111
+rentinb14,5,29,0	duplicate(BRent_Closet)	Closet#by14	111
+rentinb15,5,29,0	duplicate(BRent_Closet)	Closet#by15	111
+rentinb16,5,29,0	duplicate(BRent_Closet)	Closet#by16	111
+rentinb17,5,29,0	duplicate(BRent_Closet)	Closet#by17	111
+rentinb18,5,29,0	duplicate(BRent_Closet)	Closet#by18	111
+rentinb19,5,29,0	duplicate(BRent_Closet)	Closet#by19	111
+rentinb20,5,29,0	duplicate(BRent_Closet)	Closet#by20	111
+rentinb21,5,29,0	duplicate(BRent_Closet)	Closet#by21	111
+rentinb22,5,29,0	duplicate(BRent_Closet)	Closet#by22	111
+rentinb23,5,29,0	duplicate(BRent_Closet)	Closet#by23	111
+rentinb24,5,29,0	duplicate(BRent_Closet)	Closet#by24	111
+rentinb25,5,29,0	duplicate(BRent_Closet)	Closet#by25	111
+rentinb26,5,29,0	duplicate(BRent_Closet)	Closet#by26	111
+rentinb27,5,29,0	duplicate(BRent_Closet)	Closet#by27	111
+
+
+//============================================================
+//= Warps rentb -> rentinb (Entrada a Indoors)
+//============================================================
+
+rentb1,13,24,0	warp	rentb1-2	1,1,rentinb1,34,6
+rentb2,13,24,0	warp	rentb2-2	1,1,rentinb2,34,6
+rentb3,13,24,0	warp	rentb3-2	1,1,rentinb3,34,6
+rentb4,13,24,0	warp	rentb4-2	1,1,rentinb4,34,6
+rentb5,13,24,0	warp	rentb5-2	1,1,rentinb5,34,6
+rentb6,13,24,0	warp	rentb6-2	1,1,rentinb6,34,6
+rentb7,13,24,0	warp	rentb7-2	1,1,rentinb7,34,6
+rentb8,13,24,0	warp	rentb8-2	1,1,rentinb8,34,6
+rentb9,13,24,0	warp	rentb9-2	1,1,rentinb9,34,6
+rentb10,13,24,0	warp	rentb10-2	1,1,rentinb10,34,6
+rentb11,13,24,0	warp	rentb11-2	1,1,rentinb11,34,6
+rentb12,13,24,0	warp	rentb12-2	1,1,rentinb12,34,6
+rentb13,13,24,0	warp	rentb13-2	1,1,rentinb13,34,6
+rentb14,13,24,0	warp	rentb14-2	1,1,rentinb14,34,6
+rentb15,13,24,0	warp	rentb15-2	1,1,rentinb15,34,6
+rentb16,13,24,0	warp	rentb16-2	1,1,rentinb16,34,6
+rentb17,13,24,0	warp	rentb17-2	1,1,rentinb17,34,6
+rentb18,13,24,0	warp	rentb18-2	1,1,rentinb18,34,6
+rentb19,13,24,0	warp	rentb19-2	1,1,rentinb19,34,6
+rentb20,13,24,0	warp	rentb20-2	1,1,rentinb20,34,6
+rentb21,13,24,0	warp	rentb21-2	1,1,rentinb21,34,6
+rentb22,13,24,0	warp	rentb22-2	1,1,rentinb22,34,6
+rentb23,13,24,0	warp	rentb23-2	1,1,rentinb23,34,6
+rentb24,13,24,0	warp	rentb24-2	1,1,rentinb24,34,6
+rentb25,13,24,0	warp	rentb25-2	1,1,rentinb25,34,6
+rentb26,13,24,0	warp	rentb26-2	1,1,rentinb26,34,6
+rentb27,13,24x,0	warp	rentb27-2	1,1,rentinb27,34,6
+
+//============================================================
+//= Warps rentinb -> rentb (Salida de Indoors)
+//============================================================
+
+rentinb1,34,3,0	warp	rentb1-3	1,1,rentb1,19,18
+rentinb2,34,3,0	warp	rentb2-3	1,1,rentb2,19,18
+rentinb3,34,3,0	warp	rentb3-3	1,1,rentb3,19,18
+rentinb4,34,3,0	warp	rentb4-3	1,1,rentb4,19,18
+rentinb5,34,3,0	warp	rentb5-3	1,1,rentb5,19,18
+rentinb6,34,3,0	warp	rentb6-3	1,1,rentb6,19,18
+rentinb7,34,3,0	warp	rentb7-3	1,1,rentb7,19,18
+rentinb8,34,3,0	warp	rentb8-3	1,1,rentb8,19,18
+rentinb9,34,3,0	warp	rentb9-3	1,1,rentb9,19,18
+rentinb10,34,3,0	warp	rentb10-3	1,1,rentb10,19,18
+rentinb11,34,3,0	warp	rentb11-3	1,1,rentb11,19,18
+rentinb12,34,3,0	warp	rentb12-3	1,1,rentb12,19,18
+rentinb13,34,3,0	warp	rentb13-3	1,1,rentb13,19,18
+rentinb14,34,3,0	warp	rentb14-3	1,1,rentb14,19,18
+rentinb15,34,3,0	warp	rentb15-3	1,1,rentb15,19,18
+rentinb16,34,3,0	warp	rentb16-3	1,1,rentb16,19,18
+rentinb17,34,3,0	warp	rentb17-3	1,1,rentb17,19,18
+rentinb18,34,3,0	warp	rentb18-3	1,1,rentb18,19,18
+rentinb19,34,3,0	warp	rentb19-3	1,1,rentb19,19,18
+rentinb20,34,3,0	warp	rentb20-3	1,1,rentb20,19,18
+rentinb21,34,3,0	warp	rentb21-3	1,1,rentb21,19,18
+rentinb22,34,3,0	warp	rentb22-3	1,1,rentb22,19,18
+rentinb23,34,3,0	warp	rentb23-3	1,1,rentb23,19,18
+rentinb24,34,3,0	warp	rentb24-3	1,1,rentb24,19,18
+rentinb25,34,3,0	warp	rentb25-3	1,1,rentb25,19,18
+rentinb26,34,3,0	warp	rentb26-3	1,1,rentb26,19,18
+rentinb27,34,3,0	warp	rentb27-3	1,1,rentb27,19,18
+
+//============================================================
+//= Mapflags [12/12/2016] Isaac
+//============================================================
+
+
+rentb1	mapflag	nograveyard
+rentb2	mapflag	nograveyard
+rentb3	mapflag	nograveyard
+rentb4	mapflag	nograveyard
+rentb5	mapflag	nograveyard
+rentb6	mapflag	nograveyard
+rentb7	mapflag	nograveyard
+rentb8	mapflag	nograveyard
+rentb9	mapflag	nograveyard
+rentb10	mapflag	nograveyard
+rentb11	mapflag	nograveyard
+rentb12	mapflag	nograveyard
+rentb13	mapflag	nograveyard
+rentb14	mapflag	nograveyard
+rentb15	mapflag	nograveyard
+rentb16	mapflag	nograveyard
+rentb17	mapflag	nograveyard
+rentb18	mapflag	nograveyard
+rentb19	mapflag	nograveyard
+rentb20	mapflag	nograveyard
+rentb21	mapflag	nograveyard
+rentb22	mapflag	nograveyard
+rentb23	mapflag	nograveyard
+rentb24	mapflag	nograveyard
+rentb25	mapflag	nograveyard
+rentb26	mapflag	nograveyard
+rentb27	mapflag	nograveyard
+
+rentb1	mapflag	nowarpto
+rentb2	mapflag	nowarpto
+rentb3	mapflag	nowarpto
+rentb4	mapflag	nowarpto
+rentb5	mapflag	nowarpto
+rentb6	mapflag	nowarpto
+rentb7	mapflag	nowarpto
+rentb8	mapflag	nowarpto
+rentb9	mapflag	nowarpto
+rentb10	mapflag	nowarpto
+rentb11	mapflag	nowarpto
+rentb12	mapflag	nowarpto
+rentb13	mapflag	nowarpto
+rentb14	mapflag	nowarpto
+rentb15	mapflag	nowarpto
+rentb16	mapflag	nowarpto
+rentb17	mapflag	nowarpto
+rentb18	mapflag	nowarpto
+rentb19	mapflag	nowarpto
+rentb20	mapflag	nowarpto
+rentb21	mapflag	nowarpto
+rentb22	mapflag	nowarpto
+rentb23	mapflag	nowarpto
+rentb24	mapflag	nowarpto
+rentb25	mapflag	nowarpto
+rentb26	mapflag	nowarpto
+rentb27	mapflag	nowarpto
+
+rentb1	mapflag	nowarp
+rentb2	mapflag	nowarp
+rentb3	mapflag	nowarp
+rentb4	mapflag	nowarp
+rentb5	mapflag	nowarp
+rentb6	mapflag	nowarp
+rentb7	mapflag	nowarp
+rentb8	mapflag	nowarp
+rentb9	mapflag	nowarp
+rentb10	mapflag	nowarp
+rentb11	mapflag	nowarp
+rentb12	mapflag	nowarp
+rentb13	mapflag	nowarp
+rentb14	mapflag	nowarp
+rentb15	mapflag	nowarp
+rentb16	mapflag	nowarp
+rentb17	mapflag	nowarp
+rentb18	mapflag	nowarp
+rentb19	mapflag	nowarp
+rentb20	mapflag	nowarp
+rentb21	mapflag	nowarp
+rentb22	mapflag	nowarp
+rentb23	mapflag	nowarp
+rentb24	mapflag	nowarp
+rentb25	mapflag	nowarp
+rentb26	mapflag	nowarp
+rentb27	mapflag	nowarp
+
+rentb1	mapflag	nomemo
+rentb2	mapflag	nomemo
+rentb3	mapflag	nomemo
+rentb4	mapflag	nomemo
+rentb5	mapflag	nomemo
+rentb6	mapflag	nomemo
+rentb7	mapflag	nomemo
+rentb8	mapflag	nomemo
+rentb9	mapflag	nomemo
+rentb10	mapflag	nomemo
+rentb11	mapflag	nomemo
+rentb12	mapflag	nomemo
+rentb13	mapflag	nomemo
+rentb14	mapflag	nomemo
+rentb15	mapflag	nomemo
+rentb16	mapflag	nomemo
+rentb17	mapflag	nomemo
+rentb18	mapflag	nomemo
+rentb19	mapflag	nomemo
+rentb20	mapflag	nomemo
+rentb21	mapflag	nomemo
+rentb22	mapflag	nomemo
+rentb23	mapflag	nomemo
+rentb24	mapflag	nomemo
+rentb25	mapflag	nomemo
+rentb26	mapflag	nomemo
+rentb27	mapflag	nomemo
+
+rentb1	mapflag	noteleport
+rentb2	mapflag	noteleport
+rentb3	mapflag	noteleport
+rentb4	mapflag	noteleport
+rentb5	mapflag	noteleport
+rentb6	mapflag	noteleport
+rentb7	mapflag	noteleport
+rentb8	mapflag	noteleport
+rentb9	mapflag	noteleport
+rentb10	mapflag	noteleport
+rentb11	mapflag	noteleport
+rentb12	mapflag	noteleport
+rentb13	mapflag	noteleport
+rentb14	mapflag	noteleport
+rentb15	mapflag	noteleport
+rentb16	mapflag	noteleport
+rentb17	mapflag	noteleport
+rentb18	mapflag	noteleport
+rentb19	mapflag	noteleport
+rentb20	mapflag	noteleport
+rentb21	mapflag	noteleport
+rentb22	mapflag	noteleport
+rentb23	mapflag	noteleport
+rentb24	mapflag	noteleport
+rentb25	mapflag	noteleport
+rentb26	mapflag	noteleport
+rentb27	mapflag	noteleport

@@ -1,0 +1,27 @@
+que_qaru02,232,334,6	script	RWC Silver	937,{
+	title("RWC Silver");
+	mes "...";
+	mes "....";
+	if (countitem(5453) < 1)
+		mclose "Primero necesito un RWC Bronce";
+	
+	if (#VOTEPOINTS < 100)
+		mclose "Segundo ocupo 100 VotePoints!";
+		
+	if (#BGPOINTS < 50)
+		mclose "Tercero ocupo 50 BG Points!";
+	
+	if (#CASHPOINTS < 30000)
+		mclose "Tercero ocupo 30K de Cashpoints!";
+
+	if (select("- Dame mi item!","- Mejor No...") == 2)
+		close;
+		
+	#VOTEPOINTS = #VOTEPOINTS - 100;
+	#CASHPOINTS = #CASHPOINTS - 30000;
+	#BGPOINTS = #BGPOINTS - 50;
+	delitem 5453,1;
+	getitem 5452,1;
+	
+	mclose "Listo que disfrutes";
+}

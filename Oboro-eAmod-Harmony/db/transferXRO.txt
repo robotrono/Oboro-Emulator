@@ -1,0 +1,45 @@
+//================================= CONFIGURACION
+
+GLDTKT1,7280,0,0
+GLDTKT2,7281,0,0
+GLDTKT3,7282,0,0
+
+//================================= TRANSFER 26
+
+Diablos Armor,2375,2,7281
+Diablos Boots,2433,2,7281
+Diablos Robe,2374,2,7281
+
+Variant Shoes,2423,2,7281
+Nydhorgg Shadow Garb,2554,3,7281
+
+Combat Knife,1228,2,7281
+
+Ramen Hat,5293,6,7281
+Holy Marcher,5225,6,7281
+Salamander Card,30167,1,7281
+
+xRO Gold Coin,8903,2,7281
+
+//================================= TRANSFER PERSONAL
+
+Valkyria Shield,2115,1,7280
+Feather Beret,5170,1,7280
+Sunglasses,2202,1,7280
+Orlean Gloves,2701,2,7280
+
+Noxious Card,4334,1,7280
+Zerom Card,4064,2,7280
+Smokie Card,4044,1,7280
+Evil Druid Card,4141,1,7280
+Marc Card,4105,1,7280
+Green Ferus Card,4381,1,7280
+Matyr Card,4097,1,7280
+Thara Frog Card,4058,1,7280
+Horn Card,4045,1,7280
+Flame Skull Card,4439,1,7280
+
+Bravery Badge,7828,300,7280
+Valor Badge,7829,300,7280
+
+Guild_Pack_2,30044,1,7280

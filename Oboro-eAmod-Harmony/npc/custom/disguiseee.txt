@@ -1,0 +1,209 @@
+itemmall,168,64,6	script	Hats Pixeleros	717,{
+	set .@name$, "[Pixelero]";
+	set .@x1,0;
+	set .@x3,0;
+	set .@x2,0;
+	mes .@name$;
+	mes "Yo puedo transformara tu Hat Low y Lower lo que significa que podras equiparlo en la pestaña ^FF8040Style^000000 del equipo.";
+	mes "¿Deseas hacerlo?";
+	next;
+	mes .@name$;
+	mes " Recuerda que esto transformara tu Hat Low y Lower en Costume y es bajo tu propia responsabilidad y los GM's no se hacen responsables de perdidas de hats.";
+	mes "¿Para que hat, mid o low deseas hacer el costume?";
+	next;
+	switch(select("Top:Mid:Low:Ninguno"))
+	{
+		case 1:
+			if(getequipid(1)==-1)
+			{
+				mes .@name$;
+				mes "Lo siento no tienes nada equipado ahi.";
+				close2;
+				end;
+			}
+			mes .@name$;
+			mes "Ok, esto costara 50 medallas de cada una, y el hat que deseas transformar es ^FF0000"+getequipname(1)+"^000000";
+			mes "Recuerda Que tu hat Perderá sus Bonus y Cartas, ¿estas seguro que quieres hacerlo?";
+			next;
+			mes .@name$;
+			mes "Estas completamente seguro ^FF8040el ^FF0000"+getequipname(1)+"^000000 hat que tienes equipado se perdera y se transformara en costume!^000000 estas seguro que deseas continuar";
+			mes "¿Deseas hacerlo?"; 
+			next;
+			switch(select("Si:No"))
+			{
+				case 1:
+					if(countitem(7773) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7829) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7828) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else {
+						mes .@name$;
+						mes "Ok, aqui vamos";
+						next;
+						set .@x1,getequipid(1);
+						delitem 7829,50;
+						delitem 7828,50;
+						delitem 7773,50;
+						delitem .@x1,1;
+						atcommand "@costumeitem "+.@x1;
+						close2;
+						end;
+					}
+					end;
+					
+				case 2:
+					mes .@name$;
+					mes "Nos vemos";
+					close2;
+					end;
+			}
+			end;
+
+//Mid
+//**************************************************************************************************
+
+			case 2:
+			if(getequipid(9)==-1)
+			{
+				mes .@name$;
+				mes "Lo siento no tienes nada equipado ahi.";
+				close2;
+				end;
+			}
+			mes .@name$;
+			mes "Ok, esto costara 50 medallas de cada una, y el hat que deseas transformar es ^FF0000"+getequipname(9)+"^000000 ¿estas seguro que quieres hacerlo?";
+			next;
+			switch(select("Si:No"))
+			{
+				case 1:
+					if(countitem(7773) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7829) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7828) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else {
+						mes .@name$;
+						mes "Ok, aqui vamos";
+						next;
+						set .@x2,getequipid(9);
+						delitem 7829,50;
+						delitem 7828,50;
+						delitem 7773,50;
+						delitem .@x2,1;
+						atcommand "@costumeitem "+.@x2;
+						close2;
+						end;
+					}
+					end;
+				
+				case 2:
+					mes .@name$;
+					mes "Nos vemos";
+					close2;
+					end;
+			}
+			end;
+
+//Low
+//**************************************************************************************************
+
+			case 3:
+			if(getequipid(10)==-1)
+			{
+				mes .@name$;
+				mes "Lo siento no tienes nada equipado ahi.";
+				close2;
+				end;
+			}
+			mes .@name$;
+			mes "Ok, esto costara 50 medallas de cada una, y el hat que deseas transformar es ^FF0000"+getequipname(10)+"^000000 ¿estas seguro que quieres hacerlo?";
+			next;
+			switch(select("Si:No"))
+			{
+				case 1:
+					if(countitem(7773) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7829) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else if(countitem(7828) < 50 )
+					{
+						mes .@name$;
+						mes "No tienes suficientes medallas";
+						close2;
+						end;
+					}
+					else {
+						mes .@name$;
+						mes "Ok, aqui vamos";
+						next;
+						set .@x3,getequipid(10);
+						delitem 7829,50;
+						delitem 7828,50;
+						delitem 7773,50;
+						delitem .@x3,1;
+						atcommand "@costumeitem "+.@x3;
+						close2;
+						end;
+					}
+					end;
+					
+				case 2:
+					mes .@name$;
+					mes "Nos vemos";
+					close2;
+					end;
+			}
+			end;
+
+//Ninguno
+//**************************************************************************************************
+			case 4:
+				mes .@name$;
+				mes "Nos vemos";
+				close2;
+				end;	
+	}
+}

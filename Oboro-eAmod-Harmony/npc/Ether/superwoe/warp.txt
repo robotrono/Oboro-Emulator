@@ -1,0 +1,10 @@
+prt_are02,146,160,6	script	Warper PvP::DBexit2	831,{
+	mes "^0770E9[  PvP  ]^000000";
+	mes "¿Quieres ir a la sala PvP?";
+	next;
+	if(select("Sí.:Mejor no.") == 2){
+		close;
+	}
+	warp "prt_pvp",50,50;
+	end;
+}

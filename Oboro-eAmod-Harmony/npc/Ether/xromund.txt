@@ -1,0 +1,186 @@
+prontera,156,181,4	script	xRO Mundial	913,{
+set .@name$, "[Vive el mundial con ^FF8000x^0000FFRO^000000!]";
+set .@item, 671;
+set .@cant, 1;
+
+		mes .@name$;
+		mes "Buenas! Soy el encargado de la votacion!";
+		next;
+		mes .@name$;
+		mes "Te gustaria votar por los paises que se encuentran en partido";
+		mes "o te gustaria que te explicara un poco de que trata todo esto?";
+		next;
+		switch(select("Votar:Explicame:No, gracias:Resetear voto")) 	
+			{
+			case 1:
+			if (#voto == 1) 
+				{
+				mes .@name$;
+				mes "Ya has votado.";
+				mes "Cuando termine el partido puedes hablar conmigo";
+				close;
+				}
+			else if (#voto == 2) 
+				{
+				mes .@name$;
+				mes "Ya has votado.";
+				mes "Cuando termine el partido puedes hablar conmigo";
+				close;
+				}
+			mes .@name$;
+			mes "Esta bien, pero antes de votar, necesito que me entregues, ^0404B41 xRO Gold Coin (10.000 Cash Points.) ^000000";
+			next;
+			mes .@name$;
+			mes "Al termino del partido si ganas te devolveremos tu moneda mas otra de regalo.";
+			mes "En cambio, si pierdes no ganaras nada.";
+			next;
+			if (countitem(.@item) < 1) 
+				{
+				mes .@name$;
+				mes "Lo siento pero asegurate de tener ^0404B41 xRO Gold Coin (10.000 Cash Points.) ^000000 ";
+				mes "^FF0000Importante:^000000 En go 16 las puedes cambiar, te costara 10.000 Cash Points.";
+				close;
+				}
+				mes .@name$;
+				mes "Tienes lo necesario!";
+				next;
+				mes .@name$;
+				mes "Por que pais quieres apostar?";
+
+				switch(select("^0404B4Chile^000000:^FF0000Espana^000000")) 	
+					{
+					case 1:
+					delitem .@item, .@cant;
+					set #voto, 1;
+					mes "Gracias por votar por ^0404B4Chile^000000";
+					close;
+
+					case 2:
+					delitem .@item, .@cant;
+					set #voto, 2;
+					mes "Gracias por votar por ^FF0000Espana^000000";
+					close;
+					}
+	
+
+			case 2:
+			mes .@name$;
+			mes "Bien bien, te explicare un poco de que trata todo esto!";
+			next;
+			mes .@name$;
+			mes "Soy el encargado de hacer una apuesta para todos los usuarios que quieran participar";
+			mes "El dia de hoy jugara ^0404B4Chile ^000000vs ^FF0000Espana^000000";
+			next;
+			mes .@name$;
+			mes "Conmigo podras apostar por alguno de estos dos equipos y al termino del partido, dependiendo de cual gane";
+			mes "recibiras tu premio o perderas.";
+			next;
+			mes .@name$;
+			mes "Espero te haya quedado claro!";
+			close;
+
+			case 3:
+			mes .@name$;
+			mes "Esta bien, vuelve pronto!";
+			mes "Adios.";
+			close;
+			case 4:
+			mes .@name$;
+			mes "Tu Voto se ha reseteado";
+			next;
+			mes "Aqui tienes tu moneda de vuelta";
+			getitem .@item, .@cant;
+			set #voto, 0;
+			close;
+			}
+					
+
+}
+prontera,156,181,4	script	Chile Campeon	913,{
+set .@name2$, "[^0404B4Chile^000000 Campeon!]";
+set .@item, 671;
+set .@cant, 1;
+	if (##reclamado == 1){
+	mes "Ya has reclamado tu premio.";
+	close;
+	}
+	else if (#voto == 2)
+	{
+	mes .@name2$;
+	mes "Lo siento, pero perdiste la apuesta...";
+	close;
+	}
+	else if (#voto == 1)
+	{
+	mes .@name2$;
+	mes "Gano Chile!";
+	mes "Muchas felicidades!!";
+	mes "Disfruta tu premio!!";
+	next;
+	getitem .@item, .@cant*2;
+	set ##reclamado, 1;
+	close;
+	}
+}
+prontera,156,181,4	script	Espana Campeon	913,{
+set .@name3$, "[^FF0000Espana^000000 Campeon!]";
+set .@item, 671;
+set .@cant, 1;
+	if (##reclamado == 1)
+	{
+	mes "Ya has reclamado tu premio.";
+	close;
+	}
+	else if (#voto == 1)
+	{
+	mes .@name3$;
+	mes "Lo siento, pero perdiste la apuesta...";
+	close;
+	}
+	else if (#voto == 2)
+	{
+	mes .@name3$;
+	mes "Gano Espana!";
+	mes "Muchas felicidades!!";
+	mes "Disfruta tu premio!!";
+	next;
+	getitem .@item, .@cant*2;
+	set ##reclamado, 1;
+	close;
+	}
+}
+-	script	hidemund	0,{
+OnInit:
+	disablenpc "xRO Mundial";
+	disablenpc "Chile Campeon";
+	disablenpc "Espana Campeon";
+}
+prontera,160,181,4	script	Secretaria de iSnow	721,{
+	if (getgmlevel() >= 60)
+	{
+	switch(select("Empezar Evento:Empezo el Partido:Gano Chile:Gano España:Termino el Evento"))
+		{
+		case 1:
+		enablenpc "xRO Mundial";
+		close;
+		case 2:
+		disablenpc "xRO Mundial";
+		close;
+		case 3:
+		enablenpc "Chile Campeon";
+		disablenpc "Espana Campeon";
+		announce "Chile ha ganado el partido, quienes apostaron por este equipo pueden reclamar su premio en Prontera!!",bc_all,0xFFFF00;
+		close;
+		case 4:
+		enablenpc "Espana Campeon";
+		disablenpc "Chile Campeon";
+		announce "Espana ha ganado el partido, quienes apostaron por este equipo pueden reclamar su premio en Prontera!!",bc_all,0xFFFF00;
+		close;
+		case 5:
+		disablenpc "Chile Campeon";
+		disablenpc "Espana Campeon";
+		close;
+		}
+	}
+
+}
