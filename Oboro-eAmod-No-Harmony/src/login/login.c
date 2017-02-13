@@ -10,7 +10,6 @@
 #include "../common/strlib.h"
 #include "../common/timer.h"
 #include "../common/version.h"
-#include "../common/harmony.h"
 #include "account.h"
 #include "ipban.h"
 #include "login.h"
