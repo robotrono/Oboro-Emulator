@@ -1,0 +1,49 @@
+prt_are02,153,135,3	script	WoE Enchanter	84,{
+	mes "[ ^FF6600Shiriublem^000000 ]";
+	mes "       ";
+	switch( select( " ^009933 > ^000000 Enchant Armor : ^009933 > ^000000 HeadGear Enchant" ) )
+	{
+		case 1:
+			deletearray .@ArmorT[0],127;		
+			setarray .@ArmorT[0],2307,2309,2314,2316,2321,2325,2327,2322,2328,2330,2332,2334,2335,2341,2344,2346,2348,2350,2337,2386,2394,2395,2396,2311,2318,2319,2320,2308,2310,2315,2317,2324,2326,2331,2333,2336,2342,2345,2347,2349,2351,2364,2365,2391,2374,2375,2376,2377,2378,2379,2380,2381,2382,2387,2388,2389,2390;
+			set .@Item, getequipid(2);	
+			for( set .@i, 0; .@i < getarraysize(.@ArmorT); set .@i, .@i + 1 ) {
+				if( .@ArmorT[.@i] == .@Item )
+					break;
+			}
+
+			if( .@i >= getarraysize(.@ArmorT) ) {
+				mes "[ ^FF6600Shiriublem^000000 ]";
+				mes "       ";
+				mes "Lo siento, pero no puedo trabajar con esta armadura.";
+				emotion e_hmm;
+				close;
+			}
+
+			set .@Menu$,"";
+			for( set .@i, 0; .@i < 6; set .@i, .@i + 1 )
+				set .@Menu$, .@Menu$ + " ^009933 > ^000000 " + getitemname(4702 + (.@i * 10)) + ":";
+			set .@Enchant, 4702 + ((select(.@Menu$) - 1) * 10);
+			successenchant(.@item,.@Enchant,2);
+			close;	
+	
+		case 2:
+			set .@Item, getequipid(1);
+			if( !getequipisequiped(1) || countitem(.@Item) > 1 ) {
+				mes "No traes ningun HeadGear...";
+				mes "Tienes que tener 1 solo Hat!";
+				emotion e_an;
+				close;
+			}
+
+			set .@Menu$,"";
+			for( set .@i, 0; .@i < 6; set .@i, .@i + 1 )
+				set .@Menu$, .@Menu$ + " ^009933 > ^000000 " + getitemname(4700+ (.@i * 10)) + ":";
+			set .@Enchant, 4700 + ((select(.@Menu$) - 1) * 10);
+
+			set .@HtRfn,getequiprefinerycnt(1);
+			set .@HtCrD,getequipcardid(1,0);
+			successenchant(.@item,.@Enchant,1);
+			close;
+	}	
+}

@@ -1,0 +1,50 @@
+//By iSaac
+//============================================================
+
+que_qaru02,236,330,3	script	Mister Mobry	121,{
+	set .@name$,"^fc9856Bloody Brancher^000000";
+	setarray .@ITEMS[0],7201,10,7189,15,1019,15,7222,12,7829,20,7828,20,7773,20,30212,6;
+
+	title("Branch Maker");
+	mes "Selecciona el numero de Bloody Branch's a hacer, recuerda que tiene un porcentaje de fallo de 0%";
+	input .@numero;
+	next;
+
+	title("Branch Maker");
+	do {
+		set .@OPTION , select(" ^10B2D2 [ > ] ^000000 Hacer la quest : ^10B2D2 [ > ] ^000000 Que Necesito : ^10B2D2 [ > ] ^000000 Despues Será");
+		next;
+		switch( .@OPTION ) {
+			case 2:
+				title("Branch Maker");
+				mes "Necesitas : ";
+				for (set .@i , 0; .@i < getarraysize(.@ITEMS); set .@i , .@i + 2)
+					mes " ^135445 " + ( .@ITEMS[ .@i + 1 ] * .@numero ) + " : " + getitemname( .@ITEMS[ .@i ] ) + "^000000";
+				mes " ^135445 " + 200 * .@numero + " Cashpoints ^000000";	
+				break;
+			case 3: 
+				title("Branch Maker");
+				mclose "como gustes adios";
+			case 1:
+			
+				for ( set .@j , 0; .@j < getarraysize(.@ITEMS); set .@j , .@j + 2 ) {
+					if ( countitem(.@ITEMS[.@j] ) < ( .@numero * .@ITEMS[.@j + 1 ] ) || .@numero <= 0 || #CASHPOINTS < (200 * .@numero) ) 
+					{
+
+						title("Branch Maker");
+						mclose "no traes los items Requeridos Lo siento Mucho";
+
+					}
+				}
+
+				for ( set .@i ,0; .@i < getarraysize(.@ITEMS); set .@i , .@i + 2 )
+					delitem .@ITEMS[.@i],( .@ITEMS[ .@i + 1 ] * .@numero );
+
+				set #CASHPOINTS , #CASHPOINTS - (200 * .@numero);	
+				getitem 12103,.@numero;
+				close;
+		}
+
+	} while ( .@OPTION != 1 );
+	close;
+}

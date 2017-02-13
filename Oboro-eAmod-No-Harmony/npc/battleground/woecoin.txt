@@ -1,0 +1,91 @@
+-	script	WoE Coin	-1,{
+
+	setarray .@BadGID[0],7828,7829,7773;
+	setarray .@BadG[0],10,10,12;
+	set .@name$ , "^CC0033[  Woe Coin  ]^000000";
+	set .@woeID , 7959;
+
+title();
+	mes "Hola "+strcharinfo(0)+", ¿qué deseas cambiar?";
+	set .@CashoWoe, select ("Cambiar medallas :Quiero Woe Coins" ); // 1 cambiar a cash
+	next;
+
+title();
+	mes "¿Qué medallas deseas cambiar a "+( .@CashoWoe == 1 ? "Cashpoints":"Woe Coins" ) + "?";
+	for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 )
+		mes "^FF9900 - ^000000" + getitemname(.@BadGID[.@i]) + " : " + ( .@CashoWoe == 1 ? .@BadG[.@i] : (.@BadG[.@i]/2));
+	
+	for( set .@i, 0; .@i < getarraysize(.@BadGID); set .@i, .@i + 1 )
+		set .@Menu$, .@Menu$ + " Cambiar ^009900" + getitemname(.@BadGID[.@i]) + "^000000:";
+	set .@j, select(.@Menu$ + " Cambiar todas mis medallas") - 1;
+
+	switch( .@j ) {
+		case 3:
+			next;
+			mes .@name$;
+			mes " ";			
+			mes "^FF9900 Actualmente tienes^000000";
+			for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 )
+				mes " ^3333FF - ^000000 " + getitemname(.@BadGID[.@i]) + " " + countitem(.@BadGID[.@i]);
+			if ( select( "Continuar :Mejor no" ) == 2 ) close;
+			for ( set .@i , 0; .@i < getarraysize(.@BadGID); set .@i , .@i + 1 ) {
+				set .@TOTAL , .@TOTAL + countitem(.@BadGID[.@i]) * .@BadG[.@i];
+				delitem .@BadGID[.@i],countitem(.@BadGID[.@i]);
+			}
+		break;
+		case 0:
+		case 1:
+		case 2:
+			next;
+			mes .@name$;
+			mes "¿Cuántas quieres cambiar?";
+			input .@badge;
+			if ( .@badge <= 0 || .@badge > 9999 || countitem( .@BadGID[ .@j ] ) < .@badge )
+				mes " No jueges conmigo porfavor";
+			else if( countitem( .@BadGID[.@j] ) >= .@badge ) {	
+				delitem .@BadGID[.@j],.@badge;
+				set .@TOTAL, .@badge * .@BadG[.@j];
+			}
+		break;
+	}
+	if ( .@CashoWoe == 1 ) {
+		set #CASHPOINTS, #CASHPOINTS + .@TOTAL;
+		close2;
+			dispbottom "Tienes un Total de: [ "+#CASHPOINTS+" ] Cash Points.";
+	} else if ( .@CashoWoe == 2 ) {
+		close2;
+		getitem .@woeID,(.@TOTAL / 2 );
+	}
+	end;
+}
+
+gr_1,61,56,3	duplicate(WoE Coin)	WoE Coin#31	967
+gr_2,61,56,3	duplicate(WoE Coin)	WoE Coin#32	967
+gr_3,61,56,3	duplicate(WoE Coin)	WoE Coin#33	967
+gr_4,61,56,3	duplicate(WoE Coin)	WoE Coin#34	967
+gr_5,61,56,3	duplicate(WoE Coin)	WoE Coin#35	967
+gr_6,61,56,3	duplicate(WoE Coin)	WoE Coin#36	967
+gr_7,61,56,3	duplicate(WoE Coin)	WoE Coin#37	967
+gr_8,61,56,3	duplicate(WoE Coin)	WoE Coin#38	967
+gr_9,61,56,3	duplicate(WoE Coin)	WoE Coin#39	967
+gr_10,61,56,3	duplicate(WoE Coin)	WoE Coin#40	967
+gr_11,61,56,3	duplicate(WoE Coin)	WoE Coin#41	967
+gr_12,61,56,3	duplicate(WoE Coin)	WoE Coin#42	967
+gr_13,61,56,3	duplicate(WoE Coin)	WoE Coin#43	967
+gr_14,61,56,3	duplicate(WoE Coin)	WoE Coin#44	967
+gr_15,61,56,3	duplicate(WoE Coin)	WoE Coin#45	967
+gr_16,61,56,3	duplicate(WoE Coin)	WoE Coin#46	967
+gr_17,61,56,3	duplicate(WoE Coin)	WoE Coin#47	967
+gr_18,61,56,3	duplicate(WoE Coin)	WoE Coin#48	967
+gr_19,61,56,3	duplicate(WoE Coin)	WoE Coin#49	967
+gr_20,61,56,3	duplicate(WoE Coin)	WoE Coin#50	967
+gr_21,61,56,3	duplicate(WoE Coin)	WoE Coin#51	967
+gr_22,61,56,3	duplicate(WoE Coin)	WoE Coin#52	967
+gr_23,61,56,3	duplicate(WoE Coin)	WoE Coin#53	967
+gr_24,61,56,3	duplicate(WoE Coin)	WoE Coin#54	967
+gr_25,61,56,3	duplicate(WoE Coin)	WoE Coin#55	967
+gr_26,61,56,3	duplicate(WoE Coin)	WoE Coin#56	967
+gr_27,61,56,3	duplicate(WoE Coin)	WoE Coin#57	967
+gr_28,61,56,3	duplicate(WoE Coin)	WoE Coin#58	967
+gr_29,61,56,3	duplicate(WoE Coin)	WoE Coin#59	967
+gr_30,61,56,3	duplicate(WoE Coin)	WoE Coin#60	967

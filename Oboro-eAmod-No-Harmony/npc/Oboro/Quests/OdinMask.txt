@@ -1,0 +1,43 @@
+ra_temple,66,139,3	script	Odin Mask	461,{
+	mes "[^000000Odin Mask^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Odin Mask, te interesa? Añade 6% Atak Demihuman HIT -10 en Mid";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Odin Mask^000000]";
+		mes "^FF0000100^000000 Rune of Darkness"; //7511
+		mes "^FF00003^000000 Valhalla's Flower"; //7510
+		mes "^FF000020^000000 Soft Feather"; //7063
+		mes "^0000FF10000000^000000 zeny";
+		close;
+
+	L_check:
+		if(countitem(7511) < 100) goto L_manque;
+		if(countitem(7510) < 3) goto L_manque;
+		if(countitem(7063) < 20) goto L_manque;
+		if(Zeny < 10000000) goto L_manque;
+		mes "[^000000Odin Mask^000000]";
+		mes "Aquí está tu Odin Mask";
+		delitem 7511,100;
+		delitem 7510,3;
+		delitem 7063,20;
+		set Zeny, Zeny - 10000000;
+		getitem 5483,1;
+		close;
+
+	L_manque:
+		mes "[^000000Odin Mask^000000]";
+		mes "Te faltan: ";
+		if(countitem(7511) < 100) mes "^FF0000"+(100 - countitem(7511)) +"^000000 Rune of Darkness";
+		if(countitem(7510) < 3) mes "^FF0000"+(3 - countitem(7510)) +"^000000 Valhalla's Flower";
+		if(countitem(7063) < 20) mes "^FF0000"+(20 - countitem(7063)) +"^000000 Soft Feather";
+		if(Zeny < 10000000) mes "^0000FF"+(10000000 - Zeny)+"^000000 Zeny";
+		close;
+
+	L_partir:
+		mes "[^000000Odin Mask^000000]";
+		mes "Buen día";
+		close;
+}

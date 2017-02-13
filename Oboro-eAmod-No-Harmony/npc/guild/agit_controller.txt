@@ -1,0 +1,141 @@
+////////////////////////////////////////////////////////////////////////////////
+aldeg_cas01	mapflag	woe_set	1
+aldeg_cas02	mapflag	blocked
+aldeg_cas03	mapflag	blocked
+aldeg_cas04	mapflag	blocked
+aldeg_cas05	mapflag	blocked
+
+gefg_cas01	mapflag	blocked
+gefg_cas02	mapflag	blocked
+gefg_cas03	mapflag	blocked
+gefg_cas04	mapflag	blocked
+gefg_cas05	mapflag	blocked
+
+payg_cas01	mapflag	blocked
+payg_cas02	mapflag	blocked
+payg_cas03	mapflag	blocked
+payg_cas04	mapflag	blocked
+payg_cas05	mapflag	blocked
+
+prtg_cas01	mapflag	blocked
+prtg_cas02	mapflag	woe_set	2
+prtg_cas03	mapflag	blocked
+prtg_cas04	mapflag	blocked
+prtg_cas05	mapflag	blocked
+
+schg_cas01	mapflag	blocked
+schg_cas02	mapflag	blocked
+schg_cas03	mapflag	woe_set	3
+schg_cas04	mapflag	blocked
+schg_cas05	mapflag	blocked
+arug_cas01	mapflag	blocked
+arug_cas02	mapflag	blocked
+arug_cas03	mapflag	blocked
+arug_cas04	mapflag	blocked
+arug_cas05	mapflag	blocked
+mocg_cas01	mapflag	blocked
+arug_cas09	mapflag	woe_set	4
+
+////////////////////////////////////////////////////////////////////////////////
+-	script	Agit_Event	-1,{
+	end;
+//MartesyJueves Baby - 22:00 a 23:00
+//Viernes	1.0 - 22:00 a 23:00
+//Sabado	2.0 - 22:00 a 00:00
+//Domingo	2.0 - 22:00 a 00:00
+
+
+OnAgitInit:
+OnClock1400:
+OnClock1600:
+	switch(gettime(4))
+	{	
+		case 3: // Miercoles
+			if( gettime(3) >= 14 && gettime(3) < 15 )
+			{
+				if( !agitcheck() )
+				{
+					AgitStart 1;
+					announce "[ La Baby WoE comenzó ]",bc_all|bc_woe;
+				}
+			}
+			else if( gettime(3) == 16 )
+			{
+				if( agitcheck() )
+				{
+					AgitEnd;
+					announce "[ La Baby WoE terminó ]",bc_all|bc_woe;
+				}
+			}
+			break;
+		case 5: // Viernes
+			if( gettime(3) >= 14 && gettime(3) < 15 )	// Inicia la WoE del Viernes
+			{
+				if( !agitcheck() )
+				{
+					AgitStart 2;
+					announce "[ La WoE 1.0 comenzó ]",bc_all|bc_woe;
+				}
+			}
+			else if( gettime(3) == 16 )
+			{
+				if( agitcheck() )
+				{
+					AgitEnd;
+					announce "[ La WoE 1.0 terminó ]",bc_all|bc_woe;
+				}
+			}
+			break;
+        case 6: // Sabado
+			if( gettime(3) >= 14 && gettime(3) < 16 )
+			{
+				if( !agitcheck() )
+				{
+					AgitStart 3;
+					announce "[ La 2.0 WoE del Sábado comenzó ]",bc_all|bc_woe;
+				}
+			}
+			else if( gettime(3) == 16 )
+			{
+				if( agitcheck() )
+				{
+					AgitEnd;
+					announce "[ La WoE 2.0 terminó ]",bc_all|bc_woe;
+				}
+			}
+			break;
+        case 0: // Domingo
+			if( gettime(3) >= 14 && gettime(3) < 16 )
+			{
+				if( !agitcheck() )
+				{
+					AgitStart 4;
+					announce "[ La WoE 2.0 del Domingo comenzó ]",bc_all|bc_woe;
+				}
+			}
+			else if( gettime(3) == 16 )
+			{
+				if( agitcheck() )
+				{
+					AgitEnd;
+					announce "[ La WoE 2.0 terminó ]",bc_all|bc_woe;
+				}
+			}
+			break;
+    }
+    end;
+}
+
+// Castillo mapflag loadevent
+schg_cas01	mapflag	loadevent
+schg_cas02	mapflag	loadevent
+schg_cas03	mapflag	loadevent
+schg_cas04	mapflag	loadevent
+schg_cas05	mapflag	loadevent
+arug_cas01	mapflag	loadevent
+arug_cas02	mapflag	loadevent
+arug_cas03	mapflag	loadevent
+arug_cas04	mapflag	loadevent
+arug_cas05	mapflag	loadevent
+arug_cas09	mapflag	loadevent
+mocg_cas01	mapflag	loadevent

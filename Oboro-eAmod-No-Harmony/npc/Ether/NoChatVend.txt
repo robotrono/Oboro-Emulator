@@ -1,0 +1,49 @@
+-	script	NoChatVend	-1,{
+	end;
+
+OnInit:
+////////////////////////////////////////////////////////////////////////////////
+	setcell "prontera",146,27,146,194,cell_nochat,1;
+	setcell "prontera",147,27,147,194,cell_nochat,1;
+	setcell "prontera",148,27,148,194,cell_nochat,1;
+	setcell "prontera",149,27,149,194,cell_nochat,1;
+	setcell "prontera",150,27,150,194,cell_nochat,1;
+	setcell "prontera",151,27,151,194,cell_nochat,1;
+	setcell "prontera",152,27,152,194,cell_nochat,1;
+	setcell "prontera",153,27,153,194,cell_nochat,1;
+	setcell "prontera",154,27,154,194,cell_nochat,1;
+	setcell "prontera",155,27,155,194,cell_nochat,1;
+	setcell "prontera",156,27,156,194,cell_nochat,1;
+	setcell "prontera",157,27,157,194,cell_nochat,1;
+	setcell "prontera",158,27,158,194,cell_nochat,1;
+	setcell "prontera",159,27,159,194,cell_nochat,1;
+	setcell "prontera",160,27,160,194,cell_nochat,1;
+	setcell "prontera",161,27,161,194,cell_nochat,1;
+	setcell "prontera",162,27,162,194,cell_nochat,1;
+	setcell "prontera",163,27,163,194,cell_nochat,1;
+	setcell "prontera",164,27,164,194,cell_nochat,1;
+	setcell "prontera",165,27,165,194,cell_nochat,1;
+	
+	setcell "prontera",146,27,146,194,cell_novending,1;
+	setcell "prontera",147,27,147,194,cell_novending,1;
+	setcell "prontera",148,27,148,194,cell_novending,1;
+	setcell "prontera",149,27,149,194,cell_novending,1;
+	setcell "prontera",150,27,150,194,cell_novending,1;
+	setcell "prontera",151,27,151,194,cell_novending,1;
+	setcell "prontera",152,27,152,194,cell_novending,1;
+	setcell "prontera",153,27,153,194,cell_novending,1;
+	setcell "prontera",154,27,154,194,cell_novending,1;
+	setcell "prontera",155,27,155,194,cell_novending,1;
+	setcell "prontera",156,27,156,194,cell_novending,1;
+	setcell "prontera",157,27,157,194,cell_novending,1;
+	setcell "prontera",158,27,158,194,cell_novending,1;
+	setcell "prontera",159,27,159,194,cell_novending,1;
+	setcell "prontera",160,27,160,194,cell_novending,1;
+	setcell "prontera",161,27,161,194,cell_novending,1;
+	setcell "prontera",162,27,162,194,cell_novending,1;
+	setcell "prontera",163,27,163,194,cell_novending,1;
+	setcell "prontera",164,27,164,194,cell_novending,1;
+	setcell "prontera",165,27,165,194,cell_novending,1;
+////////////////////////////////////////////////////////////////////////////////
+	end;
+}

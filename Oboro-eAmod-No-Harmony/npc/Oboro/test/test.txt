@@ -1,0 +1,6 @@
+sec_in02,139,55,4	script	ttestr	115,{
+	for ( .@i = 48; .@i < 62; .@i++ )
+		npcskilleffect 25,1,148,.@i;    // 25 - Pheuma, 12 - Safety Wall, 362 - Basilica
+    sleep 300;
+end;
+}

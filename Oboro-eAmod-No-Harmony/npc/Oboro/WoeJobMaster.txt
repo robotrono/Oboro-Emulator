@@ -1,0 +1,168 @@
+gr_1,61,65,3	script	WoE_Master::WoE_Master	405,{
+
+	mes name$;
+	mes " ";
+
+	if ( countitem(7959) < 700 )
+		mes_with_close("Yo necesito 700 monedas de WoE para darte InstaLvL");
+
+	mes "¿Deseas cambiar de Job por 700 WoE Coins?";
+	if ( select (" > Claro! : No, estafadores...") == 2 ) close;
+	delitem 7959,700;
+
+	switch(select("Lord Knight","Champion","Professor","Paladin","High Priest","High Wizard","Assassin Cross",
+	  "Stalker","Whitesmith","Creator","Clown","Gypsy","Sniper","Soul Linker","Ninja","Taekwon","Start Gladiator","Gunslinger")) {
+		case 1: callfunc ("grs_jobbing",4008,127); break;
+		case 2: callfunc ("grs_jobbing",4016,127); break;
+		case 3: callfunc ("grs_jobbing",4017,127); break;
+		case 4: callfunc ("grs_jobbing",4015,127); break;
+		case 5: callfunc ("grs_jobbing",4009,127); break;
+		case 6: callfunc ("grs_jobbing",4010,127); break;
+		case 7: callfunc ("grs_jobbing",4013,127); break;
+		case 8: callfunc ("grs_jobbing",4018,127); break;
+		case 9: callfunc ("grs_jobbing",4011,127); break;
+		case 10: callfunc ("grs_jobbing",4019,127); break;
+		case 11: callfunc ("grs_jobbing",4020,127); break;
+		case 12: callfunc ("grs_jobbing",4021,127); break;
+		case 13: callfunc ("grs_jobbing",4012,127); break;
+		case 14: callfunc ("grs_jobbing",4049,107); break;
+		case 15: callfunc ("grs_jobbing",25,78); 	break;
+		case 16: callfunc ("grs_jobbing",4046,58); break;
+		case 17: callfunc ("grs_jobbing",4047,107); break;
+		case 18: callfunc ("grs_jobbing",24,78); 	break;
+	}
+	close;
+}
+
+function	script	grs_jobbing	{
+		jobchange 0; 
+		resetlvl 1;
+		jobchange getarg(0);
+		set baselevel,99;
+		set joblevel , joblevel + 69;
+		ResetSkill;
+		ResetStatus;
+		set SkillPoint,getarg(1);
+		skill "ALL_INCCARRY",5,0;
+	
+		skill 142,1,0; // First Aid
+		if (BaseClass == Job_Novice || BaseClass == Job_Baby)
+			skill 143,1,0; // Play Dead
+		else if (BaseClass == Job_Swordman || BaseClass == Job_Baby_Swordman) {
+			skill 144,1,0; // Moving HP-Recovery
+			skill 145,1,0; // Fatal Blow
+			skill 146,1,0; // Auto Berserk
+		} else if (BaseClass == Job_Mage || BaseClass == Job_Baby_Mage)
+			skill 157,1,0; // Energy Coat
+		else if (BaseClass == Job_Archer || BaseClass == Job_Baby_Archer) {
+			skill 147,1,0; // Arrow Crafting
+			skill 148,1,0; // Arrow Repel
+		} else if (BaseClass == Job_Merchant || BaseClass == Job_Baby_Merchant) {
+			skill 153,1,0; // Cart Revolution
+			skill 154,1,0; // Change Cart
+			skill 155,1,0; // Crazy Uproar
+		} else if (BaseClass == Job_Thief || BaseClass == Job_Baby_Thief) {
+			skill 149,1,0; // Sand Attack
+			skill 150,1,0; // Back Slide
+			skill 151,1,0; // Find Stone
+			skill 152,1,0; // Stone Fling
+		} else if (BaseClass == Job_Acolyte || BaseClass == Job_Baby_Acolyte) 
+			skill 156,1,0; // Holy Light
+
+		if (Class == Job_Knight || Class == Job_Lord_Knight || Class == Job_Baby_Knight) {
+			skill 1001,1,0; // Charge Attack
+			skill 144,1,0; // Moving HP-Recovery
+			skill 145,1,0; // Fatal Blow
+			skill 146,1,0; // Auto Berserk
+		} else if (Class == Job_Crusader || Class == Job_Paladin || Class == Job_Baby_Crusader) {
+			skill 1002,1,0; // Shrink
+			skill 144,1,0; // Moving HP-Recovery
+			skill 145,1,0; // Fatal Blow
+			skill 146,1,0; // Auto Berserk
+		} else if (Class == Job_Wizard || Class == Job_High_Wizard || Class == Job_Baby_Wizard) {
+			skill 1006,1,0; // Sight Blaster
+			skill 157,1,0; // Energy Coat
+		} else if (Class == Job_Sage || Class == Job_Professor || Class == Job_Baby_Sage) {
+			skill 157,1,0; // Energy Coat
+			skill 1007,1,0; // Create Elemental Converter
+			skill 1008,1,0; // Elemental Change Water
+			skill 1017,1,0; // Elemental Change Earth
+			skill 1018,1,0; // Elemental Change Fire
+			skill 1019,1,0; // Elemental Change Wind
+		} else if (Class == Job_Hunter || Class == Job_Sniper || Class == Job_Baby_Hunter) {
+			skill 147,1,0; // Arrow Crafting
+			skill 148,1,0; // Arrow Repel
+			skill 1009,1,0; // Phantasmic Arrow
+		} else if (Class == Job_Bard || Class == Job_Clown || Class == Job_Baby_Bard) {
+			skill 147,1,0; // Arrow Crafting
+			skill 148,1,0; // Arrow Repel
+			skill 1010,1,0; // Pang Voice
+		} else if (Class == Job_Dancer || Class == Job_Gypsy || Class == Job_Baby_Dancer) {
+			skill 147,1,0; // Arrow Crafting
+			skill 148,1,0; // Arrow Repel
+			skill 1011,1,0; // Wink of Charm
+		} else if (Class == Job_Blacksmith || Class == Job_Whitesmith || Class == Job_Baby_Blacksmith) {
+			skill 153,1,0; // Cart Revolution
+			skill 154,1,0; // Change Cart
+			skill 155,1,0; // Crazy Uproar
+			skill 1012,1,0; // Unfair Trick
+			skill 1013,1,0; // Greed
+		} else if (Class == Job_Alchemist || Class == Job_Creator || Class == Job_Baby_Alchemist) {
+			skill 153,1,0; // Cart Revolution
+			skill 154,1,0; // Change Cart
+			skill 155,1,0; // Crazy Uproar
+			skill 238,1,0; // Bioethics
+		} else if (Class == Job_Assassin || Class == Job_Assassin_Cross || Class == Job_Baby_Assassin) {
+			skill 149,1,0; // Sand Attack
+			skill 150,1,0; // Back Slide
+			skill 151,1,0; // Find Stone
+			skill 152,1,0; // Stone Fling
+			skill 1003,1,0; // Sonic Acceleration
+			skill 1004,1,0; // Throw Venom Knife
+		} else if (Class == Job_Rogue || Class == Job_Stalker || Class == Job_Baby_Rogue) {
+			skill 149,1,0; // Sand Attack
+			skill 150,1,0; // Back Slide
+			skill 151,1,0; // Find Stone
+			skill 152,1,0; // Stone Fling
+			skill 1005,1,0; // Close Confine
+		} else if (Class == Job_Priest || Class == Job_High_Priest || Class == Job_Baby_Priest) {
+			skill 1014,1,0; // Redemptio
+			skill 156,1,0; // Holy Light
+		} else if (Class == Job_Monk || Class == Job_Champion || Class == Job_Baby_Monk) {
+			skill 156,1,0; // Holy Light
+			skill 1015,1,0; // Ki Translation
+			skill 1016,1,0; // Ki Explosion
+		}
+	return;
+}
+
+gr_2,61,65,3	duplicate(WoE_Master)	WoE Master#2-1	405
+gr_3,61,65,3	duplicate(WoE_Master)	WoE Master#3-1	405
+gr_4,61,65,3	duplicate(WoE_Master)	WoE Master#4-1	405
+gr_5,61,65,3	duplicate(WoE_Master)	WoE Master#5-1	405
+gr_6,61,65,3	duplicate(WoE_Master)	WoE Master#6-1	405
+gr_7,61,65,3	duplicate(WoE_Master)	WoE Master#7-1	405
+gr_8,61,65,3	duplicate(WoE_Master)	WoE Master#8-1	405
+gr_9,61,65,3	duplicate(WoE_Master)	WoE Master#9-1	405
+gr_10,61,65,3	duplicate(WoE_Master)	WoE Master#10-1	405
+gr_11,61,65,3	duplicate(WoE_Master)	WoE Master#11-1	405
+gr_12,61,65,3	duplicate(WoE_Master)	WoE Master#12-1	405
+gr_13,61,65,3	duplicate(WoE_Master)	WoE Master#13-1	405
+gr_14,61,65,3	duplicate(WoE_Master)	WoE Master#14-1	405
+gr_15,61,65,3	duplicate(WoE_Master)	WoE Master#15-1	405
+gr_16,61,65,3	duplicate(WoE_Master)	WoE Master#16-1	405
+gr_17,61,65,3	duplicate(WoE_Master)	WoE Master#17-1	405
+gr_18,61,65,3	duplicate(WoE_Master)	WoE Master#18-1	405
+gr_19,61,65,3	duplicate(WoE_Master)	WoE Master#19-1	405
+gr_20,61,65,3	duplicate(WoE_Master)	WoE Master#20-1	405
+gr_21,61,65,3	duplicate(WoE_Master)	WoE Master#21-1	405
+gr_22,61,65,3	duplicate(WoE_Master)	WoE Master#22-1	405
+gr_23,61,65,3	duplicate(WoE_Master)	WoE Master#23-1	405
+gr_24,61,65,3	duplicate(WoE_Master)	WoE Master#24-1	405
+gr_25,61,65,3	duplicate(WoE_Master)	WoE Master#25-1	405
+gr_26,61,65,3	duplicate(WoE_Master)	WoE Master#26-1	405
+gr_27,61,65,3	duplicate(WoE_Master)	WoE Master#27-1	405
+gr_28,61,65,3	duplicate(WoE_Master)	WoE Master#28-1	405
+gr_29,61,65,3	duplicate(WoE_Master)	WoE Master#29-1	405
+gr_30,61,65,3	duplicate(WoE_Master)	WoE Master#30-1	405
+

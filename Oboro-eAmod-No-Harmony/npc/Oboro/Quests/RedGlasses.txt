@@ -1,0 +1,35 @@
+ra_temple,68,139,4	script	Red Glasses	113,{
+	mes "[^000000Red Glasses^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte unas Red Glasses, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Red Glasses^000000]";
+		mes "^FF000050^000000 Red Bijou"; //7447
+		mes "^FF00005^000000 Scarlet Dyestuff"; //975
+		close;
+
+	L_check:
+		if(countitem(7447) < 50) goto L_manque;
+		if(countitem(975) < 5) goto L_manque;
+		mes "[^000000Red Glasses^000000]";
+		mes "Aquí están tus Red Glasses";
+		delitem 7447,50;
+		delitem 975,5;
+		getitem 5288,1;
+		close;
+
+	L_manque:
+		mes "[^000000Red Glasses^000000]";
+		mes "Te faltan: ";
+		if(countitem(7447) < 50) mes "^FF0000"+(50 - countitem(7447)) +"^000000 Red Bijou";
+		if(countitem(975) < 5) mes "^FF0000"+(5 - countitem(975)) +"^000000 Scarlet Dyestuff";
+		close;
+
+	L_partir:
+		mes "[^000000Red Glasses^000000]";
+		mes "Buen día";
+		close;
+}

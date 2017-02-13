@@ -1,0 +1,44 @@
+//===== eAthena Script ========================================
+//= Dewata Dungeon Monster Spawn Script
+//===== By: ==================================================
+//= Chilly
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= Any Athena Version
+//===== Description: =========================================
+//= Official kRO monster spawns
+//===== Additional Comments: =================================
+//= 1.0 First Release
+//============================================================
+
+//==================================================
+// dew_fild01 - Dewata Field Tribal Village
+//==================================================
+dew_fild01,0,0,0,0	monster	Argiope	1099,60,0,0,0
+dew_dun01,0,0,0,0	monster	Gullinbursti	1311,20,0,0,0
+
+
+//==================================================
+// dew_dun01 - Volcanic Island of Krakatoa
+//==================================================
+dew_dun01,0,0,0,0	monster	Argiope	1099,20,0,0,0
+dew_dun01,0,0,0,0	monster	Ancient Worm	1305,20,0,0,0
+dew_dun01,0,0,0,0	monster	Gullinbursti	1311,20,0,0,0
+
+//==================================================
+// dew_dun02 - Tina Grace Cave
+//==================================================
+dew_dun02,0,0,0,0	monster	Am Mut	1301,20,0,0,0
+dew_dun02,0,0,0,0	monster	Gajomart	1309,20,0,0,0
+
+// Mapflags
+dewata	mapflag	nightenabled
+dewata	mapflag	nobranch
+dew_in01	mapflag	nobranch
+dew_in01	mapflag	nomemo
+dew_in01	mapflag	noteleport
+dew_fild01	mapflag	nightenabled
+dew_dun01	mapflag	nomemo
+dew_dun02	mapflag	nightenabled
+dew_dun02	mapflag	nomemo
