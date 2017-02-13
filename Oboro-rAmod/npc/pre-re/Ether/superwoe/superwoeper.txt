@@ -1,0 +1,197 @@
+/*
+								WoE Warper
+								By: KoKe
+							Current Version: 2.2
+	ChangeLog:
+		2.2	-	07/10/13
+			Optimizada la funcion para agregar mas castillos, de igual forma ocupan
+			agregar las coordenadas y demas informacion en el npc
+
+		2.0	-	21/11/11
+			El npc ahora calcula automaticamente el area del mapa
+			Puede soportar cuantos mapas se le configure
+			Funciones simplificadas y optimizacion del script	
+		1.3	-	04/06/11
+			Agregada configuracion mas rapida de los warps
+		1.0	-	12/04/11
+			Arreglada posible incompatibilidad de sintaxis con emulador
+*/
+
+prt_are02,153,157,3	script	WoE Warper#01::WoE Warper	430,{
+	cutin "jpn_run01",2;
+	if (getbrokenid(1) != 0) {
+			while (getbrokenid(1) != 0){
+				specialeffect2 101;
+				repairall;
+			}
+		}
+	sc_start 32,250000,10;  // Increase Agi
+	sc_start 30,250000,10;  // Blessing
+	percentheal 100,100;
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////Configutacion del Script //////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+setarray .WoECA[1],
+		26; // Castle 4
+setarray .WoeNa$[1],
+		"(WoE Event 2.0 Domingo 26+4)";	// Descripcion del castle 5
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////Arrays de Los Mapas NO TOCAR //////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+setarray .Ca_WoE$[1],
+		"aldeg_cas01",	//Neuschwanstein		1	-	Aldebaran
+		"aldeg_cas02",	//Hohenschwangau		2
+		"aldeg_cas03",	//Nuenberg				3
+		"aldeg_cas04",	//Wuerzburg				4
+		"aldeg_cas05",	//Rothenburg			5
+		"gefg_cas01",	//Repherion				6	-	Geffen
+		"gefg_cas02",	//Eeyolbriggar			7
+		"gefg_cas03",	//Yesnelph				8
+		"gefg_cas04",	//Bergel				9
+		"gefg_cas05",	//Mersetzdeitz			10
+		"payg_cas01",	//Bright Arbor			11	-	Payon
+		"payg_cas02",	//Scarlet Palace		12
+		"payg_cas03",	//Holy Shadow			13
+		"payg_cas04",	//Sacred Altar			14
+		"payg_cas05",	//Bamboo Grove Hill		15
+		"prtg_cas01",	//Kriemhild				16	-	Prontera
+		"prtg_cas02",	//Swanhild				17
+		"prtg_cas03",	//Fadhgridh				18
+		"prtg_cas04",	//Skoegul				19
+		"prtg_cas05",	//Gondul				20
+		/////////  Castles WoE SE //////////
+		"schg_cas01",	//Himinn				21	-	Yuno
+		"schg_cas02",	//Andlangr				22
+		"schg_cas03",	//Viblainn				23
+		"schg_cas04",	//Hljod					24
+		"schg_cas05",	//Skidbladnir			25
+		"arug_cas01",	//Mardol				26	-	Rachel
+		"arug_cas02",	//Cyr					27
+		"arug_cas03",	//Horn					28
+		"arug_cas04",	//Gefn					29
+		"arug_cas05",	//Banadis				30
+		"mocg_cas01";	//Iset				31
+
+setarray .Ma_WoE$[1],"alde_gld","gef_fild13","pay_gld","prt_gld","sch_gld","aru_gld","moc_gld";
+
+setarray .C_WoEX[1],48,95,142,236,268,153,308,75,192,250,121,295,316,140,203,136,240,153,115,204,293,288,97,138,71,159,85,67,299,293,196;
+
+setarray .C_WoEY[1],85,244,87,242,90,50,239,290,277,57,233,116,293,163,265,64,130,136,240,239,96,252,189,87,316,268,47,167,345,108,198;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+	mes "[   ^ED0072WoE Warper^000000   ]";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Yo puedo llevarte al castillo de WoE activado que quieras.";
+	next;
+	set .@Menu$, "";
+	if ( #WmpX > 0 )
+	{
+		set .@Menu$,.@Menu$ + "Regresar a [ ^E96D07"+#Wmp$+"^000000 ]:";
+	    for( set .@i, 1; .@i <= getarraysize(.WoECA)-1; set .@i, .@i + 1 )
+			{
+				set .@Menu$, .@Menu$ + "-^FF9900" + getcastlename(.Ca_WoE$[.WoECA[.@i]]) + "^000000 ^0066FF"+.WoeNa$[.@i]+"^000000:";
+			}
+		set .@j, select(.@Menu$) - 1;		
+	} else {
+		for( set .@i, 1; .@i <= getarraysize(.WoECA)-1; set .@i, .@i + 1 )
+			{
+				set .@Menu$, .@Menu$ + "-^FF9900" + getcastlename(.Ca_WoE$[.WoECA[.@i]]) + "^000000 ^0066FF"+.WoeNa$[.@i]+"^000000:";
+			}
+		set .@j, select(.@Menu$);	
+	}
+	if( .@j < 1 )
+	{
+		warp #WmpM$,#WmpX,#WmpY;
+		end;
+	}
+	if (.WoECA[.@j] >= 1 && .WoECA[.@j] <= 5)
+	{
+		set .@a,1;
+	} else if (.WoECA[.@j] >= 6 && .WoECA[.@j] <= 10)
+	{
+		set .@a,2;
+	} else if (.WoECA[.@j] >= 11 && .WoECA[.@j] <= 15)
+	{
+		set .@a,3;
+	} else if (.WoECA[.@j] >= 16 && .WoECA[.@j] <= 20)
+	{
+		set .@a,4;
+	} else if (.WoECA[.@j] >= 21 && .WoECA[.@j] <= 25)
+	{
+		set .@a,5;
+	} else if (.WoECA[.@j] >= 26 && .WoECA[.@j] <= 30)
+	{
+		set .@a,6;
+	} else if (.WoECA[.@j] <= 31 )
+	{
+		set .@a,7;
+	}
+	set #Wmp$,getcastlename(.Ca_WoE$[.WoECA[.@j]]);
+	warp .Ma_WoE$[.@a],.C_WoEX[.WoECA[.@j]],.C_WoEY[.WoECA[.@j]];
+	getmapxy(#WmpM$,#WmpX,#WmpY,0,strcharinfo(0));
+	end;
+}
+
+morocc,161,97,4	duplicate(WoE Warper)	WoE Warper#02	430
+geffen,124,70,4	duplicate(WoE Warper)	WoE Warper#03	430
+payon,154,233,4	duplicate(WoE Warper)	WoE Warper#04	430
+izlude,134,146,4	duplicate(WoE Warper)	WoE Warper#05	430
+aldebaran,135,116,5	duplicate(WoE Warper)	WoE Warper#06	430
+xmas,144,135,5	duplicate(WoE Warper)	WoE Warper#07	430
+comodo,187,153,6	duplicate(WoE Warper)	WoE Warper#08	430
+gonryun,165,117,4	duplicate(WoE Warper)	WoE Warper#09	430
+ayothaya,213,193,4	duplicate(WoE Warper)	WoE Warper#10	430
+hugel,102,149,4	duplicate(WoE Warper)	WoE Warper#11	430
+moscovia,222,197,6	duplicate(WoE Warper)	WoE Warper#12	430
+dicastes01,201,192,4	duplicate(WoE Warper)	WoE Warper#13	430
+brasilis,190,222,6	duplicate(WoE Warper)	WoE Warper#14	430
+splendide,205,153,3	duplicate(WoE Warper)	WoE Warper#15	430
+umbala,137,161,6	duplicate(WoE Warper)	WoE Warper#16	430
+mid_camp,222,239,3	duplicate(WoE Warper)	WoE Warper#17	430
+amatsu,220,232,6	duplicate(WoE Warper)	WoE Warper#18	430
+new_1-1,49,114,6	duplicate(WoE Warper)	WoE Warper#19	430
+manuk,271,199,4	duplicate(WoE Warper)	WoE Warper#20	430
+lighthalzen,153,97,6	duplicate(WoE Warper)	WoE Warper#21	430
+rachel,111,140,6	duplicate(WoE Warper)	WoE Warper#22	430
+alberta,113,53,6	duplicate(WoE Warper)	WoE Warper#23	430
+yuno,162,193,4	duplicate(WoE Warper)	WoE Warper#24	430
+dewata,204,182,4	duplicate(WoE Warper)	WoE Warper#25	430
+louyang,211,107,6	duplicate(WoE Warper)	WoE Warper#26	430
+Hyrule,140,192,3	duplicate(WoE Warper)	WoE Warper#27	430
+veins,212,132,6	duplicate(WoE Warper)	WoE Warper#28	430
+
+//GuildRoom
+gr_1,64,62,3	duplicate(WoE Warper)	WoE Warper#GR01	430
+gr_2,64,62,3	duplicate(WoE Warper)	WoE Warper#GR02	430
+gr_3,64,62,3	duplicate(WoE Warper)	WoE Warper#GR03	430
+gr_4,64,62,3	duplicate(WoE Warper)	WoE Warper#GR04	430
+gr_5,64,62,3	duplicate(WoE Warper)	WoE Warper#GR05	430
+gr_6,64,62,3	duplicate(WoE Warper)	WoE Warper#GR06	430
+gr_7,64,62,3	duplicate(WoE Warper)	WoE Warper#GR07	430
+gr_8,64,62,3	duplicate(WoE Warper)	WoE Warper#GR08	430
+gr_9,64,62,3	duplicate(WoE Warper)	WoE Warper#GR09	430
+gr_10,64,62,3	duplicate(WoE Warper)	WoE Warper#GR10	430
+gr_11,64,62,3	duplicate(WoE Warper)	WoE Warper#GR11	430
+gr_12,64,62,3	duplicate(WoE Warper)	WoE Warper#GR12	430
+gr_13,64,62,3	duplicate(WoE Warper)	WoE Warper#GR13	430
+gr_14,64,62,3	duplicate(WoE Warper)	WoE Warper#GR14	430
+gr_15,64,62,3	duplicate(WoE Warper)	WoE Warper#GR15	430
+gr_16,64,62,3	duplicate(WoE Warper)	WoE Warper#GR16	430
+gr_17,64,62,3	duplicate(WoE Warper)	WoE Warper#GR17	430
+gr_18,64,62,3	duplicate(WoE Warper)	WoE Warper#GR18	430
+gr_19,64,62,3	duplicate(WoE Warper)	WoE Warper#GR19	430
+gr_20,64,62,3	duplicate(WoE Warper)	WoE Warper#GR20	430
+gr_21,64,62,3	duplicate(WoE Warper)	WoE Warper#GR21	430
+gr_22,64,62,3	duplicate(WoE Warper)	WoE Warper#GR22	430
+gr_23,64,62,3	duplicate(WoE Warper)	WoE Warper#GR23	430
+gr_24,64,62,3	duplicate(WoE Warper)	WoE Warper#GR24	430
+gr_25,64,62,3	duplicate(WoE Warper)	WoE Warper#GR25	430
+gr_26,64,62,3	duplicate(WoE Warper)	WoE Warper#GR26	430
+gr_27,64,62,3	duplicate(WoE Warper)	WoE Warper#GR27	430
+gr_28,64,62,3	duplicate(WoE Warper)	WoE Warper#GR28	430
+gr_29,64,62,3	duplicate(WoE Warper)	WoE Warper#GR29	430
+gr_30,64,62,3	duplicate(WoE Warper)	WoE Warper#GR30	430

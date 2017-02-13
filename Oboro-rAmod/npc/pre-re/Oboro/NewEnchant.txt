@@ -1,0 +1,135 @@
+arena_4,151,94,3	script	Enchant Engineer::BGEncht	84,{
+	title ("Enchanter");
+	mes "__________________________";
+	mes "^009933 Armaduras: ^000000 200 Medallas.";
+	mes "^009933 Hats: ^000000 250 Bravery, 250 Valor y 100 Battle Badges.";
+	mes "^009933 Weapon / Shield / Garment / Shoes: ^000000 150 Bravery, 150 Valor y 100 Battle Badges.";
+	next;
+	
+	.@menu$ = "";
+	for(.@i = 1; .@i <= 6; .@i++) 
+		.@menu$ += ( getequipisequiped(.@i) ?
+						(getequipcardid(.@i,3) ? 
+							"^4879E1["+getitemname(getequipcardid(.@i,3))+"]^000000 " : 
+							"^DD3434[ NULL ]^000000 " 
+						) +getequipname(.@i) : 
+						" " 
+					) + ":";
+
+	.@part = select(.@menu$);
+	title ("Enchanter");
+	mes " ";
+	
+	if(!getequipisequiped(.@part))
+		mclose "No traes ningun item...";
+
+	switch (.@part) 
+	{
+		case 1: //hat
+			if(countitem(7828) < 250 || countitem(7829) < 250 || countitem(7773) < 100) 
+				mclose "Me gustaría seguir adelante, pero te faltan algunas cosas...";	
+
+			mes "Seguro de que quieres seguir?";
+			if ( select("^009933[ > ]^000000 Vamos Enchantar","^009933[ > ]^000000 Cancelar") == 2 ) 
+				close;
+
+			delitem 7828,200;
+			delitem 7829,200;
+			delitem 7773,100;
+			set .@Enchant, 4700 + (rand(6) * 10);
+		break;	
+
+		case 2://armaduras
+			deletearray .@ArmorT[0],127;		
+			setarray .@ArmorT[0],2307,2309,2314,2316,2321,2325,2327,2322,2328,2330,
+			2332,2334,2335,2341,2344,2346,2348,2350,2337,2386,2394,2395,2396,2311,
+			2318,2319,2320,2308,2310,2315,2317,2324,2326,2331,2333,2336,30093,30092,
+			2342,2345,2347,2349,2351,2364,2365,2391,2374,2375,2376,2377,2378,2379,
+			2380,2381,2382,2387,2388,2389,2390,2384;
+
+			for(.@i = 0; .@i < getarraysize(.@ArmorT); .@i++) 
+				if( .@ArmorT[.@i] == getequipid(2) )
+					break;
+			
+			if(.@i >= getarraysize(.@ArmorT))
+				mclose "Lo siento, pero no puedo trabajar con esta armadura.";
+
+			mes "Bien entonces, ¿que medallas de tu inventario quieres usar?";
+			switch( select("^339933Bravery Badge^000000","^0066FFValor Badge^000000","^FF3300Battle Badge^000000") ) {
+				case 1: set .@itBag,7828; break;
+				case 2: set .@itBag,7829; break;
+				case 3: set .@itBag,7773; break;
+			}
+
+			if( countitem(.@itBag) < 200 )
+				mclose "Lo siento pero no tienes suficientes ^339933" + getitemname(.@itBag) + "^000000";
+
+			delitem .@itBag,200;
+			
+			/**
+			 * [Isaac]
+			 * 50% salga +2 & +3
+			 **/
+			.@Enchant = 4700 + (rand(5) * 10) + (rand(1) == 0 ? (rand(3)) : (rand(1,3))));
+		break;
+			
+		case 3:
+		case 4:
+			.@Slot0 = getequipcardid(.@part,0);
+			if( .@Slot0 == 255 || .@Slot0 == 254 || .@Slot0 < 0 )
+				mclose "No puedo trabajar con Signed items";
+				
+			if(countitem(7828) < 150 || countitem(7829) < 150 || countitem(7773) < 100)
+				mclose "No tienes los items necesarios para encantar";
+				
+			.@type = select("^FF0000Enchant it Elemental^000000:^0000FFEnchant it Racial^000000:Cancel");
+			if (.@type == 3)
+				close;	
+				
+			 if( getequipweaponlv(.@part) == 0 )
+			 {
+				// En realidad es un escudo
+				switch( .@Type )
+				{
+					case 1:	.@Enchant = 4979 + rand(5);	break;
+					case 2:	.@Enchant = 4984 + rand(10); break;
+				}
+			 }
+			 else
+			 {
+				.@Item = getequipid(.@part);
+				if( getitemslots(.@Item) >= 4 )
+					mclose "No puedo trabajar con items con 4 Slots";
+				
+				switch( .@Type )
+				{
+					case 1:	.@Enchant = 4964 + rand(5);	break;
+					case 2:	.@Enchant = 4969 + rand(10); break;
+				}
+			 }
+			
+			delitem 7828,150;
+			delitem 7829,150;
+			delitem 7773,100;
+		break;
+		
+		case 5:
+		case 6:
+			if(countitem(7828) < 150 || countitem(7829) < 150 || countitem(7773) < 100)
+				mclose "No tienes los items necesarios para encantar";
+			
+			.@Slot0 = getequipcardid(.@part,0);
+			if( .@Slot0 == 255 || .@Slot0 == 254 || .@Slot0 < 0 )
+				mclose "No puedo trabajar con Signed items";
+			
+			.@Enchant = 4994 + (rand(3)) + (rand(2) * 3);
+			
+			delitem 7828,150;
+			delitem 7829,150;
+			delitem 7773,100;	
+		break;
+	}
+	close2;
+		successenchant(getequipid(.@part),.@Enchant,.@part);
+	end;
+}

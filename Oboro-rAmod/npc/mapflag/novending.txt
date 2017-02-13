@@ -1,0 +1,15 @@
+//===== eAthena Script =======================================
+//= Mapflag from a script in the NPC folder
+//===== By: ==================================================
+//= Epoque
+//===== Current Version: =====================================
+//= 1.0a [Epoque]
+//===== Compatible With: =====================================
+//=
+//===== Description: =========================================
+//=
+//============================================================
+
+prontera	mapflag	novending
+//prt_in	mapflag	novending
+arena_4	mapflag	novending

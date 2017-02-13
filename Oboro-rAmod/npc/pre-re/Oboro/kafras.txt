@@ -1,0 +1,90 @@
+//isaac..
+prontera,164,195,4	script	Kafra Employee::Kafra Employee	860,{
+	getmapxy .@map$, .@x, .@y, 0;
+	cutin "kafra_08",2;
+	mes "^BB8104 Kafra Employee ^000000";
+	mes "   ";
+	mes "Bienvenido a " + .@map$ + ", " + strcharinfo(0);
+	mes "¿Qué deseas hacer?";
+	switch(select(" ^E96D07 - ^000000 Guardar aqui : ^E96D07 - ^000000 Abrir storage : ^E96D07 - ^000000 Alquilar un carrito") ) {
+	case 1:
+		close2;
+			savepoint .@map$,.@x,.@y;
+			dispbottom "Nueva ciudad guardada.";
+		break;
+	case 2:
+		close2;
+			openstorage;
+		break;
+	case 3:
+		next;
+		mes "^BB8104 Kafra Employee ^000000";
+		mes "   ";
+		cutin "",255;
+		if( baseClass != Job_Merchant ) 
+			mclose " Solo merchants pueden adquirir este servicio.";
+		else if ( checkcart() == 1 )
+			mclose " Veo que ya tienes un carrito, ¡No jueges conmigo!";
+		else if( !getskilllv(39) )
+			mclose " No puedes llevar un carrito con esas skills...";
+		setcart;				
+		mclose " Muy bien toma tu carrito...";
+	}
+	cutin "",255;
+	end;
+}
+
+new_1-1,56,114,4	duplicate(Kafra Employee)	Kafra Employee#2-1	860
+manuk,266,199,6	duplicate(Kafra Employee)	Kafra Employee#3-1	860
+yuno,327,108,4	duplicate(Kafra Employee)	Kafra Employee#4-1	860
+yuno,277,221,4	duplicate(Kafra Employee)	Kafra Employee#5-1	860
+splendide,194,149,5	duplicate(Kafra Employee)	Kafra Employee#6-1	860
+prontera,29,207,6	duplicate(Kafra Employee)	Kafra Employee#7-1	860
+prontera,282,200,2	duplicate(Kafra Employee)	Kafra Employee#8-1	860
+prontera,146,89,6	duplicate(Kafra Employee)	Kafra Employee#9-1	860
+payon,181,104,4	duplicate(Kafra Employee)	Kafra Employee#10-1	860
+payon,175,226,4	duplicate(Kafra Employee)	Kafra Employee#11-1	860
+payon,175,226,4	duplicate(Kafra Employee)	Kafra Employee#12-1	860
+pay_arche,55,123,0	duplicate(Kafra Employee)	Kafra Employee#13-1	860
+hugel,102,141,4	duplicate(Kafra Employee)	Kafra Employee#14-1	860
+dicastes01,201,197,4	duplicate(Kafra Employee)	Kafra Employee#15-1	860
+mid_camp,210,241,5	duplicate(Kafra Employee)	Kafra Employee#16-1	860
+ayothaya,202,196,6	duplicate(Kafra Employee)	Kafra Employee#17-1	860
+amatsu,220,229,6	duplicate(Kafra Employee)	Kafra Employee#18-1	860
+xmas,154,137,4	duplicate(Kafra Employee)	Kafra Employee#19-1	860
+dewata,206,180,4	duplicate(Kafra Employee)	Kafra Employee#20-1	860
+gr_1,47,59,6	duplicate(Kafra Employee)	Kafra Employee#21-1	860
+gr_2,47,59,6	duplicate(Kafra Employee)	Kafra Employee#22-1	860
+gr_3,47,59,6	duplicate(Kafra Employee)	Kafra Employee#23-1	860
+gr_4,47,59,6	duplicate(Kafra Employee)	Kafra Employee#24-1	860
+gr_5,47,59,6	duplicate(Kafra Employee)	Kafra Employee#25-1	860
+gr_6,47,59,6	duplicate(Kafra Employee)	Kafra Employee#26-1	860
+gr_7,47,59,6	duplicate(Kafra Employee)	Kafra Employee#27-1	860
+gr_8,47,59,6	duplicate(Kafra Employee)	Kafra Employee#28-1	860
+gr_9,47,59,6	duplicate(Kafra Employee)	Kafra Employee#29-1	860
+gr_10,47,59,6	duplicate(Kafra Employee)	Kafra Employee#30-1	860
+gr_11,47,59,6	duplicate(Kafra Employee)	Kafra Employee#31-1	860
+gr_12,47,59,6	duplicate(Kafra Employee)	Kafra Employee#32-1	860
+gr_13,47,59,6	duplicate(Kafra Employee)	Kafra Employee#33-1	860
+gr_14,47,59,6	duplicate(Kafra Employee)	Kafra Employee#34-1	860
+gr_15,47,59,6	duplicate(Kafra Employee)	Kafra Employee#35-1	860
+gr_16,47,59,6	duplicate(Kafra Employee)	Kafra Employee#36-1	860
+gr_17,47,59,6	duplicate(Kafra Employee)	Kafra Employee#37-1	860
+gr_18,47,59,6	duplicate(Kafra Employee)	Kafra Employee#38-1	860
+gr_19,47,59,6	duplicate(Kafra Employee)	Kafra Employee#39-1	860
+gr_20,47,59,6	duplicate(Kafra Employee)	Kafra Employee#40-1	860
+gr_21,47,59,6	duplicate(Kafra Employee)	Kafra Employee#41-1	860
+gr_22,47,59,6	duplicate(Kafra Employee)	Kafra Employee#42-1	860
+gr_23,47,59,6	duplicate(Kafra Employee)	Kafra Employee#43-1	860
+gr_24,47,59,6	duplicate(Kafra Employee)	Kafra Employee#44-1	860
+gr_25,47,59,6	duplicate(Kafra Employee)	Kafra Employee#45-1	860
+gr_26,47,59,6	duplicate(Kafra Employee)	Kafra Employee#46-1	860
+gr_27,47,59,6	duplicate(Kafra Employee)	Kafra Employee#47-1	860
+gr_28,47,59,6	duplicate(Kafra Employee)	Kafra Employee#48-1	860
+gr_29,47,59,6	duplicate(Kafra Employee)	Kafra Employee#49-1	860
+gr_30,47,59,6	duplicate(Kafra Employee)	Kafra Employee#50-1	860
+Hyrule,127,192,6	duplicate(Kafra Employee)	Kafra Employee#51-1	860
+veins,223,128,3	duplicate(Kafra Employee)	Kafra Employee#52-1	860
+mora,112,112,3	duplicate(Kafra Employee)	Kafra Employee#53-1	860
+comodo,195,150,3	duplicate(Kafra Employee)	Kafra Employee#54-1	860
+rwc01,40,49,6	duplicate(Kafra Employee)	Kafra Employee#55-1	860

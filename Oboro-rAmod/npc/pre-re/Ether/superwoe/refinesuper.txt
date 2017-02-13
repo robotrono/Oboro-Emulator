@@ -1,0 +1,76 @@
+prt_are02,153,141,4	script	Refine Master	430,{
+if(getequipisequiped(EQI_HEAD_TOP)) {
+if(getequiprefinerycnt(EQI_HEAD_TOP) == 0 && getequipisenableref(EQI_HEAD_TOP) == 1){
+set .@tophat,getequipid(EQI_HEAD_TOP); 
+set .@topcard,getequipcardid(1,0);
+set .@topdisg,getequipcardid(1,3);
+delitem2 .@tophat,1,1,0,0,.@topcard,0,0,.@topdisg;
+getitem2 .@tophat,1,1,6,0,.@topcard,0,0,.@topdisg;
+}
+}
+
+if(getequipisequiped(EQI_ARMOR)){
+if(getequiprefinerycnt(EQI_ARMOR) == 0 && getequipisenableref(EQI_ARMOR) == 1){
+set .@armor,getequipid(EQI_ARMOR);
+set .@armcard,getequipcardid(2,0);
+set .@armchant,getequipcardid(2,3);
+delitem2 .@armor,1,1,0,0,.@armcard,0,0,.@armchant;
+getitem2 .@armor,1,1,6,0,.@armcard,0,0,.@armchant;
+}
+}
+
+if(getequipisequiped(EQI_GARMENT)){
+if(getequiprefinerycnt(EQI_GARMENT) == 0 && getequipisenableref(EQI_GARMENT) == 1){
+set .@garment,getequipid(EQI_GARMENT);
+set .@garmcard,getequipcardid(5,0);
+delitem2 .@garment,1,1,0,0,.@garmcard,0,0,0;
+getitem2 .@garment,1,1,6,0,.@garmcard,0,0,0;
+}
+}
+
+if(getequipisequiped(EQI_SHOES)){
+if(getequiprefinerycnt(EQI_SHOES) == 0 && getequipisenableref(EQI_SHOES) == 1){
+set .@shoesid,getequipid(EQI_SHOES);
+set .@shoescard,getequipcardid(6,0);
+delitem2 .@shoesid,1,1,0,0,.@shoescard,0,0,0;
+getitem2 .@shoesid,1,1,6,0,.@shoescard,0,0,0;
+}
+}
+
+if(getequipisequiped(EQI_HAND_L) && getequipisequiped(EQI_HAND_R)){
+if(getequiprefinerycnt(EQI_HAND_R) == 0 && getequipisenableref(EQI_HAND_R) == 1){
+if(getequipid(EQI_HAND_L) == getequipid(EQI_HAND_R)){
+set .@twohanded,getequipid(EQI_HAND_R);
+set .@twohandcard,getequipcardid(4,0);
+set .@twohandcard1,getequipcardid(4,1);
+set .@twohandcard2,getequipcardid(4,2);
+set .@twohandcard3,getequipcardid(4,3);
+delitem2 .@twohanded,1,1,0,0,.@twohandcard,.@twohandcard1,.@twohandcard2,.@twohandcard3;
+getitem2 .@twohanded,1,1,10,0,.@twohandcard,.@twohandcard1,.@twohandcard2,.@twohandcard3;
+}
+}
+}
+
+if(getequipisequiped(EQI_HAND_L)){
+if(getequiprefinerycnt(EQI_HAND_L) == 0 && getequipisenableref(EQI_HAND_L) == 1){
+set .@shield,getequipid(EQI_HAND_L);
+set .@shieldcard,getequipcardid(3,0);
+delitem2 .@shield,1,1,0,0,.@shieldcard,0,0,0;
+getitem2 .@shield,1,1,6,0,.@shieldcard,0,0,0;
+}
+}
+
+if(getequipisequiped(EQI_HAND_R)){
+if(getequiprefinerycnt(EQI_HAND_R) == 0 && getequipisenableref(EQI_HAND_R) == 1){
+set .@weaponid,getequipid(EQI_HAND_R);
+set .@weapcard,getequipcardid(4,0);
+set .@weapcard1,getequipcardid(4,1);
+set .@weapcard2,getequipcardid(4,2);
+set .@weapcard3,getequipcardid(4,3);
+delitem2 .@weaponid,1,1,0,0,.@weapcard,.@weapcard1,.@weapcard2,.@weapcard3;
+getitem2 .@weaponid,1,1,6,0,.@weapcard,.@weapcard1,.@weapcard2,.@weapcard3;
+}
+}
+close;
+
+}

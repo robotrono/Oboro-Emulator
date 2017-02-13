@@ -1,0 +1,165 @@
+//iSaaC
+
+-	script	OnInitBG	-1,{
+	end;
+OnInit:
+	set $Users_limite_empieza_bg, 2;
+	callfunc ("Cual_BG");
+end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() >= 99 && @whispervar0$ != "Cambiar" ) end;
+	callfunc ("Cual_BG");
+	dispbottom "Listo";
+end;
+
+}
+
+function	script	bgwaittime	{
+	if ( !getd("#deserto" + getarg(3) + getcharid(3)) || getd("#deserto" + getarg(3) + getcharid(3)) <= gettimetick(2) ) {
+		warp getarg(0),getarg(1),getarg(2);
+		end;
+	} else {
+		set .@tiempo , getd("#deserto" + getarg(3) + getcharid(3)) - gettimetick(2);
+		mes "Tienes que esperar " + .@tiempo  + " segundos para volver a entrar."; 
+		close;
+	}
+	return;
+}
+
+function	script	bgsetwaittime	{
+	if ( !getd("#deserto" + getarg(0) + getcharid(3)) || getd("#deserto" + getarg(0) + getcharid(3)) <= gettimetick(2) )
+		setd "#deserto" + getarg(0) + getcharid(3) , gettimetick(2) + getarg(1);
+	return;
+}
+
+function	script	Cual_BG	{
+
+	if (!$orden[1])
+		setarray $orden[0],1,1,4,5,0;	
+	if ( !$Que_BattleGround )
+		set $Que_BattleGround, $orden[0];
+	if ( !$i )
+		set $i, 0;
+	if ( $orden[$i] == 0 )
+		set $i, 0;
+
+	set $Que_BattleGround,$orden[$i];
+	set $i , $i + 1;
+	delwaitingroom "BGAZUL";
+	delwaitingroom "BGROJO";
+	donpcevent "BGAZUL::OnInit";
+	donpcevent "BGROJO::OnInit";	
+	return;
+}
+
+function	script	get_Name	{
+	if ( getarg(0) == 1 )
+		return "Conquest";
+	else if ( getarg(0) == 2 )
+		return "Rush";
+	else if ( getarg(0) == 3 )
+		return "Flavious TD";
+	else if ( getarg(0) == 4 )
+		return "Team vs Team";
+	else if ( getarg(0) == 5 )
+		return "Flavius CTF";
+	else
+		return "none";
+
+}
+
+arena_4,166,94,3	script	change	498,{
+	if ( getgmlevel() < 99 ) {
+		mes "^0174DF BG Control ^000000";
+		mes " ";
+		mes " Users por bg : " + $Users_limite_empieza_bg;
+		mes " ";
+		mes " Actual orden : ";
+		for ( set .@i, 0; .@i < getarraysize($orden); set .@i, .@i + 1 ) {
+			if ( $orden[.@i] == 1 )
+				mes "^0174DF> ^000000 Conquest";
+			else if ( $orden[.@i] == 2 )
+				mes "^0174DF> ^000000 Rush ";
+			else if ( $orden[.@i] == 3 )
+				mes "^0174DF> ^000000 Flavius TD";
+			else if ( $orden[.@i] == 4 )
+				mes "^0174DF> ^000000 Team vs Team";
+			else if ( $orden[.@i] == 5 )
+				mes "^0174DF> ^000000 Flavius CTF";
+		}
+		close;
+	}
+	mes "^0174DF BG Control ^000000";
+	mes " ";
+	mes " Users por bg : " + $Users_limite_empieza_bg;
+	mes " ";
+	mes " Actual orden : ";
+	for ( set .@i, 0; .@i < getarraysize($orden); set .@i, .@i + 1 ) {
+		if ( $orden[.@i] == 1 )
+			mes "^0174DF> ^000000 Conquest";
+		else if ( $orden[.@i] == 2 )
+			mes "^0174DF> ^000000 Rush ";
+		else if ( $orden[.@i] == 3 )
+			mes "^0174DF> ^000000 Flavius TD";
+		else if ( $orden[.@i] == 4 )
+			mes "^0174DF> ^000000 Team vs Team";
+		else if ( $orden[.@i] == 5 )
+			mes "^0174DF> ^000000 Flavius CTF";
+	}
+	switch ( select (" ^0174DF> ^000000 Cambiar orden : ^0174DF> ^000000 Resetear : ^0174DF> ^000000 Cancelar ") ) {
+		case 3: break;
+		case 1:
+			set .@i , 0;
+			do {
+				next;
+				mes "^0174DF BG Control ^000000";
+				mes " ";
+				mes "[ " + callfunc ("get_Name",$orden[0]) + " ], [ " + callfunc ("get_Name",$orden[1]) + " ]";
+				mes "[ " + callfunc ("get_Name",$orden[2]) + " ], [ " + callfunc ("get_Name",$orden[3]) + " ]";
+				mes "[ " + callfunc ("get_Name",$orden[4]) + " ]";
+				mes " ^0174DF 0. ^000000 Ignorar campo";
+				mes " ^0174DF 1. ^000000 Conquest";
+				mes " ^0174DF 2. ^000000 Rush";
+				mes " ^0174DF 3. ^000000 Flavius TD";
+				mes " ^0174DF 4. ^000000 Team vs Team";
+				mes " ^0174DF 5. ^000000 Flavius CTF";
+				input .@input;
+		
+				if ( .@input < 0 || .@input >= 6 ) {
+					next;
+					mes "^0174DF BG Control ^000000";
+					mes " Número inválido";
+				} else if ( .@input == 0 )
+					set .@i, .@i + 1;
+				else { 
+					setarray $orden[.@i], .@input;
+					next;
+					mes "^0174DF BG Control ^000000";
+					mes " ";
+					mes " Número agregado";
+					set .@i, .@i + 1;
+				}
+				if ( .@i >= 5 ) {
+					next;
+					mes "^0174DF BG Control ^000000";
+					mes " ";
+					mes "Principio alcanzado";
+					set .@i, 0;	
+				}
+				if ( select ( " ^0174DF> ^000000 Modificar otro : ^0174DF> ^000000 Cancelar ") == 2 ) 
+					set .@salir, 1;
+				else 
+					callfunc("Cual_BG");
+					
+			} while ( .@salir != 1 );
+		break;
+		case 2:
+			deletearray $orden[0],getarraysize($orden);
+			setarray $orden[0],1,4;
+		break;
+	}
+	close;
+}
+	
+		

@@ -1,0 +1,42 @@
+-	script	invacion	-1,{
+	OnWhisperGlobal:
+		if ( getgmlevel() > 90 )
+			if ( @whispervar0$ != "activar" ) 
+				end;
+	OnClock0035:
+	OnClock2000:
+		set .mobs , 7;
+		announce "La invasión comenzó en Mora (@go 32)",0;
+		sleep 10000;
+		setarray $@MOB__EVENTIDINV[0],1098;
+		mobevent "mora", 112, 103,"Invacion Mob", $@MOB__EVENTIDINV[0], 0, .mobs, 0, 0, 200000, 0, 0, 1, 0, 0, 0, 0, 0, "invacion::OnEventDead";
+	end;
+
+	OnClock0050:
+	OnClock2020:
+		killmonsterall "prontera",2;
+		announce "La invasión fue cerrada",0;
+	end;
+
+
+	OnEventDead:
+		setarray $@MOB__EVENTIDINV[0],1098,1867,1831,1835;
+		set .mobs, .mobs - 1;
+		getmapxy .@m$, .@x, .@y, 0;
+		set .@x, @killedx;
+		set .@y, @killedy;
+		flooritem2xy .@m$,.@x,.@y,7539,10;
+		if ( .mobs > 0 && ( .mobs == 5 || .mobs == 3 || .mobs == 1 ) ) 
+		{
+			switch( rand(1,3) ) {
+				default:
+				case 1 : announce "[ Invasión ]: Refuerzos llegando",0; break;
+				case 2 : announce "[ Invasión ]: Esto se pone más intenso aún...",0; break;
+				case 4 : announce "[ Invasión ]: Mátenlos!!!!!",0; break;
+			}
+			mobevent "mora", 156, 176,"Invacion Mob", $@MOB__EVENTIDINV[0], 0, .mobs, 0, 0, 200000, 0, 0, 1, 0, 0, 0, 0, 0, "invacion::OnEventDead";
+		} else if ( .mobs == 0 )
+			announce "[ Invasión ] Termino el evento, gracias por participar!",0;
+		 
+	end;
+}

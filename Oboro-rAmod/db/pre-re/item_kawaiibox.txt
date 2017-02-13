@@ -1,0 +1,56 @@
+// Custom Kawaii Box (item id 5000) Obtainable Items Database
+// Edit it as you wish, for your server.
+// Structure of Database:
+// GroupID,ItemID,Rate
+
+//Angel_Wing
+IG_KawaiiBox,30259,100
+IG_KawaiiBox,30260,100
+IG_KawaiiBox,30261,100
+IG_KawaiiBox,30262,100
+IG_KawaiiBox,30263,100
+IG_KawaiiBox,30264,100
+IG_KawaiiBox,30265,100
+//Cowboy_Hat
+IG_KawaiiBox,30266,100
+IG_KawaiiBox,30267,100
+IG_KawaiiBox,30268,100
+IG_KawaiiBox,30269,100
+IG_KawaiiBox,30270,100
+IG_KawaiiBox,30271,100
+IG_KawaiiBox,30272,100
+//Scarf
+IG_KawaiiBox,30275,100
+IG_KawaiiBox,30276,100
+IG_KawaiiBox,30277,100
+IG_KawaiiBox,30278,100
+//Gangster_Scarf
+IG_KawaiiBox,30280,100
+IG_KawaiiBox,30281,100
+IG_KawaiiBox,30282,100
+IG_KawaiiBox,30283,100
+IG_KawaiiBox,30284,100
+IG_KawaiiBox,30285,100
+IG_KawaiiBox,30286,100
+//Love_Dad_Bandana
+IG_KawaiiBox,30287,100
+IG_KawaiiBox,30289,100
+IG_KawaiiBox,30290,100
+IG_KawaiiBox,30291,100
+IG_KawaiiBox,30292,100
+//Luxury
+IG_KawaiiBox,30294,100
+IG_KawaiiBox,30295,100
+IG_KawaiiBox,30296,100
+IG_KawaiiBox,30297,100
+IG_KawaiiBox,30298,100
+IG_KawaiiBox,30299,100
+IG_KawaiiBox,30300,100
+//Pirate_Hat
+IG_KawaiiBox,30301,100
+IG_KawaiiBox,30302,100
+IG_KawaiiBox,30303,100
+IG_KawaiiBox,30304,100
+IG_KawaiiBox,30305,100
+IG_KawaiiBox,30306,100
+IG_KawaiiBox,30307,100

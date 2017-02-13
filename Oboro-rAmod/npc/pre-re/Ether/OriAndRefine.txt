@@ -1,0 +1,447 @@
+// Funcion actualizada para crear mas de 1 Ori/Elu al instante cuidando el peso del pj
+function	script	orimain	{
+	if (checkweight(1201,1) == 0) 
+	{
+		mes "- Wait a minute !! -";
+		mes "- Currently you're carrying -";
+		mes "- too many items with you. -";
+		mes "- Please try again -";
+		mes "- after you loose some weight. -";
+		close;
+	}
+	title(getarg(0));
+	mes "I can purify your";
+	mes "Rough Oridecons or";
+	mes "Rough Eluniums. I'll need";
+	mes "5 Rough Stones to make";
+	mes "1 pure one for you.";
+	next;
+	switch(select("Make Oridecon:Make Elunium:Ask about Enchanted Stones")) {
+	case 1:
+		if (countitem(756) >= 5) {
+		   set .@weight,countitem(756)/5;
+            if (checkweight(984,.@weight) == 0) {
+              mes "- Wait a minute !! -";
+		          mes "- Currently you're carrying -";
+          		mes "- too many items with you. -";
+          		mes "- Please try again -";
+          		mes "- after you loose some weight. -";
+          		close;
+          		}
+        getitem 984, countitem(756)/5;
+				delitem 756, countitem(756)/5*5;
+				title(getarg(0));
+				mes "Here's your Oridecon.";
+				mes "You're welcome to come";
+				mes "back whenever you want.";
+				close;
+		} else {
+			title(getarg(0));
+			mes "You're kidding me, right?";
+			mes "I just told you that I need 5 Rough Oridecons to make a pure Oridecon.";
+			close;
+		}
+	case 2:
+	if (countitem(757) >= 5) {
+		   set .@weight,countitem(757)/5;
+            if (checkweight(985,.@weight) == 0) {
+            	mes "- Wait a minute !! -";
+		          mes "- Currently you're carrying -";
+          		mes "- too many items with you. -";
+          		mes "- Please try again -";
+          		mes "- after you loose some weight. -";
+          		close;
+          		}
+      getitem 985, countitem(757)/5;
+      delitem 757, countitem(757)/5*5;
+			title(getarg(0));
+			mes "Here's your Elunium.";
+			mes "You're welcome to come";
+			mes "back whenever you want.";
+			close;
+		} else {
+			title(getarg(0));
+			mes "You're kidding me, right?";
+			mes "I just told you that I need 5 Rough Eluniums to make a pure Elunium.";
+			close;
+		}
+	case 3:
+		title(getarg(0));
+		mes "Enchanted Stones...?";
+		mes "I've been a stonesmith for 20 years, so I've heard a lot about them. Supposedly, there are";
+		mes "four different kinds.";
+		next;
+		title(getarg(0));
+		mes "Each Enchanted Stone possesses one of the following elemental properties: Earth, Wind, Water and Fire.";
+		next;
+		title(getarg(0));
+		mes "If someone combines a Enchanted Stone with a weapon while smithing, that weapon will possess the same property as the Stone.";
+		next;
+		title(getarg(0));
+		mes "Needless to say, you need to have some smithing skill to produce this kind of elemental weapon.";
+		close;
+	}
+}
+
+function	script	refinemain	{
+	if ( getsecurity() != 0 ) 
+		mclose "No puedes refinar con security";
+			
+	title(getarg(0));
+	mes "       ";
+	mes "Yo soy el Armsmith. Puedo refinar un arma o una armadura que tu elijas";
+	mes "Qué deseas refinar?";
+	next;
+
+	set @menu$,"";
+	for( set @i,1; @i < 11; set @i,@i+1 )
+		set @menu$,@menu$+(getequipisequiped(@i) ?  getequipname(@i) : "")+":";
+	
+	set @part,select(@menu$);
+	if(!getequipisequiped(@part)) 
+	{
+		title(getarg(0));
+		mes "       ";
+		mes "¿Quieres que te derrita el cuerpo o qué...?";
+		emotion 6;
+		close;
+	}
+	
+	//Check if the item is refinable...
+	//isaac woeitem system
+	// chekea un item normal...
+	if( !getequipisenableref(@part) ) 
+	{
+  		title(getarg(0));
+  		mes "      ";
+		mclose "No puedo trabajar con ese item...";
+	}
+	
+	//Check to see if the items is already +10
+	if(getequiprefinerycnt(@part) >= 10) 
+	{
+		title(getarg(0));
+		mes "      ";
+		mes "Ésta arma ya esta a su máximo nivel, no puedo refinarla más";
+		close;
+	}
+	
+	@refineitemid = getequipid(@part); // save id of the item
+	@refinerycnt = getequiprefinerycnt(@part); //save refinery count
+	@special = 0;
+	
+	switch(getequipweaponlv(@part))
+	{
+		case 0: 		// Armor
+			@price 		= 20000;
+			@material 	= 985;
+			@safe		= 4;
+		break;
+		
+		case 1: 	//Lv. 1 Weapon
+			@price 		= 20000;
+			@material	= 1010;
+			@safe		= 7;
+		break;
+		
+		case 2: 	//Lv. 2 Weapon
+			@price		= 25000;
+			@material	= 1011;
+			@safe		= 6;
+		break;
+		
+		case 3: 	//Lv. 3 Weapon
+			@price		= 30000;
+			@material	= 984;
+			@safe		= 5;
+		break;
+		case 4: 	//Lv. 4 Weapon
+			@price		= 40000;
+			@material	= 984;
+			@safe		= 4;
+		break;
+		case 5: 	//Refine other stuff?
+			@price		= 20000;
+			@material	= 985;
+			@safe		= 4;
+		break;
+	}
+	
+	// [Isaac] Special Refine
+	if (getequipid(@part) == 1743)
+	{
+		@special = 1;
+		setarray @material[0],7773,7829,7828;
+		@cantidad = 100;
+		@safe = 4;
+		@price = 20000;
+	}
+	
+	if(getequiprefinerycnt(@part) < @safe)
+	{
+		title(getarg(0));
+		mes "      ";
+		mes "Puedo refinar esto hasta el ^339933límite seguro^000000 o ^FF9900cuantas veces quieras^000000...tú decides...";
+		next;
+		@menu2 = select("^339933Al límite seguro por favor.^000000","^FF9900Voy a decidir cuántas veces.^000000","No, Solo una vez","Mejor regreso luego...");
+	} 
+	else 
+		@menu2 = 3;
+	
+	switch(@menu2)
+	{
+		case 1:
+			@refinecnt = (@safe - getequiprefinerycnt(@part));
+		break;
+
+		case 2:
+			next;
+			title(getarg(0));
+			mes "      ";
+			mes "Así que cuantas veces te gustaría refinar tu item?";
+			next;
+			input @refinecnt;
+			@refinecheck = (@refinecnt + getequiprefinerycnt(@part));
+			if (@refinecnt < 1 || @refinecheck > 10) 
+			{
+				title(getarg(0));
+				mes "      ";
+				mes "No puedo refinar este item tantas veces";
+				close;
+			}
+			
+			if(@refinecheck > @safe) 
+			{
+				@refinecheck = @refinecheck - @safe;
+				title(getarg(0));
+				mes "Trataré de refinar tu item ^0033ff" + @refinecheck + "^000000 veces pasando el ^339933límite seguro^000000. Tu item probablemente se destruya, ¿continuo?";
+				if(select("^339933Sí^000000","^FF3300No^000000") == 2)
+					close;
+				next;
+			}
+		break;
+	
+		case 3:
+			next;
+			title(getarg(0));
+			mes "      ";
+			if (!@special)
+				mes "Para refinar esto, necesitaré ^ff9999" + getitemname(@material) + "^000000 y " + @price + " Zeny.";
+			else
+				mes "Eso te costara ^0066ff100 Medallas ^000000 de cada tipo y ^ff3300" + @price + "^000000 Zeny. Esta bien?";
+			mes "      ";
+			mes "¿Quieres continuar?";
+			next;
+			if(select("Sí:No") == 2)
+				close;
+			
+			if(getequippercentrefinery(@part) < 100) 
+			{
+				title(getarg(0));
+				mes "     ";
+				mes "Solo tengo que advertirte que si este intento falla tu item sera DESTRUIDO!!";
+				mes "     ";
+				mes "Quieres continuar con el refine?";
+				next;
+				if(select("Si:No") == 2)
+					close;
+			}
+			
+			if (!@special)
+			{
+				//normal refine
+				if((countitem(@material) < 1) || (Zeny < @price)) 
+				{
+					title(getarg(0));
+					mes "     ";
+					mes "¿Es todo lo que tienes? Desgraciadamente no puedo trabajar por un precio más bajo.";
+					emotion e_an;
+					close;
+				}
+				
+				set Zeny,Zeny-@price;
+				delitem @material,1;
+				if(getequipisequiped(@part) == 0) 
+				{
+					title(getarg(0));
+					mes "     ";
+					mes "Mira esto, no llevas los Items puestos...";
+					close;
+				}
+			
+				if(getequiprefinerycnt(@part) != @refinerycnt || getequipid(@part) != @refineitemid) 
+				{
+					title(getarg(0));
+					mes "     ";
+					mes "Clan... ¿¡¿Crees que soy tonto o que!?!";
+					mes "Tu cambiaste los items...";
+					mes "¡¡¡LARGATE antes de que te aplaste con mi martillo!!!";
+					emotion e_an;
+					close;
+				}
+				
+				if(getequippercentrefinery(@part) <= rand(100)) 
+				{
+					title(getarg(0));
+					mes "     ";
+					mes "Clang! Clang! Clang!";
+					failedrefitem @part;
+					mes "Eh..Ehem... Lo siento pero el proceso de refine ^ff0000fallo^000000.";
+					close;
+				}
+				
+				title(getarg(0));
+				mes "     ";
+				mes "Clang! Clang! Clang!";
+				successrefitem @part;
+				next;
+				title(getarg(0));
+				mes "     ";
+				mes "HAHA! Parece que mis conocimientos todavía no se oxidan! Perfecto... simplemente perfecto...";
+				emotion 21;
+				close;
+			}
+			else
+			{
+				for ( .@j = 0; .@j < getarraysize(@material); .@j++ )
+				{
+					if ( countitem(@material[.@j]) < @cantidad || (Zeny < @price))
+					{
+						title(getarg(0));
+						mes "     ";
+						mes "Oh te hace falta items";
+						close;
+					}
+				}
+				
+				for ( .@j = 0; .@j < getarraysize(@material); .@j++ )
+					delitem @material[.@j],@cantidad;
+				Zeny = Zeny - @price;
+				
+				if(getequippercentrefinery(@part) <= rand(100)) 
+				{
+					title(getarg(0));
+					mes "     ";
+					mes "Clang! Clang! Clang!";
+					failedrefitem @part;
+					mes "Eh..Ehem... Lo siento pero el proceso de refine ^ff0000fallo^000000.";
+					close;
+				}
+				
+				title(getarg(0));
+				mes "     ";
+				mes "Clang! Clang! Clang!";
+				successrefitem @part;
+				next;
+				title(getarg(0));
+				mes "     ";
+				mes "HAHA! Parece que mis conocimientos todavía no se oxidan! Perfecto... simplemente perfecto...";
+				emotion 21;
+				close;
+			}
+	
+		case 4:
+			next;
+			title(getarg(0));
+			mes "      ";
+			mes "Tu mandas, te veo luego";
+			emotion e_swt;
+		close;
+	}
+	
+	@fullprice = @price * @refinecnt;
+	title(getarg(0));
+	mes "      ";
+	if (!@special)
+		mes "Eso te costara ^0066ff" + @refinecnt + "^000000 ^009933" + getitemname(@material) + "^000000 y ^ff3300" + @fullprice + "^000000 Zeny. Esta bien?";
+	else
+		mes "Eso te costara ^0066ff" + @refinecnt*@cantidad + "^000000 ^009933 Medallas ^000000 y ^ff3300" + @fullprice + "^000000 Zeny. Esta bien?";
+
+	next;
+	if(select("Si","No...") == 2)
+		close;
+	if (!@special)
+	{
+		if(countitem(@material) < @refinecnt || Zeny < @fullprice) 
+		{
+			title(getarg(0));
+			mes "     ";
+			mes "Es todo lo que tienes? desgraciadamente no puedo trabajar por un precio más bajo.";
+			emotion e_an;
+			close;
+		}
+	
+		set Zeny,Zeny - @fullprice;
+		delitem @material,@refinecnt;
+	}
+	else
+	{
+		for ( .@j = 0; .@j < getarraysize(@material); .@j++ )
+		{
+			if ( countitem(@material[.@j]) < (@cantidad*@refinecnt) || (Zeny < @fullprice))
+			{
+				title(getarg(0));
+				mes "     ";
+				mes "Oh te hace falta items";
+				close;
+			}
+		}
+			
+		for ( .@j = 0; .@j < getarraysize(@material); .@j++ )
+			delitem @material[.@j],(@cantidad * @refinecnt);
+		Zeny = Zeny - @price;
+	}
+
+	while(@refinecnt)
+	{
+		if (getequipisequiped(@part) == 0) 
+		{
+			title(getarg(0));
+			mes "     ";
+			mes "Mira esto... no llevas Items puestos...";
+			close;
+		}
+		if (getequipid(@part) != @refineitemid || (@menu2 == 1 && getequippercentrefinery(@part) < 100)) 
+		{
+			title(getarg(0));
+			mes "     ";
+			mes "Clan... Crees que soy tonto o que!?!";
+			mes "Tu cambiaste los items...";
+			mes "LARGATE antes de que te aplaste con mi martillo!!!";
+			emotion e_an;
+			close;
+		}
+		mes "Clang, clang!!!";
+		if(@menu2 == 2 && getequippercentrefinery(@part) <= rand(100)) 
+		{
+			failedrefitem @part;
+			emotion 23;
+			title(getarg(0));
+			mes "     ";
+			mes "WAHHHH!!! perdon... Te ADVERTI que esto podria pasar...";			
+			@refinecnt = @refinecnt - 1;
+			if(@refinecnt == 0) 
+				close;
+			mes "Toma te regreso el material y el zeny que no use...";
+			if (@special)
+			{
+				for ( .@j = 0; .@j < getarraysize(@material); .@j++ )
+					getitem @material[.@j],(@cantidad * @refinecnt);
+			} else
+				getitem @material, @refinecnt;
+			
+			set @fullprice,@refinecnt * @price;
+			set Zeny,Zeny + @fullprice;
+			close;
+		}
+		successrefitem @part;
+		emotion 21;
+		set @refinecnt,@refinecnt - 1;
+		next;
+	}
+	title(getarg(0));
+	mes "     ";
+	mes "Todo terminado... Regresa pronto.";
+	emotion e_no1;
+	close;
+}

@@ -1,0 +1,132 @@
+prontera,140,153,5	script	MVP Room::MVPR	45,2,2,{
+OnTouch:		
+	.@zeny = 10000;
+	setarray .@mapas_mvp$[0],"xromvp","xromvp2","xromvp3","xromvp4";
+
+	title("MVP Room");
+	mes "Hola " + strcharinfo(0) + ", Soy encargada de distribuir las partys para que puedan jugar en paz.";
+	mes "El valor de la sala es de: " + .@zeny;
+	mes "Una vez que no queden personajes en el mapa la sala quedará libre";
+	mes "Cantidad de Salas: " + getarraysize(.@mapas_mvp$);
+
+	.@PMenu$ = "";
+	.@Menu$ = "";
+
+	for (set .@c, 0; .@c < getarraysize(.@mapas_mvp$); .@c++) 
+		set .@PMenu$, .@PMenu$ + " ^10B2D2 [ > ] ^000000 " + ( getmapusers(.@mapas_mvp$[.@c]) > 0 ? "^FF0000Sala " + (.@c + 1) + " Ocupada.^000000" :  "Sala " + (.@c + 1) +". ^00FF00Libre^000000" ) + ":";
+	.@select = select(.@PMenu$) - 1;
+
+	next; 
+	title("MVP Room");
+
+	if ( getmapusers( .@mapas_mvp$[.@select] ) == 0 ) 
+	{
+		if ( #CASHPOINTS  < .@zeny || getcharid(1) == 0 ) 
+		{
+
+			mes "Necesitas :"; 
+			mes " - "+.@zeny+" : de Cashpoint's"; 
+			mclose " - Tener una party "; 
+
+		}
+
+		announce "[ MVP ROOM ]: La sala " + (.@select + 1)+ " fue alquilada por : "+ strcharinfo(0) + ".",0,0x00BFFF;
+
+		close2;
+			set #CASHPOINTS , #CASHPOINTS - .@zeny;
+			setd "$SALA" + .@select, getcharid(1);
+			warp .@mapas_mvp$[.@select],50,45;
+		end;
+	}
+
+	if ( getcharid(1) == 0 )
+		mclose "Debes tener una party"; 
+
+	else if ( getd("$SALA" + .@select) != getcharid(1) )
+		mclose "No perteneces a la party registrada.";
+
+	else if ((getd("$SALA" + .@select) == getcharid(1)) && getcharid(1) != 0 )  
+		warp .@mapas_mvp$[ .@select],50,45;
+
+	end;
+
+
+OnPCDieEvent:
+	if ( strcharinfo(3) == "xromvp" ||
+		strcharinfo(3) == "xromvp2" ||
+		strcharinfo(3) == "xromvp3" ||
+		strcharinfo(3) == "xromvp4"
+	) 
+	{
+		sleep2 100;
+		warp strcharinfo(3),91,49;
+		atcommand "@alive "+ strcharinfo(0);
+		sc_start 32,  240000, 10;
+		sc_start 30, 240000, 10;
+		percentheal 100,100;
+		repairall;
+		end;
+	}
+end;
+
+}
+
+gonryun,166,126,4	duplicate(MVPR)	MVP Room#1	448
+
+xromvp	mapflag	nowarp
+xromvp	mapflag	nowarpto
+xromvp	mapflag	nomemo
+xromvp	mapflag	nosave	SavePoint
+xromvp	mapflag	monster_noteleport
+
+xromvp2	mapflag	nowarp
+xromvp2	mapflag	nowarpto
+xromvp2	mapflag	nomemo
+xromvp2	mapflag	nosave	SavePoint
+xromvp2	mapflag	monster_noteleport
+
+xromvp3	mapflag	nowarp
+xromvp3	mapflag	nowarpto
+xromvp3	mapflag	nomemo
+xromvp3	mapflag	nosave	SavePoint
+xromvp3	mapflag	monster_noteleport
+
+xromvp4	mapflag	nowarp
+xromvp4	mapflag	nowarpto
+xromvp4	mapflag	nomemo
+xromvp4	mapflag	nosave	SavePoint
+xromvp4	mapflag	monster_noteleport
+
+xromvp,88,53,4	script	MVP Killer::MVPK	405,{
+
+	title("MVP Room");
+
+	if ( #CASHPOINTS < 250 )
+		mclose "Ocupas minimo 250 de cash"; 
+	
+	mes "Hola yo puedo matar todos los mounstros en la sala!";
+	mes "Que deseas hacer";
+	next;
+
+	if(select("^10B2D2 [ > ] ^000000Destruir :^10B2D2 [ > ] ^000000Salir") == 2 ) close;
+
+	if(getpartyleader(getcharid(1),1) == (getcharid(3) ) )	
+	{
+		close2;
+			getmapxy .@map$ , .@x, .@y , 0;
+			killmonsterall .@map$,2;
+			announce "["+strcharinfo(0)+"] ha destruido todos los mounstros en este mapa.",1;
+		end;
+	}
+
+	mclose "No eres El Party Leader";	
+}
+
+xromvp2,88,53,4	duplicate(MVPK)	MVP Killer#2	405
+xromvp3,88,53,4	duplicate(MVPK)	MVP Killer#3	405
+xromvp4,84,53,4	duplicate(MVPK)	MVP Killer#4	405
+
+xromvp,84,49,0	warp	xromvp1-2	1,1,xromvp,72,49
+xromvp2,84,49,0	warp	xromvp2-2	1,1,xromvp2,72,49
+xromvp3,84,49,0	warp	xromvp3-2	1,1,xromvp3,72,49
+xromvp4,84,49,0	warp	xromvp4-2	1,1,xromvp4,72,49

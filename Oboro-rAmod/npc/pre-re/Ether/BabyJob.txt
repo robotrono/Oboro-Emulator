@@ -1,0 +1,245 @@
+prontera,146,196,5	script	Baby Job Master	877,{
+
+if (class == 0) goto makebaby;
+if (class == 4023) goto Go1st;
+if (class == 4024 || class == 4025 || class == 4026 || class == 4027 || class == 4028 || class == 4029) goto Go2nd;
+if (class >= 4030) goto ur2nd;
+title();
+mes "Lo siento, no eres un Baby Novice o un Baby First Class, por favor usa el Job Changer normal.";
+close;
+
+ur2nd:
+title();
+mes "Ya eres Baby Second Class, no puedo hacer nada más por ti.";
+close;
+
+makebaby:
+if(joblevel>1) goto Lbabyjobone;
+if(baselevel>1) goto Lbabybaseone;
+title();
+mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+mes "Yo soy el Baby Job Changer y soy el encargado de convertir tu personaje en Baby class. ¿Quieres ser baby?";
+menu "> ^044ABB¡Sí, claro!^000000",Lyes,"> ^9D0303Mejor en otro momento^000000.",Lno;
+
+Lbabyjobone:
+title();
+mes "Lo siento, pero tu personaje no es Baby level 1/1.";
+close;
+
+Lbabybaseone:
+title();
+mes "Lo siento, pero tu personaje no es Baby level 1/1.";
+close;
+
+Lyes:
+mes "¡Ok! Ahora perteneces al grupo de los Baby y serás un pequeño guerrero.";
+jobchange 4023;// Job: Baby_Novice
+close;
+
+Lno:
+title();
+mes "¡De acuerdo! Vete con los Jobs normales, nuestro pequeño ejército no te necesita >.> !";
+close;
+
+Go1st:
+if(joblevel<10) goto Lbabyjobten;
+if(SkillPoint != 0) goto Lbabyskillpt;
+title();
+mes "Oh, ¿Tú otra vez por aquí? Me alegra volver a verte pequeño guerrero.";
+next;
+title();
+mes "¡Escoge un job y sé el mejor de todos los Baby!";
+menu "Swordsman",LbabySword,"Mage",LbabyMage,"Thief",LbabyThief,"Merchant",LbabyMerc,"Acolyte",LbabyAco,"Archer",LbabyArch,"Super Novice",LbabySupNovi,"Cancel",LCancel;
+
+Lbabyjobten:
+title();
+mes "Ugh, necesitas ser al menos Job Level 10 antes de cambiar a tu primera clase, ve a matar algunos porings o algo... >.>'";
+cutin "kafra_01",255;
+close;
+
+title();
+mes "Por favor, usa todos los skill points antes de cambiar de job. ";
+cutin "kafra_01",255;
+close;
+
+LbabySupNovi:
+title();
+if(baselevel<35) goto LReqnovi;
+mes "Ya veo, quieres destacar sobre el resto de jugadores de EasyRO. Entonces has elegido bien tu job.";
+cutin "kafra_01",255;
+jobchange 4045;// Job: Super_Novice
+close;
+LReqnovi:
+mes "Tienes que ser level 35,";
+mes "para ser Super Novice. Vuelve cuando llegues al nivel requerido.";
+close;
+
+
+LbabySword:
+title();
+mes "Wow, ¡Fantastico! ¿No sientes que todo el trabajo ha merecido la pena? ¡Ahora eres un ^0005CESwordsman^000000! ";
+cutin "kafra_01",255;
+jobchange 4024;// Job: Job_BabySwordman
+close;
+
+LbabyMage:
+title();
+mes "Bien, ahora finalmente podrás obtener el poder de la magia, ¡Haz hechizos malignos a los jugadores de EasyRO!";
+cutin "kafra_01",255;
+jobchange 4025;// Job: Job_BabyMage
+close;
+
+LbabyThief:
+title();
+mes "Pequeño thief, roba todo lo que puedas y ataca sin ser visto, serás mejor que cualquier ninja de EasyRO.";
+cutin "kafra_01",255;
+jobchange 4029;// Job: Job_BabyThief
+close;
+
+LbabyMerc:
+title();
+mes "Mr. Money, parece que te gusta sacar el dinero y vender a grandes precios.";
+mes "Bueno, ¿Y a quién no?... >_>..... ... bah...! ";
+cutin "kafra_01",255;
+jobchange 4028;// Job: Job_BabyMerchant
+close;
+
+LbabyAco:
+title();
+mes "Como se diría en estos casos... que la fuerza del Staff de EasyRO te acompañe.";
+cutin "kafra_01",255;
+jobchange 4027;// Job: Job_BabyAcolyte
+close;
+
+LbabyArch:
+title();
+mes "Así que quieres dedicarte a la música... Espero que suenes mejor que ese tal 'Bieber', >.>!";
+cutin "kafra_01",255;
+jobchange 4026;// Job: Job_BabyArcher
+close;
+
+
+Go2nd:
+if(SkillPoint != 0) goto Lbabyskillpt;
+if(joblevel<40) goto Lbabyjobforty;
+title();
+mes "Oh, ¿Tú otra vez? Parece que ya estás preparado para dar el siguiente paso.";
+mes "Bien, va siendo hora de elegir tu second job.";
+next;
+title();
+mes "¿Qué te gustaría ser, pequeño guerrero?";
+menu "Knight",LbabyKnight,"Wizard",LbabyWizard,"Hunter",LbabyHunter,"Blacksmith",LbabyBlacksmith,"Assassin",LbabyAssassin,"Priest",LbabyPriest,"Crusader",LbabyCrusader,"Sage",LbabySage,"Dancer/Bard",LbabyDancerbard,"Alchemist",LbabyAlchemist,"Rogue",LbabyRogue,"Monk",LbabyMonk,"Cancel",LCancel;
+
+Lbabyjobforty:
+title();
+mes "Tienes que ser al menos level 40 de Job para poder cambiar a Second.";
+cutin "kafra_01",255;
+close;
+
+
+LbabyHunter:
+if(class != 4026) goto wrong1stjob;
+title();
+mes "Oh, adorable. Ahora podrás cantar 'I believe i can fly' mientras vas tras tus presas.";
+jobchange 4034;// Job: Job_Hunter
+close;
+
+LbabyKnight:
+if(class != 4024) goto wrong1stjob;
+title();
+mes "¡Ya veo! Eres de los míos, has decidido ser un gran guerrero.";
+mes "Muy bien, estás listo para ser parte de la realeza de EasyRO. Ve a salvar a iCreative de sus jugadores o algo...";
+cutin "kafra_01",255;
+jobchange 4030;// Job: Job_Knight
+close;
+
+LbabyBlacksmith:
+if(class != 4028) goto wrong1stjob;
+title();
+mes "Oooo~~h! Has alcanzado el máximo para ser un gran estafador, perdón, vendedor. Hazme sentir orgulloso.";
+jobchange 4033;// Job: Job_Blacksmith
+close;
+
+LbabyAssassin:
+if(class != 4029) goto wrong1stjob;
+title();
+mes "Ahora serás todo un asesino, ten cuidado de que no te pillen y así serás el mejor de todos.";
+jobchange 4035;// Job: Job_Assassin
+close;
+
+LbabyPriest:
+if(class != 4027) goto wrong1stjob;
+title();
+mes "A puesto a que el que nos mira desde arriba está orgulloso de ser un gran priest, ahora toca curar a los personajes y que te molesten. La vida de un priest.";
+jobchange 4031;// Job: Job_Priest
+close;
+
+LbabyWizard:
+if(class != 4025) goto wrong1stjob;
+title();
+mes "Weeee, ahora podrás ir a Hogwarts si te lo propones.";
+jobchange 4032;// Job: Job_Wizard
+close;
+
+LbabyCrusader:
+if(class != 4024) goto wrong1stjob;
+mes "[ ^0065DFBaby Jobra^000000 ]";
+mes "¿Crusader? Ahora sí que EasyRO podrá estar seguro de cualquier ataque enemigo. ¡El mejor de todos los guerreros!";
+jobchange 4037;// Job: Job_Crusader
+close;
+
+LbabyDancerbard:
+if(class != 4026) goto wrong1stjob;
+title();
+if(sex==1) mes "Ooooh~, Ahora toca seguir con tu carrera musical, cuidado de convertirte como esos de One Direction...";
+if(sex==1) jobchange 4042;// Job: Job_Bard
+if(sex==0) mes "Uh-huh, ¿Pero qué tenemos aquí? Posiblemente la chica más sexy de todo EasyRO. Ahora es tu turno de conquistar hombres.";
+if(sex==0) jobchange 4043;// Job: Job_Dancer
+close;
+
+LbabyAlchemist:
+if(class != 4028) goto wrong1stjob;
+title();
+mes "Yeah! Ahora te toca crear tus propias mascotas y atacar con ellas, o quizás hacer pociones.";
+jobchange 4041;// Job: Job_Alchem
+close;
+
+LbabyRogue:
+if(class != 4029) goto wrong1stjob;
+title();
+mes "Wow! Tú... eres... TAAAN PROOOO!! Ese poder para desnudar, cualquiera querría tenerlo en su poder.";
+jobchange 4040;// Job: Job_Rogue
+close;
+
+LbabyMonk:
+if(class != 4027) goto wrong1stjob;
+title();
+mes "Pequeño monje, tu poder es tan grande como el de un champion, úsalo bien.";
+jobchange 4038;// Job: Job_Monk
+close;
+
+LbabySage:
+if(class != 4025) goto wrong1stjob;
+title();
+mes "Ahhhh, yeah! Nunca me cansaré de los pequeños sages, ¡Enséñales a esos magos que tu protección es mejor que la magia!";
+jobchange 4039;// Job: Job_Sage
+close;
+
+wrong1stjob:
+title();
+mes "Tienes el first job equivocado, así que por favor escoge otro second job.";
+close;
+
+Lbabyskillpt:
+title();
+mes "Por favor, usa todos skills points antes de cambiar de job.";
+cutin "kafra_01",255;
+close;
+
+
+LCancel:
+title();
+mes "Blah... quédate como estás... >_>... Yo siempre seré el más sexy de todos los novice.";
+cutin "kafra_01",255;
+close;
+} 

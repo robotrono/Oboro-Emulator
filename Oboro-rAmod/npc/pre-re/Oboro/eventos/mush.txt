@@ -1,0 +1,27 @@
+izlude,86,176,4	script	Find the Mushroom	1084,{
+	end;
+OnMinute10:
+	set .Spawn,rand(1,10);
+	set $@ran, rand(1,4); 
+	if ($@ran == 4) set .Map$,"izlude";
+	if ($@ran == 3) set .Map$,"geffen";
+	if ($@ran == 2) set .Map$,"morocc";
+	if ($@ran == 1) set .Map$,"prontera";
+	killmonster .Map$,"All";
+	monster .Map$,0,0,"No me mates!",1084,.Spawn,strnpcinfo(0)+"::OnMobKilled";
+	announce "Find the Mushroom : "+.Spawn+" hongos aparecieron en "+.Map$+"!",0;
+	sleep2 10000;
+	announce "Find the Mushroom : Cada hongo que encuentres y mates te dara 1 Poring Coins!",0;
+	sleep2 10000;
+	end;
+
+OnMobKilled:
+	set .Spawn,.Spawn - 1;
+	getitem 7539,5; //Add the ItemID and Amount you wish to give as a prize. To add more prizes, just add more getitem ID,AMOUNT;
+	if( .Spawn ) announce "[ "+strcharinfo(0)+" ] ha matado 1 Hongo. Ahora quedan "+.Spawn+" Hongo(s).",bc_map;
+	else {
+		announce "El evento de encontrar los hongos ha terminado.",0;
+		set .Status,0;
+	}
+	end;
+}

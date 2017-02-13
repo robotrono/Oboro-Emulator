@@ -1,0 +1,9 @@
+prontera,142,190,6	script	Restock	415,{
+	mes "[ Restock ]";
+	mes " ";
+	mes "@restock: podrás activar/desactivar el comando para que restokee items de tu storage automáticamente.";
+	next;
+	mes "[ Restock ]";
+	mes " ";
+	mes_with_close "@wrestock: Puedes mirar qué items están restackeando y la cantidad, pero no te preocupes, nuncá te dará mas items de los que puedes soportar (peso).";
+}

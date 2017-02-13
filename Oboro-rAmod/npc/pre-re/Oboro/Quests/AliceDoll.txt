@@ -1,0 +1,62 @@
+// Alice Doll Quest ====================
+
+que_qaru02,238,328,6	script	Quests	902,{
+
+	setarray .@MENU__HATS$[1],"Alice Doll","Gangster Scarf","Ramen Hat","Flying Angel","Red Glasses","Evil Marcher Hat","Robo Eyes[1]","Black Tail Ribbon"/*, "Trebol(Dex)"*/;
+	title("Hat Quest's");
+	mes " Bienvenido, yo puedo hacer muchas cosas, entre ellos Alice Doll Evil Marcher, que quest deseas hacer?";
+
+set .@menu$,"";
+for (set .@MENU_ESCOJE , 1; .@MENU_ESCOJE < getarraysize(.@MENU__HATS$); set .@MENU_ESCOJE , .@MENU_ESCOJE + 1 )
+	set .@menu$ , .@menu$ + "^10B2D2 [ > ] ^000000" + .@MENU__HATS$[ .@MENU_ESCOJE ] + ":";
+set .@ESCOJIDO , select(.@menu$);
+	switch ( .@ESCOJIDO ) {
+		case 1: next; callfunc("quest_maker","^FF0000 Alice Doll ^000000",    0,5137,20000000,100,7047,100,7063 ,30 ,661 ,6  ,4400,6,4253,0); break;
+		case 2: next; callfunc("quest_maker","^FF0000 Gangster Scarf ^000000",0,5361,50000000 ,150,7216,40 ,10019,300,7563,25 ,2265,0); break;
+		case 3: next; callfunc("quest_maker","^FF0000 Ramen Hat ^000000",     0,5293,10000000,100,7356,100,7357 ,100,7358,100,7359,5,975,0); break;
+		case 4: next; callfunc("quest_maker","^FF0000 Flying Angel ^000000",  0,5210,20000000,150,7063,15 ,982  ,5  ,2254,  0   ); break;
+		case 5: next; callfunc("quest_maker","^FF0000 Red Glasses ^000000",   0,5288,10000000,5  , 975,100,7447 ,100,990 ,10 ,7440,0); break;
+		case 6: next; callfunc("quest_maker","^FF0000 Evil Marcher ^000000", 0,18522,20000000,1 ,5225,1,4252 ,100,991,0); break;
+		case 7: next; callfunc("quest_maker","^FF0000 Robo Eyes[1] ^000000", 0,5325,20000000,30,7337,1,2202,0); break;
+		case 8: next; callfunc("quest_maker","^FF0000 Black Tail Ribbon ^000000", 0,5765,20000000,3,983,1,4375,1,5277,0); break;
+		//case 9: next; callfunc("quest_maker","^FF0000 Trebol ^000000", 0,5596,50000000,10,706,1,18697,18,7078,0); break;
+
+
+	}
+	 close;
+}
+
+function	script	quest_maker	{
+	title(getarg(0));
+	mes "Para que te de un " + getitemname( getarg(2) ) + ", necesitaré los siguientes items";
+
+	for (set .@i, 4; getarg(.@i); set .@i, .@i + 2)
+	{
+		if ( getarg(.@i + 1) == 5225 ) //fix holy marcher(Parade)
+			mes getarg(.@i)+" - ^0000FF Holy Marcher Hat ^000000";		
+		else
+			mes getarg(.@i)+" - ^0000FF"+getitemname(getarg(.@i + 1))+"^000000";
+	}
+
+	mes "Ahhh y necesitaré ^0000FF"+getarg(3)+"z^000000";
+
+	next;
+	title(getarg(0));
+
+	for (set .@i, 4; getarg(.@i); set .@i, .@i + 2) 
+	{
+		if ( countitem(getarg(.@i + 1)) < ( isPremium() == 1 ? (getarg(.@i) - 5) : getarg(.@i)) || zeny < getarg(3) ) 
+			mclose "Lo siento "+strcharinfo(0)+", pero no tienes lo que necesito";
+
+	}
+	
+	mes "Disfruta tu nuevo "+getitemname(getarg(2));
+	close2;
+
+	for (set .@i, 4; getarg(.@i); set .@i, .@i + 2) 
+		delitem getarg(.@i + 1), ( isPremium() == 1 ? (getarg(.@i) - 5) : getarg(.@i));
+
+	set zeny, zeny - getarg(3);
+	getitem getarg(2),1;
+	end;
+} 

@@ -1,0 +1,134 @@
+prt_in,24,56,0	script	Advanced Refiner#cash	85,{
+	title("Advanced Refiner");
+	mes "Yo soy el Refinador especial";
+	mes "deseas que te refine algo?";
+	next;
+	
+	.@menu$ = "";
+	for(  .@i = 1; .@i <= 10; .@i++ )
+	{
+		if( getequipisequiped(.@i) )
+			.@menu$ += "^4879E1[ - ] ^000000" + getequipname(.@i) + ":";
+		else
+			.@menu$ += "^4879E1[ - ] ^000000 Nothing :";
+	}
+	.@part = select(.@menu$);
+	
+	title("Advanced Refiner");
+	
+    if( !getequipisequiped(.@part) )
+        close;
+		
+	if( !getequipisenableref(.@part) )
+		mclose "No puedo refinar " + getequipname(.@part);
+
+	if( !getequipisidentify(.@part) )
+		mclose "Por favor primero identifica el item.";
+
+	if( getequiprefinerycnt(.@part) >= 10 )
+		mclose "Solo puedo llegar a +10 :( ...";
+
+	switch( getequipweaponlv(.@part) )
+	{
+		case 1: 
+			.@weapon_lvl  = 1;
+			.@item = 7620;
+			.@cash = 500;
+		break;
+		
+		case 2: 
+			.@weapon_lvl  = 2;
+			.@item = 7620;
+			.@cash = 1000;
+		break;
+		
+		case 3: 
+			.@weapon_lvl  = 3;
+			.@item = 7620;
+			.@cash = 200;
+		break;
+		
+		case 4:
+			.@weapon_lvl  = 4;
+			.@item = 7620;
+			.@cash = 4000;
+		break;
+		
+		// Es una armadura..
+		default:
+			.@weapon_lvl  = 0;
+			.@item = 7619;
+			.@cash = 2000;
+		break;
+	}
+	
+		
+	mes "Necesitare: 1 ^ff9999" + getitemname(.@item) + "^000000 y " + .@cash + " Cashpoint.";
+	mes "Deseas continuar ?";
+	next;
+	if( select("^4879E1[ - ]^000000 Si !:^4879E1[ - ]^000000 Mejor No") == 2 )
+		close;
+		
+	if( getequippercentrefinery(.@part) < 100 && getequiprefinerycnt(.@part) >= 7 )
+	{
+		title("Advanced Refiner");
+		mes "Hmm!! esta peligroso refinar este item";
+		mes "ya ha sido refinado muchas veces";
+		mes "puedes perder el item si continuas, quieres continuar ??";
+		next;
+		if( select("^4879E1[-]^000000 Si!:^4879E1[-]^000000 Mejor No") == 2 )
+		{
+			title("Advanced Refiner");
+			mclose "Es la mejor decision";
+		}
+	}
+	
+	if( countitem(.@item) < 1 || #CASHPOINTS < .@cash )
+	{
+		next;
+		title("Advanced Refiner");
+		mes "No tinees suficientes Cashpoints o " + getitemname(.@item);
+		close;
+	}
+	
+	delitem .@item, 1;
+	#CASHPOINTS = #CASHPOINTS - .@cash;
+
+	if (getequiprefinerycnt(.@part) < 7 )
+	{
+		title("Advanced Refiner");
+		mes "Clink! Clank! Clunk!";
+		mes "Safe Refine!";
+		SuccessRefItem .@part;
+		Emotion e_no1;
+		mes "Aqui esta tu item refinado!";
+		close;
+	}
+	else if( getequippercentrefinery(.@part) > rand(100) || getequippercentrefinery(.@part) > rand(100) )
+	{
+		title("Advanced Refiner");
+		mes "Clink! Clank! Clunk!";
+		SuccessRefItem .@part;
+		Emotion e_no1;
+		mes "Aqui esta tu item refinado!";
+		close;
+	}
+	else
+	{
+		title("Advanced Refiner");
+		mes "Clink! Clank! Clunk!";
+		FailedRefItem .@part;
+		next;
+		if (rand(5) == 1)
+			Emotion e_cash;
+		else 
+			Emotion e_omg;
+		title("Advanced Refiner");
+		mes "Ought!!!!";
+		next;
+		title("Advanced Refiner");
+		mes "Cough...Cough..";
+		mes "Tu item no ha logrado sobrevivir al refine :(";
+		close;
+	}
+}

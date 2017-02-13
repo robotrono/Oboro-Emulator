@@ -1,0 +1,141 @@
+-	script	mvpvsmvp	-1,{
+OnWhisperGlobal:
+	if ( getgmlevel() >= 60 ) 
+	{
+		if (@whispervar0$ == "activar")
+		{
+			$@Reload = 0;
+			donpcevent "mvpvsmvp::OnWatingRoom";
+		}
+	}
+end;
+
+OnPCLoadMapEvent:
+	//if ( harm_map_multicount( "g_room1-2" ) > 1 )
+	//	warp "prontera",155,187;
+end;
+
+
+OnInit:
+	$@termino = 0;
+	$@Reload = 0;
+end;
+	
+OnEventReload:
+	$@Reload++;
+	if ($@Reload == 3)
+	{
+		$@Reload = 0;
+		$@termino = 0;
+		announce " [MvP vs MvP]: El evento ha terminado! gracias por participar.",bc_all;
+		end;
+	}
+OnClock1300:
+OnClock1600:
+OnClock1900:
+OnClock2100:
+OnWatingRoom:
+	$@termino = 1;
+	
+	killmonsterall "g_room1-2",2;
+	setarray $@MobID[0],1511,1647,1785,1039,1874,2068,1272,1719,1046,1871,1768,1832,1734,2022,1087,1190,1623,1708,1751,1917,1832,2022,1646,1650,1708;
+	do 
+	{
+		$@Rand1 = (rand(0,getarraysize($@MobID)));
+		$@Rand2 = (rand(0,getarraysize($@MobID)));
+	
+		$@MName1$= getmonsterinfo($@MobID[$@Rand1], MOB_NAME );
+		$@HpMob1 = getmonsterinfo($@MobID[$@Rand1], MOB_MAXHP);
+		$@MobLv1 = getmonsterinfo($@MobID[$@Rand1], MOB_LV);
+		$@MName2$= getmonsterinfo($@MobID[$@Rand2], MOB_NAME );
+		$@HpMob2 = getmonsterinfo($@MobID[$@Rand2], MOB_MAXHP);
+		$@MobLv2 = getmonsterinfo($@MobID[$@Rand1], MOB_LV);
+		
+		if (
+			($@MobLv1 > $@MobLv2 && ($@MobLv1 - $@MobLv2) > 15) ||
+			($@MobLv2 > $@MobLv1 && ($@MobLv2 - $@MobLv1) > 15)
+		)
+			$@error = 1;
+		else
+			$@error = 0;
+
+	} while ( 
+			$@MName1$ == "null" ||
+			$@MName2$ == "null" || 
+			$@HpMob1 == 0 ||
+			$@HpMob2 == 0 || 
+			$@MobID[$@Rand1] == 0 ||
+			$@MobID[$@Rand2] == 0 || 
+			$@MobID[$@Rand1] == $@MobID[$@Rand2] ||
+			$@error == 1			
+	);
+	
+	if ( $@Reload == 0 )
+		announce " [MvP vs MvP]: El evento comenzará pronto! Warp en Morocc ["+$@MName1$+"] vs ["+$@MName2$+"] por 6 Event Coins.",bc_all;
+	else
+		announce " [MvP vs MvP]: El Round "+$@Reload+" está por comenzar ["+$@MName1$+"] vs ["+$@MName2$+"] en Moroccc por 6 Event Coins.",bc_all;
+
+	sleep 60000;
+	
+	announce "[MvP vs MvP]: En 1 minuto se deshabilitaran las apuestas...",bc_all;
+	sleep 60000;
+	donpcevent "mvpvsmvp::OnStart";
+end;
+
+
+OnStart:
+	announce "[MvP vs MvP]: Se cerraron las puertas.",bc_all;
+	$@termino = 2;
+	// mobevent <map>,  <x>,<y>,<fakename>,        <mobid>,<size>,<amount>,<teamid>,<showhp>,<increasehp>,<allied>,<noslaves>,<noexpnodrop>,<poringcoins>,<event>
+	mobevent "g_room1-2",44,369,$@MName1$,$@MobID[$@Rand1],rand(0,2),1,1,0,500000,1,0,0,0,0,0,0,0,"mvpvsmvp::OnEquip2Win";
+	mobevent "g_room1-2",40,369,$@MName2$,$@MobID[$@Rand2],rand(0,2),1,0,0,500000,0,0,0,0,0,0,0,0,"mvpvsmvp::OnEquip1Win";
+end;
+
+
+OnEquip2Win: 
+	announce "[MvP vs MvP]: "+$@MName2$+" Ganó, Felicidades a los ganadores",bc_all; 
+	mapeventwarp("g_room1-2","morocc",158,90,"@OPT_mvpvsmvp",2,7539,6);
+	donpcevent "mvpvsmvp::OnEventReload";
+end;
+
+OnEquip1Win:
+	announce "[MvP vs MvP]: "+$@MName1$+" Ganó, Felicidades a los ganadores",bc_all;
+	mapeventwarp("g_room1-2","morocc",158,90,"@OPT_mvpvsmvp",1,7539,6);
+	donpcevent "mvpvsmvp::OnEventReload";
+end;
+
+}
+
+morocc,159,84,5	script	Entrada MVP	45,2,2,{
+	if ( $@termino == 1 )
+	{
+		mes "^10B2D2 MvP vs MvP^000000"; 
+		mes " "; 
+
+		//if ( harm_map_multicount( "g_room1-2" ) > 0 ) 
+		//	mclose "No puedes hacer doble login en este mapa";
+
+		mes "A que mvp queres apostar";
+		@OPT_mvpvsmvp = select("^10B2D2 [ > ] ^000000 " + $@MName1$ + ":^10B2D2 [ > ] ^000000 " + $@MName2$);
+
+		close2;
+			dispbottom "Has apostado por : " + ( @OPT_mvpvsmvp == 1 ? $@MName1$ : $@MName2$) + ", Opción: " + @OPT_mvpvsmvp; 
+			warp "g_room1-2",40,380;
+		end;
+	}
+	end;
+}
+
+g_room1-2	mapflag	monster_noteleport
+g_room1-2	mapflag	noteleport
+g_room1-2	mapflag	nobranch
+g_room1-2	mapflag	nosave
+g_room1-2	mapflag	noloot
+g_room1-2	mapflag	novending
+g_room1-2	mapflag	nowarp
+ordeal_1-1	mapflag	nowarpto
+ordeal_1-1	mapflag	nosave	SavePoint
+ordeal_1-1	mapflag	nomemo
+ordeal_1-1	mapflag	nopenalty
+ordeal_1-1	mapflag	monster_noteleport
+ordeal_1-1	mapflag	loadevent

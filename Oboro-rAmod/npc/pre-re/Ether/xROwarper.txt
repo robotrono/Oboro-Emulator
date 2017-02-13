@@ -1,0 +1,1032 @@
+//===== eAthena Script =========================================================
+//= Warper Editado Para X-RO
+//===== By: ====================================================================
+//= KoKe
+//===== Current Version: =======================================================
+//= 2.1
+//===== ChangeLog: =============================================================
+//=	1.0	-	10/04/11
+//=	- Agregados cuartos de Dead Branch						
+//=	- Agregado nombre del ultimo mapa en el menu	
+//=	- Agregado un poco mas de robustes al script
+//=	2.0	-	17/01/12
+//=	- Remake completo del npc
+//=		- Agregado configuracion mas compleja pero eficiente para los warp
+//=		- Dead Branch room ahora es un instance ( 3 años planeandolo por fin? )
+//=		- Actualizado total del npc
+//=	2.1	-	19/01/12
+//=	- Agregados los fields faltantes
+//=		-	Discastes Fields ( dic_fild )
+//==============================================================================
+//=	Por Hacer
+//	-	Que muestre si esta vivo o muerto Mvps o mini bosses
+//==============================================================================
+
+prontera,160,195,4	script	Warper::Warper	831,{
+Main:
+	if (getbrokenid(1) != 0) {
+		while (getbrokenid(1) != 0){
+			specialeffect2 101;
+			repairall;
+		}
+	}
+	sc_start 32,250000,10;  // Increase Agi
+	sc_start 30,250000,10;  // Blessing
+	percentheal 100,100;
+	set .@DBCost,1000;
+	callsub S_CheckVar;
+	title("Warper");
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "¿A dónde quieres que te lleve?";
+	next;
+	switch (select(
+		"^DF6F00Volver a [^000000 ^0066FF"+warpmapN$+"^000000 ^DF6F00]^000000",
+		"^74B221> Warp a Ciudades^000000",
+		"^B53F05> Warp a Dungeon's^000000",
+		"^696969> Warp a Field's^000000",
+		"^2E64FE> Mercado de Merchants^000000",
+		"^7401DF> Zonas Especiales^000000")){
+				case 1:
+					if (warpmap$ == "") 
+					{ 
+						title("Warper");
+						mclose "No has visitado ningún mapa antes."; 
+					}
+					
+					atcommand "@dance 7";
+					sleep2 1000;
+					warp ""+warpmap$+"",warpmapx,warpmapy;
+					end;
+				case 2:
+					title("Warper");
+					mes "¿A qué ciudad quieres ir?";
+					setarray .@WCityN$[1],"Prontera","Alberta","Aldebaran","Amatsu","Ayothaya","Brasilis","Comodo","Dicastes","Einbech (Mining Village)","Einbroch","Geffen","Gonryun","Hugel","Izlude","Jawaii","Lighthalzen","Louyang","Lutie","Manuk","Midgarts Expedition Camp","Morroc","Moscovia","Nameless Island","Niflheim","Payon","Rachel","Splendide","Thor Camp","Umbala","Veins","Yuno","Dewata","Malagno Island","Bifrost","Discastes";
+					setarray .@WCityM$[1],                     "prontera","alberta","aldebaran","amatsu","ayothaya","brasilis","comodo","dicastes01",                 "einbech","einbroch","geffen","gonryun","hugel","izlude","jawaii","lighthalzen","louyang","xmas","manuk",                "mid_camp","morocc","moscovia",     "nameless_n","niflheim","payon","rachel","splendide","thor_camp","umbala","veins","yuno","dewata",      "malangdo",   "mora","dicastes01";
+					setarray .@WCityX[1],                             155,       49,        140,     224,       208,       192,     189,       197,                        70,        64,     119,      160,     96,     128,     213,          158,      218,    147,    260,                       219,     156,       225,              256,        85,    152,     130,        200,        254,     145,    216,   157,     200,             180,      108,         198;
+					setarray .@WCityY[1],                             183,      246,        117,     299,       199,       217,     149,       196,                        95,       200,      59,      121,    145,     140,     230,           92,      103,    134,    175,                       238,      93,       193,              215,       154,     75,     137,        153,         90,     155,    123,    51,     178,             129,       98,         189;	
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WCityN$); set .@i, .@i + 1 )
+					{
+						set .@Menu$, .@Menu$ + " ^339900" + .@WCityN$[.@i] + "^000000:";
+					}
+					set .@j, select(.@Menu$);
+					atcommand "@dance 7";
+					sleep2 1000;
+					set warpmapN$,.@WCityN$[.@j];
+					warp .@WCityM$[.@j],.@WCityX[.@j],.@WCityY[.@j];
+					callsub S_CheckVar;
+					callfunc "LastMapSave";
+					end;
+				case 3:
+				Main_dun:
+					callsub S_CheckVar;
+					setarray .@WDunL$[1],"Abbey, Cursed Monastery","Abyss Lakes","Amatsu Dungeon","Anthell","Ayothaya Dungeon","Beach Dungeon","Bio Laboratory","Brasilis Dungeon","Byalan Dungeon","Clock Tower","Coal Mines","Culverts","Dewata Dungeon","Einbroch Dungeon","Endless Tower","Gefenia","Geffen Dungeon","Glast Heim","Gonryun Dungeon","Hidden Dungeon","Ice Cave","Juperos Dungeon","Kiel Dungeon","Lighthalzen Dungeon","Louyang Dungeon","Malangdo Dungeon","Magma Dungeon","Moscovia Dungeon","Nidhoggur's Dungeon","Nidhoggur's Nest","Orc Dungeon","Payon Dungeon","Pyramids","Rachel Sanctuary","Scaraba Hole Dungeon","Sphinx","Sunken Ship","Thanatos Tower","Thor Volcano","Toy Factory","Turtle Dungeon","Umbala Dungeon";					
+					title("Warper");
+					mes "					";
+					mes "Elige la dungeon (mazmorra) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto más alto sea el nivel, más difícil será. ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WDunL$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^0066FF" + .@WDunL$[.@i] + "^FF3300:";
+					set .@j, select(.@Menu$);
+					if( .@j == 1)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Cursed Abbey Dungeon - LvL 1","Cursed Abbey Dungeon - LvL 2","Cursed Abbey Dungeon - LvL 3";
+						setarray .@WDunX[1],                             51,                           150,                           120;
+						setarray .@WDunY[1],                             14,                            11,                            10;
+						setarray .@WDunMVP$[1],                          "",       "[ ^FF3300MVP^000000 ]",       "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"abbey";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 2)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Abyss Lakes Underground Cave F1","Abyss Lakes Underground Cave F2","Abyss Lakes Underground Cave F3";
+						setarray .@WDunX[1],                               263,                              275,                              116;
+						setarray .@WDunY[1],                               273,                              270,                               27;
+						setarray .@WDunMVP$[1],                             "",                               "",          "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"abyss_";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 3)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Amatsu Dungeon - LvL 1","Amatsu Dungeon - LvL 2","Amatsu Dungeon - LvL 3";
+						setarray .@WDunX[1],                      228,                      32,                     120;
+						setarray .@WDunY[1],                       11,                      44,                      14;
+						setarray .@WDunMVP$[1],                    "",                      "", "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"ama_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 4)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],                  "Anthell F1",           "Anthell F2";
+						setarray .@WDunX[1],                             35,                    168;
+						setarray .@WDunY[1],                            262,                    170;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"anthell";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 5)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Ayothaya - Ancient Shrine Maze","Ayothaya - Inside Ancient Shrine";
+						setarray .@WDunX[1],                              275,                                24;
+						setarray .@WDunY[1],                               19,                                26;
+						setarray .@WDunMVP$[1],                            "",           "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"ayo_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 6)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Beach Dungeon - Karu, west cave","Beach Dungeon - Ruande, north cave","Beach Dungeon - Mao, east cave";
+						setarray .@WDunX[1],                               266,                                 255,                              23;
+						setarray .@WDunY[1],                                67,                                 244,                             260;
+						setarray .@WDunMVP$[1],        "[ ^FF3300MVP^000000 ]",                                  "",                              "";
+						set .@WDunM$,"beach_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 7)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Somatology Laboratory F1","Somatology Laboratory F2","Somatology Laboratory F3","Somatology Laboratory F4";
+						setarray .@WDunX[1],                      150,                     150,                     140,							 240;
+						setarray .@WDunY[1],                      288,                      18,                     134,							  73;
+						setarray .@WDunMVP$[1],                    "", "[ ^FF3300MVP^000000 ]", "[ ^FF3300MVP^000000 ]",		 "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"lhz_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 8)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Brasilis Dungeon F1",  "Brasilis Dungeon F2";
+						setarray .@WDunX[1],                    87,                    262;
+						setarray .@WDunY[1],                    47,                    262;
+						setarray .@WDunMVP$[1],                 "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"bra_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 9)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Undersea Tunnel F1";
+						setarray .@WDunX[1],                  251;
+						setarray .@WDunY[1],                  251;
+						setarray .@WDunMVP$[1],                "";
+						set .@WDunM$,"iz_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 10)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Clock Tower F1","Clock Tower F2","Clock Tower F3","Clock Tower F4","Clock Tower B1","Clock Tower B2","Clock Tower B3","Clock Tower B4";
+						setarray .@WDunX[1],              199,             148,              65,              56,             297,             127,             277,             268;
+						setarray .@WDunY[1],              159,             283,             147,             155,              25,             169,             178,              74;
+						setarray .@WDunMVP$[1],            "",              "",              "",              "",              "",              "",              "",              "";
+						set .@WDunM$,"c_tower";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 11)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Coal Mines - Mjolnir Dead Pit F1","Coal Mines - Mjolnir Dead Pit F2","Coal Mines - Mjolnir Dead Pit F3";
+						setarray .@WDunX[1],                                 52,                               381,                               305;
+						setarray .@WDunY[1],                                 17,                               343,                               260;
+						setarray .@WDunMVP$[1],                              "",                                "",                                "";
+						set .@WDunM$,"mjo_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 12)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Prontera Culvert F1","Prontera Culvert F2","Prontera Culvert F3", "Prontera Culvert F4";
+						setarray .@WDunX[1],                   131,                   19,                 180,                    100;
+						setarray .@WDunY[1],                   247,                   19,                 169,                     92;
+						setarray .@WDunMVP$[1],                 "",                   "",                  "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"prt_sewb";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 13)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1], "Dewata Dungeon - LvL 1","Dewata Dungeon - LvL 2";
+						setarray .@WDunX[1],                       176,                     298;
+						setarray .@WDunY[1],                        86,                      29;
+						setarray .@WDunMVP$[1],"[ ^FF3300MVP^000000 ]",                      "";
+						set .@WDunM$,"dew_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 14)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Mine Dungeon F1",      "Mine Dungeon F2";
+						setarray .@WDunX[1],               	22,                    287;
+						setarray .@WDunY[1],                14,                    287;
+						setarray .@WDunMVP$[1],             "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"ein_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 15)
+					{
+						set warpmapN$,.@WDunL$[14]; 
+						warp "e_tower",72,115;
+						callfunc "LastMapSave";
+						end;	
+					}
+					if( .@j == 16)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Gefenia - LvL 1","Gefenia - LvL 2","Gefenia - LvL 3","Gefenia - LvL 4";
+						setarray .@WDunX[1],                40,              203,              266,              130;
+						setarray .@WDunY[1],               103,               34,              168,              272;
+						setarray .@WDunMVP$[1],             "",               "",               "",               "";
+						set .@WDunM$,"gefenia";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}	
+				    if( .@j == 17)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],      "Geffen Dungeon F1","Geffen Dungeon F2",    "Geffen Dungeon F3", "Geffen Dungeon F4"; 
+						setarray .@WDunX[1],                       104,                115,                    106,                 203;
+						setarray .@WDunY[1],                        99,                236,                    132,                 201;
+						setarray .@WDunMVP$[1],"[ ^FF3300MVP^000000 ]",                 "","[ ^FF3300MVP^000000 ]",                  "";
+						set .@WDunM$,"gef_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+				    if( .@j == 18)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Glast Heim - Entrance",    "Glast Heim - Castle F1",    "Glast Heim - Castle F2","Glast Heim - Chivalry F1","Glast Heim - Chivalry F2",     "Glast Heim - St.Abbey","Glast Heim - Churchyard","Glast Heim - Culvert F1","Glast Heim - Culvert F2","Glast Heim - Culvert F3","Glast Heim - Culvert F4","Glast Heim - Staircase Dungeon","Glast Heim - Underground Cave 1","Glast Heim - Underground Cave 2","Glast Heim - Underground Prison 1","Glast Heim - Underground Prison 2";
+						setarray .@WDunX[1],                     370,                         200,                         104,                       150,                       157,                         156,                      147,                      258,                      108,                      171,                       68,                              12,                              133,                              224,                                 14,                                150;
+						setarray .@WDunY[1],                     304,                          26,                          26,                        15,                       287,                          11,                       18,                      255,                      291,                      283,                      277,                               7,                              271,                              274,                                 70,                                 14;
+						setarray .@WDunMVP$[1],                   "","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]",                      "","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]",  "[ ^FF3300MVP^000000 ]",                       "",                       "",                       "",                       "",                              "",                               "",                               "",                                 "",                                 "";
+						set .@WDunM$,"";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+				    if( .@j == 19)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Gonryun Dungeon - Level 1","Gonryun Dungeon - Level 2","Gonryun Dungeon - Level 3";
+						setarray .@WDunX[1],                         153,                         30,                         68;
+						setarray .@WDunY[1],                          53,                        113,                         16;
+						setarray .@WDunMVP$[1],                       "",                         "",    "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"gon_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 20)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],         "Labyrinth Forest F1","Labyrinth Forest F2",  "Labyrinth Forest F3";
+						setarray .@WDunX[1],                            176,                   93,                     23;
+						setarray .@WDunY[1],                              7,                   21,                      8;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]",                   "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"prt_maze";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 21)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Ice Cave F1","Ice Cave F2",          "Ice Cave F3";
+						setarray .@WDunX[1],           157,          151,                    149;
+						setarray .@WDunY[1],            14,          151,                     22;
+						setarray .@WDunMVP$[1],         "",           "","[ ^009900Quest MVP^000000 ]";
+						set .@WDunM$,"ice_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 22)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"The Ruins of Juperos F1","The Ruins of Juperos F2",    "Center of Juperos"; 
+						setarray .@WDunX[1],                        53,                       37,                    150;
+						setarray .@WDunY[1],                       247,                       63,                    285;
+						setarray .@WDunMVP$[1],                     "",                       "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"juperos_";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 23)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Robot Factory LvL 1",  "Robot Factory LvL 2";
+						setarray .@WDunX[1],                    26,                     40;
+						setarray .@WDunY[1],                   220,                    199;
+						setarray .@WDunMVP$[1],                 "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"kh_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 24)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],      "Somatology Labotory F1","Somatology Labotory F2","Somatology Labotory F3";
+						setarray .@WDunX[1],                            150,                     150,                     140;
+						setarray .@WDunY[1],                            288,                      18,                     134;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]", "[ ^FF3300MVP^000000 ]", "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"lhz_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 25)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Louyang Dungeon - LvL 1","Louyang Dungeon - LvL 2","Louyang Dungeon - LvL 3";
+						setarray .@WDunX[1],                       215,                      280,                      165;
+						setarray .@WDunY[1],                       195,                       20,                       41;
+						setarray .@WDunMVP$[1],                     "",                       "",  "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"lou_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 26)
+					{
+						set warpmapN$,.@WDunL$[26];
+						warp "mal_dun01",33,230;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					}	
+					if( .@j == 27)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Nogg Road F1","Nogg Road F2";
+						setarray .@WDunX[1],            126,            47;
+						setarray .@WDunY[1],             68,            30;
+						setarray .@WDunMVP$[1],          "",            "";
+						set .@WDunM$,"mag_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 28)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Moscovia Dungeon - LvL 1","Moscovia Dungeon - LvL 2","Moscovia Dungeon - LvL 3";
+						setarray .@WDunX[1],                        204,                       164,                        31;
+						setarray .@WDunY[1],                         51,                        31,                       135;
+						setarray .@WDunMVP$[1],                      "",                        "",   "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"mosk_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 29)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Nidhoggur's Dungeon LvL 1","Nidhoggur's Dungeon LvL 2";
+						setarray .@WDunX[1],                          63,                         63;
+						setarray .@WDunY[1],                         221,                        269;
+						setarray .@WDunMVP$[1],                       "",                         "";
+						set .@WDunM$,"nyd_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 30)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Nidhoggur's Nest LvL 1","Nidhoggur's Nest LvL 2";
+						setarray .@WDunX[1],                       32,                     200;
+						setarray .@WDunY[1],                       45,                       9;
+						setarray .@WDunMVP$[1],                    "", "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 31)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Orc Dungeon F1","Orc Dungeon F2";
+						setarray .@WDunX[1],               32,              21;
+						setarray .@WDunY[1],              170,             185;
+						setarray .@WDunMVP$[1],            "",              "";
+						set .@WDunM$,"orcsdun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 32)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Payon Cave F1","Payon Cave F2","Payon Cave F3","Payon Cave F4",        "Payon Cave F5";
+						setarray .@WDunX[1],              21,             19,             21,            155,                    195;
+						setarray .@WDunY[1],             182,             33,             63,            156,                    200;
+						setarray .@WDunMVP$[1],           "",             "",             "",             "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"pay_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 33)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Inside Pyramids F1","Inside Pyramids F2","Inside Pyramids F3",   "Inside Pyramids F4","Inside Pyramids B1",   "Inside Pyramids B2";
+						setarray .@WDunX[1],                  192,                  10,                 100,                    181,                  94,                    192;
+						setarray .@WDunY[1],                    9,                 192,                  92,                     11,                  96,                     11;
+						setarray .@WDunMVP$[1],                "",                  "",                  "","[ ^FF3300MVP^000000 ]",                  "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"moc_pryd";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 34)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Rachel Sanctuary - LvL 1","Rachel Sanctuary - LvL 2","Rachel Sanctuary - LvL 3","Rachel Sanctuary - LvL 4","Rachel Sanctuary - LvL 5";
+						setarray .@WDunX[1],                        139,                        34,                        10,                       203,                       150;
+						setarray .@WDunY[1],                         18,                        21,                       149,                       216,                        11;
+						setarray .@WDunMVP$[1],                      "",                        "",                        "",                        "",   "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"ra_san";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 35)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Scaraba Hole Dungeon F1","Scaraba Hole Dungeon F2";
+						setarray .@WDunX[1],                        33,                      102;
+						setarray .@WDunY[1],                       212,                      142;
+						setarray .@WDunMVP$[1],                     "",  "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"dic_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 36)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Sphinx F1","Sphinx F2","Sphinx F3","Sphinx F4",            "Sphinx F5";
+						setarray .@WDunX[1],         288,        149,        210,         10,                    100;
+						setarray .@WDunY[1],           9,         81,         54,        222,                     99;
+						setarray .@WDunMVP$[1],       "",         "",         "",         "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"in_sphinx";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 37)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Sunken Ship F1",       "Sunken Ship F2";
+						setarray .@WDunX[1],               69,                    102;
+						setarray .@WDunY[1],               24,                     27;
+						setarray .@WDunMVP$[1],            "","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"treasure";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 38)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],      "Thanatos Tower - LvL 1",    "Thanatos Tower - LvL 2",    "Thanatos Tower - LvL 3",    "Thanatos Tower - LvL 4",    "Thanatos Tower - LvL 5",    "Thanatos Tower - LvL 6",    "Thanatos Tower - LvL 7",    "Thanatos Tower - LvL 8",    "Thanatos Tower - LvL 9",   "Thanatos Tower - LvL 10",   "Thanatos Tower - LvL 11",   "Thanatos Tower - LvL 12";
+						setarray .@WDunX[1],                            150,                         150,                         220,                          59,                          62,                          89,                          35,                          93,                          29,                         159,                          19,                         130;
+						setarray .@WDunY[1],                             39,                         136,                         158,                         143,                          11,                         221,                         166,                         148,                         107,                         138,                          20,                          52;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]";
+						set .@WDunM$,"tha_t";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 39)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],   "Thor's Volcano Dungeon F1", "Thor's Volcano Dungeon F2","Thor's Volcano Dungeon F3";
+						setarray .@WDunX[1],                             21,                          77,                         34;
+						setarray .@WDunY[1],                            228,                         203,                        272;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]","[ ^9900FFMiniBoss^000000 ]",    "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"thor_v";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 40)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],         "Toy Factory - LvL 1",  "Toy Factory - LvL 2";
+						setarray .@WDunX[1],                            205,                    129;
+						setarray .@WDunY[1],                             15,                    133;
+						setarray .@WDunMVP$[1],"[ ^9900FFMiniBoss^000000 ]","[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"xmas_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 41)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Turtle Dungeon - Entrance","Turtle Dungeon - LvL 1","Turtle Dungeon - LvL 2","Turtle Dungeon - LvL 3";
+						setarray .@WDunX[1],                         154,                     148,                     132,                     100;
+						setarray .@WDunY[1],                          49,                     261,                     189,                     192;
+						setarray .@WDunMVP$[1],                       "",                      "",                      "", "[ ^FF3300MVP^000000 ]";
+						set .@WDunM$,"tur_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 42)
+					{
+						callsub S_CheckVar;
+						setarray .@WDunN$[1],"Umbala Dungeon - LvL 1","Umbala Dungeon - LvL 2";
+						setarray .@WDunX[1],                       42,                      48;
+						setarray .@WDunY[1],                       31,                      30;
+						setarray .@WDunMVP$[1],                    "",                      "";
+						set .@WDunM$,"um_dun";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					// Formato para agregar mas dungeons
+					//if( .@j == 1) // Dungeon de 1 Nivel
+					//{
+					//	set warpmapN$,.@WFildL$[1]; 
+					//	warp "ama_fild01",190,197;
+					//	callfunc "LastMapSave";
+					//	end;	
+					//}
+				    //if( .@j == 6) // Dungeon de mas de 1 Nivel
+					//{
+					//	callsub S_CheckVar;
+					//	setarray .@WDunN$[1],1;
+					//	setarray .@WDunX[1],2;
+					//	setarray .@WDunY[1],2;
+					//	setarray .@WDunMVP$[1],2;
+					//	set .@WDunM$,"ein_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					//}
+					mes "          ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WDunN$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^0033FF" + .@WDunN$[.@i] + "^000000 "+.@WDunMVP$[.@i]+":";
+					set .@j, select(.@Menu$);
+					if (compare(.@WDunN$[.@j],"Nest LvL 1"))
+					{
+						set .@WDunM$,"1@nyd";
+					}
+					if (compare(.@WDunN$[.@j],"Nest LvL 2"))
+					{
+						set .@WDunM$,"2@nyd";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Entrance"))
+					{
+						set .@WDunM$,"glast_";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Castle F"))
+					{
+						set .@WDunM$,"gl_cas";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Chivalry F"))
+					{
+						set .@WDunM$,"gl_knt";
+					}
+					if (compare(.@WDunN$[.@j],"St.Abbey"))
+					{
+						set .@WDunM$,"gl_church";         
+					}
+					if (compare(.@WDunN$[.@j],"Churchyard"))
+					{
+						set .@WDunM$,"gl_chyard";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Culvert F"))
+					{
+						set .@WDunM$,"gl_sew";
+					}
+					if (compare(.@WDunN$[.@j],"Staircase Dungeon"))
+					{
+						set .@WDunM$,"gl_step";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Underground Cave"))
+					{
+						set .@WDunM$,"gl_dun";
+					}
+					if (compare(.@WDunN$[.@j],"Heim - Entrance"))
+					{
+						set .@WDunM$,"glast_";
+					}
+					if (compare(.@WDunN$[.@j],"Prison"))
+					{
+						set .@WDunM$,"gl_prison";
+					}
+					if (compare(.@WDunN$[.@j],"Tower B"))
+					{
+						set .@WDunM$,"alde_dun";
+					}
+					if (compare(.@WDunN$[.@j],"Center of Juperos"))
+					{
+						set .@WDunM$,"jupe_core";
+					}
+					if ( .@WDunM$ == "gl_prison" )
+					{
+						if ( .@j == 15 ){set .WNm$,"";} else if ( .@j == 16 ){set .WNm$,"1";}
+					} else if ( .@WDunM$ == "gl_dun" )
+					{
+						if ( .@j == 13 ){set .WNm$,"01";} else if ( .@j == 14 ){set .WNm$,"02";}
+					} else if ( .@WDunM$ == "gl_sew" )
+					{
+						if ( .@j == 8 ){set .WNm$,"01";} else if ( .@j == 9 ){set .WNm$,"02";} else if ( .@j == 10 ){set .WNm$,"03";} else if ( .@j == 11 ){set .WNm$,"04";}
+					} else if ( .@WDunM$ == "1@nyd" || .@WDunM$ == "2@nyd" || .@WDunM$ == "gl_chyard" || .@WDunM$ == "gl_church" || .@WDunM$ == "gl_step" || .@wDunM$ == "jupe_core" )
+					{
+						if ( .@j == 1 || .@j == 2 || .@j == 3 || .@j == 6 || .@j == 7 || .@j == 12 ){set .WNm$,"";}
+					} else if ( .@WDunM$ == "gl_knt" )
+					{
+						if ( .@j == 4){set .WNm$,"01";} else if ( .@j == 5){set .WNm$,"02";}
+					} else if ( .@WDunM$ == "gl_cas" )
+					{
+						if ( .@j == 2){set .WNm$,"01";} else if ( .@j == 3){set .WNm$,"02";}
+					} else if ( .@WDunM$ == "alde_dun")
+					{
+						if ( .@j == 5){set .WNm$,"01";} else if ( .@j == 6){set .WNm$,"02";} else if ( .@j == 7){set .WNm$,"03";} else if ( .@j == 8){set .WNm$,"04";}	
+					} else if ( .@WDunM$ == "c_tower" || .@WDunM$ == "prt_sewb" || .@WDunM$ == "in_sphinx" )
+					{
+						if ( .@j == 1){set .WNm$,"1";} else if ( .@j == 2){set .WNm$,"2";} else if ( .@j == 3){set .WNm$,"3";} else if ( .@j == 4){set .WNm$,"4";} else if ( .@j == 5){set .WNm$,"5";}	
+					} else if ( .@WDunM$ == "beach_dun")
+					{ 
+						if ( .@j == 1){set .WNm$,"";} else if ( .@j == 2){set .WNm$,"2";} else if ( .@j == 3){set .WNm$,"3";}
+					} else if ( .@WDunM$ == "iz_dun" || .@WDunM$ == "gef_dun" || .@WDunM$ == "pay_dun" )
+					{
+						if( .@j == 1){set .WNm$,"00";} else if( .@j == 2){set .WNm$,"01";} else if( .@j == 3){set .WNm$,"02";} else if( .@j == 4){set .WNm$,"03";} else if( .@j == 5){set .WNm$,"04";}
+					} else if ( .@j == 1){set .WNm$,"01";} else if( .@j == 2){set .WNm$,"02";} else if( .@j == 3){set .WNm$,"03";} else if( .@j == 4){set .WNm$,"04";} else if( .@j == 5){set .WNm$,"05";} else if( .@j == 6){set .WNm$,"06";} else if( .@j == 7){set .WNm$,"07";} else if( .@j == 8){set .WNm$,"08";} else if( .@j == 9){set .WNm$,"09";} else if( .@j == 10){set .WNm$,"10";} else if( .@j == 11){set .WNm$,"11";} else if( .@j == 12){set .WNm$,"12";} else if( .@j == 13){set .WNm$,"13";} else if( .@j == 14){set .WNm$,"14";} else if( .@j == 15){set .WNm$,"15";} else if( .@j == 16){set .WNm$,"16";} else if( .@j == 17){set .WNm$,"17";} else if( .@j == 18){set .WNm$,"18";} else if( .@j == 19){set .WNm$,"19";} else if( .@j == 20){set .WNm$,"20";} else if( .@j == 21){set .WNm$,"21";} else if( .@j == 22){set .WNm$,"22";}
+					set warpmapN$,.@WDunN$[.@j]+@WDunD$[.@j];
+
+					//isaac
+					//if ( MF_MVP(.@WDunM$+.WNm$) > 0 && countitem(30212) >= 1)
+					//{
+		
+					//	delitem 30212,1;
+					//	warp .@WDunM$+.WNm$,.@WDunX[.@j],.@WDunY[.@j];
+					//	callsub S_CheckVar;
+					//	callfunc "LastMapSave";
+					//	end;
+
+					//} else if ( MF_MVP(.@WDunM$+.WNm$) > 0 && countitem(30212) < 1 ) {
+
+					//	next;
+					//	set warpmap$, "";
+					//	set warpmapN$, "";
+					//	title("Warper");
+					//	mclose "Necesitas mvp ticket para ir a este mapa";
+						
+					//} else {
+						atcommand "@dance 7";
+						sleep2 1000;
+						warp .@WDunM$+.WNm$,.@WDunX[.@j],.@WDunY[.@j];
+						callsub S_CheckVar;
+						callfunc "LastMapSave";
+						end;
+					
+					//}
+
+
+				case 4:
+					callsub S_CheckVar;
+					setarray .@WFildL$[1],"Amatsu Field","Ayothaya Fields","Brasilis Field","Comodo Fields","Discastes Fields","Einbroch Fields","Geffen Fields","Gonryun Field","Hugel Fields","Lighthalzen Fields","Louyang Field","Lutie Field","Manuk Fields","Mjolnir Fields","Niflheim Fields","Odin Temple","Payon Forests","Prontera Fields","Rachel Fields","Sograt Deserts","Splendide Fields","Umbala Fields","Veins Fields","Yuno Fields";
+					title("Warper");
+					mes "Elige la field (campo) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto más alto sea el nivel, más difícil será. ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WFildL$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^FF3300" + .@WFildL$[.@i] + "^000000:";
+					set .@j, select(.@Menu$);
+					if( .@j == 1)
+					{
+						set warpmapN$,.@WFildL$[1]; 
+						warp "ama_fild01",190,197;
+						callfunc "LastMapSave";
+						end;	
+					}
+					if( .@j == 2)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Ayothaya Field 1","Ayothaya Field 2";
+						setarray .@WFieldD$[1],                "",                "";
+						setarray .@WFieldX[1],                173,               212;
+						setarray .@WFieldY[1],                134,               150;
+						set .@WFieldM$,"ayo_fild";
+					}
+					if( .@j == 3)
+					{
+						set warpmapN$,.@WFildL$[3]; 
+						warp "bra_fild01",74,32;
+						callfunc "LastMapSave";
+						end; 	
+					}
+					if( .@j == 4)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],   "Comodo Field 1","Comodo Field 2","Comodo Field 3","Comodo Field 4",            "Comodo Field 5",        "Comodo Field 6",       "Comodo Field 7",               "Comodo Field 8",                "Comodo Field 9";
+						setarray .@WFieldD$[1],"Papuchicha Forest",  "Kokomo Beach",  "Zenhai Marsh",  "Kokomo Beach","Border of Papuchica Forest","Fortress Saint Darmain","Beacon Island, Pharos","Fortress Saint Darmain (East)","Fortress Saint Darmain (South)";
+						setarray .@WFieldX[1],                 180,             231,             191,             228,                         224,                     190,                    234,                            194,                             172;
+						setarray .@WFieldY[1],                 178,             160,             172,             194,                         203,                     223,                    137,                            175,                             172;
+					    set .@WFieldM$,"cmd_fild";
+					}
+					if( .@j == 5)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Discastes Field 1","Discastes Field 2";
+						setarray .@WFieldD$[1],                 "",                 "";
+						setarray .@WFieldX[1],                 150,                 71;
+						setarray .@WFieldY[1],                 278,                369;
+						set .@WFieldM$,"dic_fild";
+					}
+					if( .@j == 6)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Einbroch Field 1","Einbroch Field 2","Einbroch Field 3","Einbroch Field 4","Einbroch Field 5","Einbroch Field 6","Einbroch Field 7","Einbroch Field 8","Einbroch Field 9","Einbroch Field 10";
+						setarray .@WFieldD$[1],                "",                "",                "",                "",                "",                "",                "",                "",                "",                 "";
+						setarray .@WFieldX[1],                142,               182,               187,               185,               216,               195,               272,               173,               207,                196;
+						setarray .@WFieldY[1],                225,               141,               228,               173,               173,               148,               220,               214,               174,                200;
+						set .@WFieldM$,"ein_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					}
+					if( .@j == 7)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Geffen Field 0","Geffen Field 1","Geffen Field 2","Geffen Field 3","Geffen Field 4","Geffen Field 5","Geffen Field 6","Geffen Field 7","Geffen Field 8","Geffen Field 9","Geffen Field 10","Geffen Field 11","Geffen Field 12","Geffen Field 13", "Geffen Field 14";
+						setarray .@WFieldD$[1],              "",              "",              "",              "",              "",              "",              "",              "",              "",              "",               "",               "",   "Kordt Forest",      "Britoniah","West Orc Village";
+						setarray .@WFieldX[1],               46,             213,             195,             257,             188,             166,             248,             195,             186,             221,              178,              136,              240,              235,               211;
+						setarray .@WFieldY[1],              199,             204,             212,             192,             171,             263,             158,             191,             183,             117,              218,              318,              181,              235,               185;
+						set .@WFieldM$,"gef_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 8)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WDunN$[7]; 
+						warp "gon_fild01",220,227;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 9)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Hugel Field 1","Hugel Field 2","Hugel Field 3","Hugel Field 4",  "Hugel Field 5","Hugel Field 6","Hugel Field 7";
+						setarray .@WFieldD$[1],             "",             "",             "",             "","The Abyss Lakes",             "",             "";
+						setarray .@WFieldX[1],             268,            222,            232,            252,              196,            216,            227;
+						setarray .@WFieldY[1],             101,            193,            185,            189,              106,            220,            197;
+						set .@WFieldM$,"hu_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 10)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Lighthalzen Field 1", "Lighthalzen Field 2", "Lighthalzen Field 3";
+						setarray .@WFieldD$[1],                   "","Grim Reaper's Valley",                    "";
+						setarray .@WFieldX[1],                   240,                   185,                   240;
+						setarray .@WFieldY[1],                   179,                   235,                   226;
+						set .@WFieldM$,"lhz_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 11)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WFildL$[10]; 
+						warp "lou_fild01",229,187;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 12)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WFildL$[11]; 
+						warp "xmas_fild01",115,145;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					}
+					if( .@j == 13)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Manuk Field 1","Manuk Field 2","Manuk Field 3";
+						setarray .@WFieldD$[1],             "",             "",             "";
+						setarray .@WFieldX[1],              35,             35,             84;
+						setarray .@WFieldY[1],             236,            262,            365;
+						set .@WFieldM$,"man_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 14)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Mjolnir Field 1","Mjolnir Field 2","Mjolnir Field 3","Mjolnir Field 4","Mjolnir Field 5","Mjolnir Field 6","Mjolnir Field 7","Mjolnir Field 8","Mjolnir Field 9","Mjolnir Field 10","Mjolnir Field 11","Mjolnir Field 12";
+						setarray .@WFieldD$[1],               "",               "",               "",               "",               "",               "",               "",               "",               "",                "",                "",                "";
+						setarray .@WFieldX[1],               204,              175,              208,              179,              181,              195,              235,              188,              205,               245,               180,               196;
+						setarray .@WFieldY[1],               120,              193,              213,              180,              240,              270,              202,              215,              144,               223,               206,               208;
+						set .@WFieldM$,"mjolnir_";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 15)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],   "Niflheim Field 1","Niflheim Field 2";
+						setarray .@WFieldD$[1],"Skellington Village", "Valley of Gyoll";
+						setarray .@WFieldX[1],                   215,               167;
+						setarray .@WFieldY[1],                   229,               234;
+						set .@WFieldM$,"nif_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 16)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Odin Temple 1","Odin Temple 2","Odin Temple 3";
+						setarray .@WFieldD$[1],             "",             "",             "";
+						setarray .@WFieldX[1],             298,            227,            265;
+						setarray .@WFieldY[1],             165,            149,            280;
+						set .@WFieldM$,"odin_tem";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 17)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Payon Forest 1","Payon Forest 2","Payon Forest 3","Payon Forest 4","Payon Forest 5","Payon Forest 6","Payon Forest 7","Payon Forest 8","Payon Forest 9","Payon Forest 10","Payon Forest 11";
+						setarray .@WFieldD$[1],              "",              "",              "",              "",              "",              "",              "",              "",              "",               "",               "";
+						setarray .@WFieldX[1],              158,             151,             205,             186,             134,             193,             200,             137,             201,              160,              194;
+						setarray .@WFieldY[1],              206,             219,             148,             247,             204,             235,             177,             189,             224,              205,              150;
+						set .@WFieldM$,"pay_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 18)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Prontera Field 0","Prontera Field 1","Prontera Field 2","Prontera Field 3","Prontera Field 4","Prontera Field 5","Prontera Field 6","Prontera Field 7","Prontera Field 8","Prontera Field 9","Prontera Field 10","Prontera Field 11";
+						setarray .@WFieldD$[1],                "",                "",                "",                "",                "",                "",                "",                "",                "",                "",                 "",                 "";
+						setarray .@WFieldX[1],                184,               190,               240,               190,               307,               239,               185,               193,               187,               210,                195,                198;
+						setarray .@WFieldY[1],                235,               206,               206,               143,               252,               213,               188,               194,               218,               183,                149,                164;
+						set .@WFieldM$,"prt_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 19)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],    "Rachel Field 1","Rachel Field 2","Rachel Field 3",    "Rachel Field 4",    "Rachel Field 5","Rachel Field 6","Rachel Field 7","Rachel Field 8",    "Rachel Field 9","Rachel Field 10","Rachel Field 11","Rachel Field 12","Rachel Field 13";
+						setarray .@WFieldD$[1],"Audumra Grass Land",      "Oz Gorge",     "Ida Plane","Audumra Grass Land","Audumra Grass Land",    "Fortu Luna",      "Oz Gorge",     "Ida Plane","Audumra Grass Land",       "Oz Gorge",      "Ida Plane",      "Ida Plane", "Beach of Tears";
+						setarray .@WFieldX[1],                  192,             235,             202,                 202,                 225,             202,             263,             217,                  87,              277,              221,              175,              174;
+						setarray .@WFieldY[1],                  162,             166,             206,                 208,                 202,             214,             196,             201,                 121,              181,              185,              200,              197;
+						set .@WFieldM$,"ra_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 20)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Sograt Desert 1","Sograt Desert 2","Sograt Desert 3","Sograt Desert 4","Sograt Desert 5","Sograt Desert 6","Sograt Desert 7","Sograt Desert 8","Sograt Desert 9","Sograt Desert 10","Sograt Desert 11","Sograt Desert 12","Sograt Desert 13","Sograt Desert 14","Sograt Desert 15","Sograt Desert 16","Sograt Desert 17","Sograt Desert 18","Sograt Desert 19",                            "Sograt Desert 20", "Sograt Desert 21", "Sograt Desert 22";
+						setarray .@WFieldD$[1],               "",               "",               "",               "",               "",               "",               "",               "",               "",                "",                "",                "",                "",                "",                "",                "",                "",                "",                "","Continental Guard Quarantine","Dimensional Gorge","Dimensional Gorge";
+						setarray .@WFieldX[1],               219,              177,              194,              184,              203,              213,              224,              229,              195,               209,               198,               156,               185,               209,               223,               206,               208,               209,                85,                                            44,                 46,                 38;
+						setarray .@WFieldY[1],               205,              206,              182,              217,              213,              208,              170,              177,              198,               168,               216,               187,               263,               219,               188,               228,               238,               223,                97,                                           179,                192,                196;
+						set .@WFieldM$,"moc_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 21)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Splendide Field 1","Splendide Field 2","Splendide Field 3";
+						setarray .@WFieldD$[1],                 "",                 "",                 "";
+						setarray .@WFieldX[1],                 289,                 12,                306;
+						setarray .@WFieldY[1],                  32,                241,                375;
+						set .@WFieldM$,"spl_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 22)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Umbala Field 1","Umbala Field 2","Umbala Field 3","Umbala Field 4";
+						setarray .@WFieldD$[1], "Luluka Forest", "Hoomga Forest",  "Kalala Swamp", "Hoomga Jungle";
+						setarray .@WFieldX[1],              217,             223,             237,             202;
+						setarray .@WFieldY[1],              206,             221,             215,             197;
+						set .@WFieldM$,"um_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 23)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Veins Field 1","Veins Field 2","Veins Field 3","Veins Field 4","Veins Field 5","Veins Field 6","Veins Field 7";
+						setarray .@WFieldD$[1],             "",             "",             "",             "",             "",             "",             "";
+						setarray .@WFieldX[1],             186,            196,            222,             51,            202,            150,            149;
+						setarray .@WFieldY[1],             175,            370,             45,            250,            324,            223,            307;
+						set .@WFieldM$,"ve_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 24)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Yuno Field 1",       "Yuno Field 2",  "Yuno Field 3",  "Yuno Field 4",  "Yuno Field 5",  "Yuno Field 6",                  "Yuno Field 7",       "Yuno Field 8",           "Yuno Field 9","Yuno Field 10","Yuno Field 11",    "Yuno Field 12";
+						setarray .@WFieldD$[1],"Border Posts","Kiel Hyre's Cottage","El Mes Plateau","El Mes Plateau","El Mes Plateau","El Mes Plateau","El Mes Gorge (Valley of Abyss)","Kiel Hyre's Academy","Schwarzwald Guards Camp",             "",             "","Border Checkpoint";
+						setarray .@WFieldX[1],            189,                  192,             221,             226,             223,             187,                             231,                  196,                      183,            200,            195,                210;
+						setarray .@WFieldY[1],            224,                  207,             157,             199,             177,             232,                             174,                  203,                      214,            124,            226,                304;
+						set .@WFieldM$,"yuno_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					mes "          ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WFieldN$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^FF3300" + .@WFieldN$[.@i] + "^000000 " + .@WFieldD$[.@i] + " :";
+					set .@j, select(.@Menu$);
+					if ( .@WFieldM$ == "gef_fild" || .@WFieldM$ == "prt_fild" )
+					{ 
+						if( .@j == 1){set .WNm$,"00";} else if( .@j == 2){set .WNm$,"01";} else if( .@j == 3){set .WNm$,"02";} else if( .@j == 4){set .WNm$,"03";} else if( .@j == 5){set .WNm$,"04";} else if( .@j == 6){set .WNm$,"05";} else if( .@j == 7){set .WNm$,"06";} else if( .@j == 8){set .WNm$,"07";} else if( .@j == 9){set .WNm$,"08";} else if( .@j == 10){set .WNm$,"09";} else if( .@j == 11){set .WNm$,"10";} else if( .@j == 12){set .WNm$,"11";} else if( .@j == 13){set .WNm$,"12";} else if( .@j == 14){set .WNm$,"13";} else if( .@j == 15){set .WNm$,"14";}
+					} else if( .@j == 1){set .WNm$,"01";} else if( .@j == 2){set .WNm$,"02";} else if( .@j == 3){set .WNm$,"03";} else if( .@j == 4){set .WNm$,"04";} else if( .@j == 5){set .WNm$,"05";} else if( .@j == 6){set .WNm$,"06";} else if( .@j == 7){set .WNm$,"07";} else if( .@j == 8){set .WNm$,"08";} else if( .@j == 9){set .WNm$,"09";} else if( .@j == 10){set .WNm$,"10";} else if( .@j == 11){set .WNm$,"11";} else if( .@j == 12){set .WNm$,"12";} else if( .@j == 13){set .WNm$,"13";} else if( .@j == 14){set .WNm$,"14";} else if( .@j == 15){set .WNm$,"15";} else if( .@j == 16){set .WNm$,"16";} else if( .@j == 17){set .WNm$,"17";} else if( .@j == 18){set .WNm$,"18";} else if( .@j == 19){set .WNm$,"19";} else if( .@j == 20){set .WNm$,"20";} else if( .@j == 21){set .WNm$,"21";} else if( .@j == 22){set .WNm$,"22";}
+					
+					set warpmapN$,.@WFieldN$[.@j];
+
+
+					//isaac
+					//if ( MF_MVP(.@WFieldM$+.WNm$) > 0 && countitem(30212) >= 1)
+					//{
+	
+					//	delitem 30212,1;
+					//	warp .@WFieldM$+.WNm$,.@WFieldX[.@j],.@WFieldY[.@j];
+					//	callsub S_CheckVar;
+					//	callfunc "LastMapSave";
+					//	end;
+
+					//} else if ( MF_MVP(.@WFieldM$+.WNm$) > 0 && countitem(30212) < 1 ) {
+
+					//	next;
+					//	set warpmap$, "";
+					//	set warpmapN$, "";
+					//	title("Warper");
+					//	mclose "Necesitas mvp ticket para ir a este mapa";
+						
+					//} else {
+						atcommand "@dance 7";
+						sleep2 1000;
+						warp .@WFieldM$+.WNm$,.@WFieldX[.@j],.@WFieldY[.@j];
+						callsub S_CheckVar;
+						callfunc "LastMapSave";
+						end;
+					
+					//}
+
+				case 5:
+					atcommand "@dance 7";
+					sleep2 1000;
+					warp "alberta",104,194;
+					close;
+				case 6:
+					title("Warper");
+					mes "¿A qué zona especial (custom) quieres ir?";
+					switch (select(
+							"- ^0033FFCash Shop^000000",
+							"- ^CC3300Mercado de NPC^000000"))
+					{
+						case 1:
+							atcommand "@dance 7";
+							sleep2 1000;
+							warp "que_qaru02",251,343;
+							close;
+						case 2:
+							atcommand "@dance 7";
+							sleep2 1000;
+							warp "ayothaya",151,161;
+							close;
+					}
+	}
+S_CheckVar:
+	cleararray .@WCityN$[0],0,127;
+	cleararray .@WCityM$[0],0,127;
+	cleararray .@WCityX[0],0,127;
+	cleararray .@WCityY[0],0,127;
+	cleararray .@WFieldN$[0],0,127;
+	cleararray .@WFieldM$[0],0,127;
+	cleararray .@WFieldX[0],0,127;
+	cleararray .@WFieldY[0],0,127;
+	cleararray .@WDunN$[1],0,127;
+	cleararray .@WDunX[0],0,127;
+	cleararray .@WDunY[0],0,127;
+	cleararray .@WDunMVP$[0],0,127;
+	set .@WDunM$,""; 
+	set .@WDunN$,"";
+	return;
+}
+
+function	script	LastMapSave	{
+	getmapxy(warpmap$,warpmapx,warpmapy,0,strcharinfo(0));
+	return;
+}
+
+bat_room,18,185,3	script	Warper Bat::DBexit	601,{
+title();	mes "¿Quieres regresar a "+getsavepoint(0)+"?";
+	next;
+	if(select("Si:Mejor No") == 2){
+		close;
+	}
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	end;
+}
+
+bat_room,42,51,3	script	Warp::WarpDB	-1,10,5,{
+OnTouch:
+	getmapxy(.@mapES$, .@1E, .@2E,0);
+	warp .@mapES$,106,98;
+	end;
+}
+
+bat_room,20,168,1	script	Señal::DBSignal	835,{
+	end;
+OnInit:
+	waitingroom "Centro del mapa Por aqui",0;
+	end;
+}
+
+-	script	DBStuff	-1,{
+OnPCDieEvent:
+getmapxy(.@mapname$,.@mapx,.@mapy,0);
+if (compare(.@mapname$,"@dbroom"))
+	{
+		sleep2 1000;
+		warp .@mapname$,15,180;
+		end;
+	}
+}
+
+
+//-------------------------------
+//       Duplicate NPCs
+//-------------------------------
+rachel,105,134,6	duplicate(Warper)	Warp NPC#2-2	831
+alberta,120,60,4	duplicate(Warper)	Warp NPC#3-1	831
+aldebaran,145,119,4	duplicate(Warper)	Warp NPC#4-1	831
+amatsu,225,234,4	duplicate(Warper)	Warp NPC#5-1	831
+ayothaya,202,193,6	duplicate(Warper)	Warp NPC#6-1	831
+comodo,193,152,4	duplicate(Warper)	Warp NPC#7-1	831
+einbech,142,246,4	duplicate(Warper)	Warp NPC#8-1	831
+einbroch,69,202,4	duplicate(Warper)	Warp NPC#9-1	831
+hugel,91,145,6	duplicate(Warper)	Warp NPC#10-1	831
+geffen,115,67,6	duplicate(Warper)	Warp NPC#12-1	831
+izlude,132,142,4	duplicate(Warper)	Warp NPC#13-1	831
+xmas,151,135,4	duplicate(Warper)	Warp NPC#14-1	831
+morocc,162,94,4	duplicate(Warper)	Warp NPC#15-1	831
+payon,168,107,6	duplicate(Warper)	Warp NPC#16-1	831
+yuno,158,199,4	duplicate(Warper)	Warp NPC#17-1	831
+moc_fild04,207,331,4	duplicate(Warper)	Warp NPC#18-1	831
+izlu2dun,104,82,4	duplicate(Warper)	Warp NPC#19-1	831
+mjolnir_02,85,363,4	duplicate(Warper)	Warp NPC#20-1	831
+prt_fild05,273,215,4	duplicate(Warper)	Warp NPC#21-1	831
+glast_01,370,308,4	duplicate(Warper)	Warp NPC#22-1	831
+yuno_fild03,37,135,4	duplicate(Warper)	Warp NPC#23-1	831
+gef_fild10,71,339,4	duplicate(Warper)	Warp NPC#24-1	831
+pay_arche,39,135,4	duplicate(Warper)	Warp NPC#25-1	831
+moc_ruins,64,166,4	duplicate(Warper)	Warp NPC#26-1	831
+moc_fild19,106,97,4	duplicate(Warper)	Warp NPC#27-1	831
+alb2trea,73,101,4	duplicate(Warper)	Warp NPC#28-1	831
+tur_dun01,148,239,4	duplicate(Warper)	Warp NPC#29-1	831
+gonryun,156,122,6	duplicate(Warper)	Warp NPC#30-1	831
+louyang,216,109,4	duplicate(Warper)	Warp NPC#31-1	831
+umbala,141,165,6	duplicate(Warper)	Warp NPC#32-1	831
+brasilis,201,222,4	duplicate(Warper)	Warp NPC#33-1	831
+manuk,269,199,4	duplicate(Warper)	Warp NPC#34-1	831
+splendide,206,151,4	duplicate(Warper)	Warp NPC#35-1	831
+mid_camp,223,237,4	duplicate(Warper)	Warp NPC#36-1	831
+moscovia,229,192,4	duplicate(Warper)	Warp NPC#37-1	831
+dicastes01,195,197,6	duplicate(Warper)	Warp NPC#38-1	831
+poring_w02,114,92,6	duplicate(Warper)	Warp NPC#39-1	831
+new_1-1,47,114,6	duplicate(Warper)	Warp NPC#40-1	831
+lighthalzen,165,97,4	duplicate(Warper)	Warp NPC#41-1	831
+dewata,201,183,4	duplicate(Warper)	Warp NPC#42-1	831
+gr_1,47,62,6	duplicate(Warper)	Warp NPC#43-1	831
+gr_2,47,62,6	duplicate(Warper)	Warp NPC#44-1	831
+gr_3,47,62,6	duplicate(Warper)	Warp NPC#45-1	831
+gr_4,47,62,6	duplicate(Warper)	Warp NPC#46-1	831
+gr_5,47,62,6	duplicate(Warper)	Warp NPC#47-1	831
+gr_6,47,62,6	duplicate(Warper)	Warp NPC#48-1	831
+gr_7,47,62,6	duplicate(Warper)	Warp NPC#49-1	831
+gr_8,47,62,6	duplicate(Warper)	Warp NPC#50-1	831
+gr_9,47,62,6	duplicate(Warper)	Warp NPC#51-1	831
+gr_10,47,62,6	duplicate(Warper)	Warp NPC#52-1	831
+gr_11,47,62,6	duplicate(Warper)	Warp NPC#53-1	831
+gr_12,47,62,6	duplicate(Warper)	Warp NPC#54-1	831
+gr_13,47,62,6	duplicate(Warper)	Warp NPC#55-1	831
+gr_14,47,62,6	duplicate(Warper)	Warp NPC#56-1	831
+gr_15,47,62,6	duplicate(Warper)	Warp NPC#57-1	831
+gr_16,47,62,6	duplicate(Warper)	Warp NPC#59-1	831
+gr_17,47,62,6	duplicate(Warper)	Warp NPC#60-1	831
+gr_18,47,62,6	duplicate(Warper)	Warp NPC#61-1	831
+gr_19,47,62,6	duplicate(Warper)	Warp NPC#62-1	831
+gr_20,47,62,6	duplicate(Warper)	Warp NPC#63-1	831
+gr_21,47,62,6	duplicate(Warper)	Warp NPC#64-1	831
+gr_22,47,62,6	duplicate(Warper)	Warp NPC#65-1	831
+gr_23,47,62,6	duplicate(Warper)	Warp NPC#66-1	831
+gr_24,47,62,6	duplicate(Warper)	Warp NPC#67-1	831
+gr_25,47,62,6	duplicate(Warper)	Warp NPC#68-1	831
+gr_26,47,62,6	duplicate(Warper)	Warp NPC#69-1	831
+gr_27,47,62,6	duplicate(Warper)	Warp NPC#70-1	831
+gr_28,47,62,6	duplicate(Warper)	Warp NPC#71-1	831
+gr_29,47,62,6	duplicate(Warper)	Warp NPC#72-1	831
+gr_30,47,62,6	duplicate(Warper)	Warp NPC#73-1	831
+veins,220,132,3	duplicate(Warper)	Warp NPC#74-1	831
+core,149,169,3	duplicate(Warper)	Warp NPC#75-1	831
+mora,104,105,6	duplicate(Warper)	Warp NPC#76-1	831
+
+
+//mapflags del Cuarto de DB
+//1@dbroom	mapflag	nowarpto
+//1@dbroom	mapflag	loadevent
+pvp_n_1-1	mapflag	nowarpto
+pvp_n_1-1	mapflag	loadevent
+//No teleport para mobs
+//1@dbroom	mapflag	monster_noteleport
+pvp_n_1-1	mapflag	monster_noteleport

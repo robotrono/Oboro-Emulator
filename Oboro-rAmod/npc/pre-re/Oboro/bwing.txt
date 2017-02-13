@@ -1,0 +1,55 @@
+-	script	bwing	-1,{
+	end;
+
+OnWhisperGlobal:
+	if ( getgmlevel() < 90 ) end; 
+OnInit:
+	setarray .Ca_WoE$[1],
+		"aldeg_cas01",	//Neuschwanstein		1	-	Aldebaran
+		"aldeg_cas02",	//Hohenschwangau		2
+		"aldeg_cas03",	//Nuenberg			3
+		"aldeg_cas04",	//Wuerzburg			4
+		"aldeg_cas05",	//Rothenburg			5
+		"gefg_cas01",	//Repherion			6	-	Geffen
+		"gefg_cas02",	//Eeyolbriggar			7
+		"gefg_cas03",	//Yesnelph			8
+		"gefg_cas04",	//Bergel			9
+		"gefg_cas05",	//Mersetzdeitz			10
+		"payg_cas01",	//Bright Arbor			11	-	Payon
+		"payg_cas02",	//Scarlet Palace		12
+		"payg_cas03",	//Holy Shadow			13
+		"payg_cas04",	//Sacred Altar			14
+		"payg_cas05",	//Bamboo Grove Hill		15
+		"prtg_cas01",	//Kriemhild			16	-	Prontera
+		"prtg_cas02",	//Swanhild			17
+		"prtg_cas03",	//Fadhgridh			18
+		"prtg_cas04",	//Skoegul			19
+		"prtg_cas05",	//Gondul			20
+		/////////  Castles WoE SE //////////
+		"schg_cas01",	//Himinn			21	-	Yuno
+		"schg_cas02",	//Andlangr			22
+		"schg_cas03",	//Viblainn			23
+		"schg_cas04",	//Hljod				24
+		"schg_cas05",	//Skidbladnir			25
+		"arug_cas01",	//Mardol			26	-	Rachel
+		"arug_cas02",	//Cyr				27
+		"arug_cas03",	//Horn				28
+		"arug_cas04",	//Gefn				29
+		"arug_cas05",	//Banadis			30
+		"mocg_cas01";	//Iset				31
+		
+	bindatcmd("bwing", strnpcinfo(3)+"::OnBWing");
+end;
+
+OnBWing:
+	for (.@i = 0; .@i < getarraysize(.Ca_WoE$); .@i++)
+	{
+		if (strcharinfo(3) == .Ca_WoE$[.@i])
+		{
+			warp "SavePoint",0,0;
+			end;
+		}
+	}
+	dispbottom "No puedes usar @bwing en este mapa";
+end;
+}

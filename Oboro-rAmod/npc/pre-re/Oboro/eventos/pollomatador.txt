@@ -1,0 +1,92 @@
+prontera,145,149,4	script	Gallinita del mal	800,{
+	if ( .evento == 0 ) {
+		mes "[ ^FF009ECluckers^000000 ]";
+		mes "¡Cocorocó, ^E96D07"+strcharinfo(0)+"^000000!";
+		mes "No hay envento aún, ¡vuelve más tarde!";
+		close;
+	}
+
+	set .prize,8905; // Item Recompensa
+	set .cprize,3;   // Cantidad del item
+
+
+	specialeffect2 2;
+	switch( rand(15) ) {
+		case 0:
+		case 1:
+			npctalk "¡¡¡CLUUUUUUCK!!!";
+			specialeffect2 183;
+			emotion 23;
+			percentheal -100,-100;
+			break;
+		case 2:
+		case 3:
+		case 4:
+			sc_start SC_Freeze,10000,0;
+			dispbottom "¡Cluckers te ha congelado!";
+			break;
+
+		case 5:
+		case 6:
+			sc_start SC_Sleep,10000,0;
+			dispbottom "¡Cluckers te mando a dormir!";
+			break;
+		case 7:
+		case 8:
+			emotion 29;
+			sc_start SC_Stone,10000,0;
+			dispbottom "¡Cluckers te hizo piedra!";
+			break;
+		case 9:
+		case 10:
+		case 11:
+			sc_start SC_Stun,10000,0;
+			dispbottom "¡Cluckers te dio Stun!";
+			break;
+
+		case 12:
+		case 13:
+		case 15:
+			npctalk "¡Cluck! ¡Cluck!";
+			break;
+
+		default:
+			if( rand(50) < 2 && .evento == 1 ) {
+				set .evento , 0;
+				npctalk "¡WOOF!...........";
+				announce "[Evento] ¡Cluckers por fin se rindió! ¡" + strcharinfo(0) + " logró conseguir el premio, bien hecho!",0;
+				getitem 7539, 10;
+				sleep 5000;
+				announce "[Evento] ¡Despídanse de Cluckers y esperenla en su proximo paseo!",0;
+			} else {
+				sc_start SC_Stun,10000,0;
+				dispbottom "¡HAS FALLADO AL FINAL, CASI GANAS!";
+			}
+			break;
+	}
+	end;
+
+	OnWhisperGlobal:
+		if ( getgmlevel() > 90 )
+			if ( @whispervar0$ != "activar" ) end;
+	OnClock2226:
+	OnClock1540:
+	OnClock1240:
+	OnClock0020:
+	OnClock0940:
+	OnClock1140:
+		announce "[ Evento ] ¡Cluckers acaba de salir a pasear!",0;
+		sleep 10000; //10 s <-- Espera 10 segundos para el proximo mensaje
+	
+		announce "[ Evento ] ¡¿Quien es Cluckers? es nuestra mascota y le encanta pasear en xRO... o dormir...",0; //puedes poner cualquier ciudad
+		sleep 10000; //10 s
+	
+		announce "[ Evento ] El problema es que ha tomado algunas Event coins, quien logre quitárselas puede conservarlas.",0; //puedes elegir el premio que te plasca
+		sleep 5000; //5 s
+
+		announce "[ Evento ] ¡Solo recuerden, ella despierta de muy mal humor!",0;
+		sleep 5000; //5 s
+
+		set .evento , 1;
+	end;
+}

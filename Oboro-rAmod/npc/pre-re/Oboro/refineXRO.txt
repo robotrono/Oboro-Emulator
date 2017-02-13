@@ -1,0 +1,98 @@
+payon,174,135,3	script	xRO Refiner	63,{
+	title();
+	mes "Hola " + strcharinfo( 0 ) + ",¿qué deseas hacer? ";
+	switch( select( " ^4EEDE8 > ^000000 ¡Deseo refinar! : ^4EEDE8 > ^000000 Oh, ¿qué es esto ? : ^4EEDE8 > ^000000 Nada, mejor me voy.") ) {
+		case 3:
+			break;
+		case 2:
+			next;
+			mes name$;
+			mes " ";
+			mes "Con el nuevo item ^5DEE39 " + getitemname(30115) + " ^000000 puedes refinar aún más seguro.";
+			mes "las probabilidades son las siguientes : ";
+			next;
+			mes name$;
+			mes " ";
+			mes " ^4EEDE8 > ^000000  0 a +8  : 100% Seguro";
+			mes " ^4EEDE8 > ^000000 +8 a +9  : 50% Seguro";
+			mes " ^4EEDE8 > ^000000 +9 a +10 : 25% Seguro";
+			break;
+		case 1:
+			next;
+			mes name$;
+			mes " ";
+			mes "¿Qué item deseas refinar? ";
+			set @menu$,"";
+			for( set @i,1; @i < 11; set @i,@i+1 )
+				set @menu$ , @menu$ + " ^4EEDE8 > ^000000 " + (getequipisequiped(@i) ?  getequipname(@i) : "Ningún item equipado")+":";
+			set @part,select(@menu$);
+
+			next;
+			mes name$;
+			mes " ";
+			if ( !countitem(30115) ) {
+				mes "No traes ^5DEE39 " + getitemname(30115) + " ^000000 para refinar.";
+				break;
+			}
+
+			if(!getequipisequiped(@part)) {
+				mes "No llevas nada puesto.";
+				break;
+			}
+			if(!getequipisenableref(@part) || @part == 6 ) {
+				mes "No puedo trabajar con ese item...";
+				break;
+			}
+			if(!getequipisidentify(@part)) {
+				mes "Tienes que identificar el item primero...";
+				break;
+			}
+			if(getequiprefinerycnt(@part) >= 10) {
+    				mes "Esta arma ya está a su máximo nivel, no puedo refinarla más";
+				break;
+			}
+
+			do {				
+				mes "¿Cuántas veces deseas refinar?";
+				input .@veces;
+				if ( .@veces + getequiprefinerycnt(@part) > 10 ) {
+					mes "No puedes refinar a más de 10";
+					next;
+					mes name$;
+					mes " ";	
+				} else if ( !.@veces ) {
+					mes "¡0 no es una opcion!";
+					next;
+					mes name$;
+					mes " ";
+				}
+			} while( .@veces + getequiprefinerycnt(@part) > 10 || !.@veces );
+
+			if ( .@veces > countitem(30115) )
+				set .@veces , countitem(30115);
+			do {
+				if ( !countitem(30115) ){ mes "No tienes ningun Enriched Oridecon ._."; break; } //mejor preevenir q lamentar
+				delitem 30115,1;
+				set @refineitemid, getequipid(@part); // save id of the item
+				set @refinerycnt, getequiprefinerycnt(@part); //save refinery count
+				if ( @refinerycnt <= 7 )
+					successrefitem @part;
+				else if ( @refinerycnt == 8 && rand(100) < 20 ) 
+					successrefitem @part;
+				else if ( @refinerycnt == 9 && rand(100) < 10 )
+					successrefitem @part;
+				else {
+					failedrefitem @part;
+					set .@error , 1;
+					mes "WAHHHH!!! Perdón... Te ADVERTÍ que esto podria pasar...";
+				}
+				mes name$;
+				mes " ";
+				mes " [ " + .@veces + " ]: " + (.@error ? "^E23232 Erroneo":"^71F689 Exitoso") + "^000000";
+				if ( .@error ) break;
+				set .@veces , .@veces - 1;
+				next;
+			} while ( .@veces > 0 );
+	}
+	close;
+}

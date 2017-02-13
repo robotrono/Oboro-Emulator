@@ -1,0 +1,50 @@
+//===== *Athena Script =======================================
+//= Pal Offsets Script
+//===== By: ==================================================
+//= Evil Puncker, KamiShi
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= *Athena SVN
+//===== Description: =========================================
+//= Define the pals positions index for the different races.
+
+-	script	PalOffsets	-1,{
+OnInit:
+	set .@offc, 0;
+	set .@offh, 0;
+	
+	/* Define Palettes Positions */
+	setarray $RacePals[0], 0,127+.@offh,0,693+.@offc;						// Human
+	
+	setarray $RacePals[1*4], 700+.@offh,732+.@offh,700+.@offc,732+.@offc;	// Dark Elf
+	setarray $RacePals[2*4], 732+.@offh,764+.@offh,732+.@offc,764+.@offc;	// Light Elf
+	setarray $RacePals[3*4], 764+.@offh,796+.@offh,764+.@offc,796+.@offc;	// Merman
+	setarray $RacePals[4*4], 796+.@offh,828+.@offh,796+.@offc,828+.@offc;	// Orc
+	setarray $RacePals[5*4], 828+.@offh,860+.@offh,828+.@offc,860+.@offc;	// Vampire
+	setarray $RacePals[6*4], 860+.@offh,892+.@offh,860+.@offc,892+.@offc;	// Beast
+	setarray $RacePals[7*4], 892+.@offh,924+.@offh,892+.@offc,924+.@offc;	// Demon
+	setarray $RacePals[8*4], 924+.@offh,956+.@offh,924+.@offc,956+.@offc;	// Dragon
+	setarray $RacePals[9*4], 956+.@offh,988+.@offh,956+.@offc,988+.@offc;	// Light Soul
+	setarray $RacePals[10*4], 988+.@offh,1020+.@offh,988+.@offc,1020+.@offc;// Dark Soul
+	
+	setarray $RacePals[11*4], 1020+.@offh,1052+.@offh,1020+.@offc,1052+.@offc;	// Earth
+	setarray $RacePals[12*4], 1052+.@offh,1084+.@offh,1052+.@offc,1084+.@offc;	// Wind
+	setarray $RacePals[13*4], 1084+.@offh,1116+.@offh,1084+.@offc,1116+.@offc;	// Water
+	setarray $RacePals[14*4], 1116+.@offh,1148+.@offh,1116+.@offc,1148+.@offc;	// Fire
+	setarray $RacePals[15*4], 1148+.@offh,1180+.@offh,1148+.@offc,1180+.@offc;	// Electric
+	setarray $RacePals[16*4], 1180+.@offh,1212+.@offh,1180+.@offc,1212+.@offc;	// Shadow
+	setarray $RacePals[17*4], 1212+.@offh,1244+.@offh,1212+.@offc,1244+.@offc;	// Ghost
+	setarray $RacePals[18*4], 1244+.@offh,1276+.@offh,1244+.@offc,1276+.@offc;	// Poison
+	setarray $RacePals[19*4], 1276+.@offh,1308+.@offh,1276+.@offc,1308+.@offc;	// Holy
+	setarray $RacePals[20*4], 1308+.@offh,1340+.@offh,1308+.@offc,1340+.@offc;  // Undead
+	
+	/* Define Races Names */
+	setarray $RaceNames$[0], "Human", "Dark Elf", "Light Elf", "Merman", "Orc", "Vampire", "Beast", "Demon", "Dragoon", "Light Soul", "Dark Soul";
+	setarray $RaceNames$[11], "Earth Element", "Wind Element", "Fire Element", "Water Element", "Electric Element", "Element Shadow", "Element Ghost", "Element Holy", "Element Poison", "Element Undead";
+	end;
+	
+	
+
+}
+

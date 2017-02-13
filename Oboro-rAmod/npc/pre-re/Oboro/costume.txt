@@ -1,0 +1,211 @@
+// <poc_tienda> = 1=HeadA 2=HeadB 3 =HeadC 4=HeadD 5=Mid 6=Lower
+-	shop	cashc1	-1,512:-1
+-	shop	cashc2	-1,512:-1
+-	shop	cashc3	-1,512:-1
+-	shop	cashc4	-1,512:-1
+-	shop	cashc5	-1,512:-1
+-	shop	cashc6	-1,512:-1
+-	shop	cashc7	-1,512:-1
+
+
+que_qaru02,254,347,3	script	Costume	861,{
+
+	function  i_Costume;
+	mes "Costume Shop";
+	mes " ";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Yo puedo darte un item costume que no tiene efectos, ni se puede refinar. ¡Es simple decoración!";
+	set .@Menu$ , "";
+	setarray .@Menu$[1],"^0174DF> ^000000 Top (Hats)"," ^0174DF> ^000000 Mid (Ojos)"," ^0174DF> ^000000 Lower (Boca)";
+	setarray .@OptioN[1],            0               ,            6                 ,             7                ;
+
+	set .@M_$, " ";
+	for ( set .@i , 1; .@i < getarraysize(.@Menu$); set .@i , .@i + 1 ) 
+		set .@M_$ , .@M_$ + .@Menu$[.@i] + ":";
+	set .@Select , select(.@M_$);
+
+	close2;
+	if ( .@Select == 1 ) 
+	{
+
+		set .@Select2 , select("^0174DF [ > ] ^000000 Top A :^0174DF [ > ] ^000000 Top B :^0174DF [ > ] ^000000 Top C :^0174DF [ > ] ^000000 Top D:^0174DF [ > ] ^000000 Troll");
+		callshop "cashc"+(.@Select2),1;
+		npcshopattach "cashc"+(.@Select2);
+		set .opt , (.@Select2);
+
+	} else {
+
+		callshop "cashc"+.@OptioN[.@Select],1;
+		npcshopattach "cashc"+.@OptioN[.@Select];
+		set .opt , .@OptioN[.@Select];
+
+	}
+	end;
+
+function	i_Costume	{
+	npcshopadditem "cashc"+getarg(1),getarg(0),4000;
+	setd "$CostumeID" + getarg(1) ,getarg(0);
+	sleep 1;
+	return; 	
+}
+
+OnWhisperGlobal:
+	if ( getgmlevel() < 99 ) end;
+OnInit:
+	// HeadA
+	i_Costume(5448,1); //lol
+	i_Costume(5137,1); //alice doll
+	i_Costume(5490,1); //anubis hat
+	i_Costume(2285,1); //apple hat
+	i_Costume(18549,1); //banana hat
+	i_Costume(5199,1); //baseball
+	i_Costume(5506,1); //bluepija
+	i_Costume(5016,1); //boys
+	i_Costume(5132,1); //angeling hat
+	i_Costume(18727,1); //Sedora hat
+	i_Costume(5086,1); //alarm mask
+	i_Costume(5076,1); //beanie
+	i_Costume(5436,1); //bridge
+	i_Costume(18709,1); //black wool hat
+	i_Costume(5057,1); //black cat ear
+	i_Costume(18714,1); // blue drooping hipo
+	i_Costume(18753,1); //boiled rice hat
+	i_Costume(5184,1); //captaion
+	i_Costume(18708,1); //candy hat
+	i_Costume(5307,1); //carmen miranda hat
+	i_Costume(5431,1); //chicken hat
+	i_Costume(5434,1); //cocacola can hat
+	i_Costume(5200,1); //copola
+	i_Costume(18669,1); //cow
+	//HeadB
+	i_Costume(5292,2); //dragon skull
+	i_Costume(5467,2); //dragon helm
+	i_Costume(5253,2); //drooping lif
+	i_Costume(5058,2); //drooping cat
+	i_Costume(5296,2); //drooping nine tail
+	i_Costume(5170,2); //feather beret
+	i_Costume(5047,2); //fashionable glasses
+	i_Costume(5480,2); //feather of bizolnif
+	i_Costume(5400,2); //fox hat
+	i_Costume(5447,2); //frog hat
+	i_Costume(5336,2); //guild member hat
+	i_Costume(5319,2); //hello mother
+	i_Costume(5070,2); //hot hblooded headband
+	i_Costume(5360,2); //whikebne black cat ear
+	i_Costume(5383,2); //hunter hat
+	i_Costume(18785,2); //king poring
+	i_Costume(5322,2); //k
+	i_Costume(5489,2); //love dad hat
+	i_Costume(5020,2); //kafra
+	i_Costume(5497,2); //king tiger doll hat
+	i_Costume(5069,2); //kitsune
+	i_Costume(5185,2); //laurel crown
+	i_Costume(5793,2); //life
+	i_Costume(18541,2); //little feather hat
+	i_Costume(5324,2); //Little Angel Doll
+	//HeadC
+	i_Costume(18547,3); //lol
+	i_Costume(18691,3); //lol
+	i_Costume(5568,3); //lol
+	i_Costume(5505,3); //lol
+	i_Costume(5153,3); //lol
+	i_Costume(5255,3); //lol
+	i_Costume(18749,3); //majestic horn
+	i_Costume(5420,3); //mask of ifrit
+	i_Costume(5117,3); //mystic rose
+	i_Costume(18692,3); //microphone hat
+	i_Costume(5370,3); //orchit
+	i_Costume(5502,3); //necromancer hood
+	i_Costume(5469,3); //noble hat
+	i_Costume(5442,3); //tie
+	i_Costume(5030,3); //panda hat
+	i_Costume(5286,3); //peco peco hairband
+	i_Costume(2289,3); //popo hat
+	i_Costume(5182,3); //puppy hat
+	i_Costume(5033,3); //racoon hat
+	i_Costume(5208,3); //rideword
+	i_Costume(5690,3); //red wing
+	//HeadD
+	i_Costume(18700,4); // rabbit ear ribbon
+	i_Costume(5656,4); //satan poring cap
+	i_Costume(18618,4); //airplain hat
+	i_Costume(18565,4); //st patric
+	i_Costume(2245,4); //sweet
+	i_Costume(5388,4); //snake head hat
+	i_Costume(18589,4); //strawberry
+	i_Costume(2258,4); //spiki
+	i_Costume(5032,4); //sunday hat
+	i_Costume(18548,4); //taini cap
+	i_Costume(5316,4); //umbrella hat
+	i_Costume(18711,4); //umbrella hat
+	i_Costume(5272,4); //tongue mask
+	i_Costume(5538,4); //tucano
+	i_Costume(5098,4); //tiger mask
+	i_Costume(5395,4); //tiraya
+	i_Costume(18530,4); //thanatos despero mask
+	i_Costume(5285,4); //pinwheel hairping
+	i_Costume(5357,4); //wings of victory
+	i_Costume(5256,4); //valkyrie feather band
+	i_Costume(5498,4); //walvering wolf hat
+	i_Costume(5294,4); //whisper mask
+	i_Costume(5751,4); //minstrel song hat
+	i_Costume(5579,4); //wanderer sakkat
+	i_Costume(5079,4); //x hairping
+	i_Costume(5385,4); //yoyo hat
+	
+	//Troll
+	i_Costume(30358,6); //Invisible Cap
+	i_Costume(30359,6); //Invisible Mask
+	i_Costume(30360,6); //Invisible Sunglasses
+
+	//Mids
+	i_Costume(2283,6); //lol
+	i_Costume(5074,6); //angel wing ear
+	i_Costume(5401,6); //black framed glasses
+	i_Costume(2201,6); //sunglasses
+	i_Costume(2286,6); //elven ears
+	i_Costume(5040,6); //blush
+	i_Costume(5175,6); //censor bar
+	i_Costume(5421,6); //ears of ifrit
+	i_Costume(5068,6); //evil wing ears
+	i_Costume(5006,6); //machoman
+	i_Costume(5315,6); //observer
+	i_Costume(5402,6); //mischievous
+	i_Costume(5358,6); //peco peco ears
+	//Lowers
+	i_Costume(2267,7); //cigarette
+	i_Costume(18745,7); //choco
+	i_Costume(5775,7); //choco donut
+	i_Costume(2268,7); //pipe
+	i_Costume(5156,7); //father mask
+	i_Costume(5403,7); //fish in mouth
+	i_Costume(18643,7); //rock replica
+	i_Costume(5675,7); //poring letter
+	i_Costume(18642,7); //scissor replica
+	i_Costume(18702,7); //shaving cream
+	i_Costume(5391,7); //crunch toast
+	i_Costume(18644,7); //paper replica
+	i_Costume(5051,7); //pussy
+	i_Costume(5532,7); //pirate dagger
+	i_Costume(5419,7); //leaves of grass
+	i_Costume(5536,7); //spare cad
+	i_Costume(5412,7); //sweet candy
+
+	for( set .@i , 1; .@i <  8; set .@i , .@i + 1 )
+		npcshopdelitem "cashc"+.@i,512;
+
+end;
+
+OnBuyItem:
+	mes "Costume Shop";
+	mes " ";
+	if ( #CASHPOINTS < 2000 ||  getarraysize( @bought_nameid ) > 1 ) {
+		mes " Necesitas almenos 2000 Cashpoints";
+		mes " Solo se puede comprar un item a la vez";
+	} else {
+		mes " Muy bien toma!";
+		set #CASHPOINTS , #CASHPOINTS - 2000;
+		atcommand "@costumeitem " + @bought_nameid + " 1 5432";
+	}
+	close;
+}

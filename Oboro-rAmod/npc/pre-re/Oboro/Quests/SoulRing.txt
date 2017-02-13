@@ -1,0 +1,43 @@
+ra_temple,70,139,4	script	Soul Ring	435,{
+	mes "[^000000Soul Ring^000000]";
+	mes "Hola!";
+	mes "Puedo hacerte un Soul Ring, te interesa?";
+	next;
+	menu "Qué necesito?",L_required,"Claro que sí, aquí están tus items",L_check,"Salir",L_partir;
+
+	L_required:
+		mes "[^000000Soul Ring^000000]";
+		mes "^FF000050^000000 Halo"; //2282
+		mes "^FF00001^000000 White Dyestuff"; //982
+		mes "^FF00001^000000 Angel Wing Ears"; //5074
+		mes "^FF000050^000000 Feather of Birds"; //916
+		close;
+
+	L_check:
+		if(countitem(2282) < 50) goto L_manque;
+		if(countitem(982) < 1) goto L_manque;
+		if(countitem(5074) < 1) goto L_manque;
+		if(countitem(916) < 50) goto L_manque;
+		mes "[^000000Soul Ring^000000]";
+		mes "Aquí está tu Soul Ring";
+		delitem 2282,50;
+		delitem 982,1;
+		delitem 5074,1;
+		delitem 916,50;
+		getitem 5257,1;
+		close;
+
+	L_manque:
+		mes "[^000000Soul Ring^000000]";
+		mes "Te faltan: ";
+		if(countitem(2282) < 50) mes "^FF0000"+(50 - countitem(2282)) +"^000000 Halo";
+		if(countitem(982) < 1) mes "^FF0000"+(1 - countitem(982)) +"^000000 White Dyestuff";
+		if(countitem(5074) < 1) mes "^FF0000"+(1 - countitem(5074)) +"^000000 Angel Wing Ears";
+		if(countitem(916) < 50) mes "^FF0000"+(50 - countitem(916)) +"^000000 Feather of Birds";
+		close;
+
+	L_partir:
+		mes "[^000000Soul Ring^000000]";
+		mes "Buen día";
+		close;
+}

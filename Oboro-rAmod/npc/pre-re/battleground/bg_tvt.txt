@@ -1,0 +1,436 @@
+// ==============================================================================
+// Basado en KvM eAmod (c) 2008 - 2012 eAmod Project; Andres Garbanzo / Zephyrus
+// eAmod is a non Free, extended version of eAthena Ragnarok Private Server.
+//
+// BattleGround System - Team vs Team (TvT)
+// v1.0 Febrero, 2014 ; Mario Lopez / Suke
+// v1.1 Febrero, 2014 ; Mario Lopez / Suke
+//      - setwall extras por posibles bugs.
+// v1.1.1 Febrero, 2014 ; Mario Lopez / Suke
+//      - Modificaciones de mapa y Therapist in battle para xRO.
+// This file is NOT public - you are not allowed to distribute it.
+// ==============================================================================
+
+
+// Battleground Engine
+// *********************************************************************
+
+-	script	TvT_BG	-1,{
+	end;
+	
+OnInit:
+	
+	setwall "arena_01",60,131,9,2,0,"tvtc01wall_a";
+	setwall "arena_01",149,62,9,4,0,"tvtc01wall_b";
+	
+	disablenpc "Therapist in battle#tvta";
+	disablenpc "Therapist in battle#tvtb";
+	end;	
+
+OnGuillaumeJoin:
+OnCroixJoin:
+	if( $@TvT01_BG == 0 )
+		donpcevent "TvT_BG::OnReadyCheck";
+	else
+		donpcevent "TvT_BG::OnDoBalance";
+	end;
+OnDoBalance:
+	if( $@TvT01_BG == 0 ) 
+		end; 
+
+	set .@Guillaume, bg_get_data($@TvTBG_id1, 0);
+	set .@Croix, bg_get_data($@TvTBG_id2, 0);
+
+	if( .@Guillaume < .@Croix )
+		waitingroom2bg_single $@TvTBG_id1,"arena_01",53,128,"BGAZUL";
+	else if( .@Guillaume > .@Croix )
+		waitingroom2bg_single $@TvTBG_id2,"arena_01",146,55,"BGROJO";
+	else
+	{
+		set .@GuillaumeR, getwaitingroomstate(0,"BGAZUL");
+		set .@CroixR, getwaitingroomstate(0,"BGROJO");
+
+		if( .@GuillaumeR <= .@CroixR )
+			set .@Limit, .@GuillaumeR;
+		else
+			set .@Limit, .@CroixR;
+
+		if( .@Limit + .@Guillaume > 99 )
+			set .@Limit, 99 - .@Guillaume;
+		if( .@Limit <= 0 ) end;
+
+		for( set .@i, 0; .@i < .@Limit; set .@i, .@i + 1 )
+		{
+			waitingroom2bg_single $@TvTBG_id1,"arena_01",53,128,"BGAZUL";
+			waitingroom2bg_single $@TvTBG_id2,"arena_01",146,55,"BGROJO";
+		}
+
+		set .@Guillaume, .@Guillaume + .@Limit;
+		set .@Croix, .@Croix + .@Limit;
+		mapannounce "arena_4","Battleground -- Team vs Team G: " + .@Guillaume + "/99, C: " + .@Croix + "/99 (Playing)",1,0x00BFFF;
+	}
+	end;
+	
+OnReadyCheck:
+	if( $@TvT01_BG || $Que_BattleGround != 4 )
+		end;
+	set .@Guillaume, getwaitingroomstate(0,"BGAZUL");
+	set .@Croix, getwaitingroomstate(0,"BGROJO");
+	
+	if( .@Guillaume < ($Users_limite_empieza_bg - 1) || .@Croix < ($Users_limite_empieza_bg - 1) )
+	{
+		if( .@Guillaume > ($Users_limite_empieza_bg - 1) && .@Croix > ($Users_limite_empieza_bg - 1) && !agitcheck() && $@TvT_Flood < gettimetick(2) )
+		{
+			announce "Battleground -- Team vs Team G: " + .@Guillaume + "/"+($Users_limite_empieza_bg - 1)+", C: " + .@Croix + "/"+($Users_limite_empieza_bg - 1),0,0x00BFFF;
+			set $@TvT_Flood, gettimetick(2) + 15;
+		}
+		else
+			mapannounce "arena_4","Battleground -- Team vs Team G: " + .@Guillaume + "/"+($Users_limite_empieza_bg - 1)+", C: " + .@Croix + "/"+($Users_limite_empieza_bg - 1),1,0x00BFFF;
+		end;
+	}
+
+	set $@TvT01_BG, 1;
+   	donpcevent "BGROJO::OnEnterBG";
+	donpcevent "BGAZUL::OnEnterBG";
+	announce "Battleground -- Team vs Team has started!",0,0x00BFFF;
+	sleep 2000;
+	initnpctimer;
+	bg_warp $@TvTBG_id1,"arena_01",53,128;
+	bg_warp $@TvTBG_id2,"arena_01",146,55;
+	sleep 3000;
+	bg_team_reveal $@TvTBG_id1;
+	bg_team_reveal $@TvTBG_id2;
+	set .Round,1;
+	set .Guillaume_Score, 0;
+	set .Croix_Score, 0;
+	set .TvT_Croix, 0;
+	set .TvT_Guillaume, 0;
+	set $@TvT01_BG,2; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+	sleep 2000;
+	// Respawn NPC's
+	enablenpc "Therapist in battle#tvta";
+	enablenpc "Therapist in battle#tvtb";
+	// Start Match!!
+	end;
+
+OnGuillaumeQuit:
+	callfunc("bgsetwaittime","TvT",180);
+	if( $@TvT01_BG != 0 )
+		donpcevent "TvT_BG::OnDoBalance";
+OnGuillaumeDie:
+	if( $@TvT01_BG == 1 )
+	{
+		getmapxy .@m$, .@x, .@y, 0;
+		if( .@m$ != "arena_01" || (.@x >= 52 && .@x <= 59 && .@y >= 122 && .@y <= 129) )
+			end; // Killed/Logout on Cementery or outside the map?
+
+		set .Guillaume_Score, .Guillaume_Score - 1;
+		donpcevent "TvT_BG::OnValidateScore";
+	}
+	end;
+	
+OnCroixQuit: 
+	callfunc("bgsetwaittime","TvT",180);
+	if( $@TvT01_BG != 0 )
+		donpcevent "TvT_BG::OnDoBalance";
+OnCroixDie:
+	if( $@TvT01_BG == 1 )
+	{
+		getmapxy .@m$, .@x, .@y, 0;
+		if( .@m$ != "arena_01" || (.@x >= 140 && .@x <= 147 && .@y >= 54 && .@y <= 61) )
+			end; // Killed/Logout on Cementery or outside the map?
+
+		set .Croix_Score, .Croix_Score - 1;
+		donpcevent "TvT_BG::OnValidateScore";
+	}
+	end;
+	
+OnValidateScore:
+
+	bg_updatescore "arena_01",.Guillaume_Score,.Croix_Score;
+	set .@Guillaume, bg_get_data($@TvTBG_id1, 0);
+	set .@Croix, bg_get_data($@TvTBG_id2, 0);
+	
+	if( .@Croix == 0 )
+	{ // All Croix Players quit
+	   set .TvT_Guillaume,3;
+	   donpcevent "TvT_BG::OnRewardQuit";
+	}
+	else if( .@Guillaume == 0 )
+	{ // All Guillaume Players quit
+	   set .TvT_Croix,3;
+	   donpcevent "TvT_BG::OnRewardQuit";
+	}
+	else if( .Croix_Score <= 0 )
+	{ // Guillaume Won
+		donpcevent "TvT_BG::OnGuillaumeWin";
+	}
+	else if( .Guillaume_Score <= 0 )
+	{ // Croix Won
+		donpcevent "TvT_BG::OnCroixWin";
+	}	
+	end;
+
+OnChangeRound:
+	initnpctimer;
+	set .Round, .Round + 1;
+	set .Guillaume_Score,0;
+	set .Croix_Score,0;
+    set $@TvT01_BG,2; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+    sleep 2000;
+    bg_warp $@TvTBG_id1,"arena_01",53,128;
+	bg_warp $@TvTBG_id2,"arena_01",146,55;
+	end;
+
+OnTimer5000:
+    if (.Round == 1)
+        mapannounce "arena_01","The Battle will start in 30 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+    else
+        mapannounce "arena_01","The Battle will start in 20 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+
+OnTimer22000:
+    if (.Round == 1) end;
+	mapannounce "arena_01","The Battle will start in 3 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+OnTimer23000:
+    if (.Round == 1) end;
+	mapannounce "arena_01","The Battle will start in 2 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+	
+OnTimer24000:
+    if (.Round == 1) end;
+	mapannounce "arena_01","The Battle will start in 1 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+OnTimer32000:
+    if (.Round != 1) end;
+	mapannounce "arena_01","The Battle will start in 3 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+OnTimer33000:
+    if (.Round != 1) end;
+	mapannounce "arena_01","The Battle will start in 2 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+	
+OnTimer34000:
+    if (.Round != 1) end;
+	mapannounce "arena_01","The Battle will start in 1 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+	
+	
+
+OnTimer25000:
+    if(.Round == 1) end;
+OnRoundStart:
+    if($@TvT01_BG == 1) end;
+	// Warp Teams
+	bg_warp $@TvTBG_id1,"arena_01",63,119;
+	bg_warp $@TvTBG_id2,"arena_01",137,64;
+	// ScoreBoard
+	set .Guillaume_Score, bg_get_data($@TvTBG_id1,0);
+	set .Croix_Score, bg_get_data($@TvTBG_id2,0);
+	if( .Croix_Score == 0 )
+	{ // All Croix Players quit
+	   set .TvT_Guillaume,3;
+	   donpcevent "TvT_BG::OnRewardQuit";
+	   end;
+	}
+	else if( .Guillaume_Score == 0 )
+	{ // All Guillaume Players quit
+	   set .TvT_Croix,3;
+	   donpcevent "TvT_BG::OnRewardQuit";
+	   end;
+	}
+	bg_updatescore "arena_01",.Guillaume_Score,.Croix_Score;
+	set $@TvT01_BG,1; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+	end;
+OnTimer35000:
+    if(.Round != 1) end;
+    callsub OnRoundStart;
+    end;
+
+
+OnTimer27000:
+    if(.Round == 1) end;
+	mapannounce "arena_01","Battleground -- Team vs Team has started! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+OnTimer37000:
+    if(.Round != 1) end;
+	mapannounce "arena_01","Battleground -- Team vs Team has started! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+OnTimer87000:
+	mapannounce "arena_01","The Battle will ends in 30 seconds!! [Round "+.Round+"]",1,0x00BFFF;
+	end;
+
+OnTimer117000:
+    set $@TvT01_BG,2; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+	if( .Croix_Score > .Guillaume_Score )
+		donpcevent "TvT_BG::OnCroixWin";
+	else if( .Croix_Score < .Guillaume_Score )
+		donpcevent "TvT_BG::OnGuillaumeWin";
+	else
+	{ // Draw Game
+		stopnpctimer;
+		sleep 2000;
+		set .TvT_Croix, .TvT_Croix + 1;
+		set .TvT_Guillaume, .TvT_Guillaume + 1;
+		mapannounce "arena_01","The time is out! This is a Tie... +1 Croix, +1 Guillaume. G("+.TvT_Guillaume+"-"+.TvT_Croix+")C",1,0x00BFFF;
+		if(.TvT_Guillaume > 2 || .TvT_Croix > 2)
+            donpcevent "TvT_BG::OnReward";
+		else
+            donpcevent "TvT_BG::OnChangeRound";
+	}
+	end;
+
+OnGuillaumeWin:
+    set .TvT_Guillaume, .TvT_Guillaume + 1;
+	stopnpctimer;
+	mapannounce "arena_01","The Guillaume Army has won this round! +1 Guillaume. G("+.TvT_Guillaume+"-"+.TvT_Croix+")C",1,0x0000FF;
+	set $@TvT01_BG,2;
+    sleep 2000;
+	if(.TvT_Guillaume > 2)
+        donpcevent "TvT_BG::OnReward";
+    else
+        donpcevent "TvT_BG::OnChangeRound";
+	end;
+
+OnCroixWin:
+    set .TvT_Croix, .TvT_Croix + 1;
+	stopnpctimer;
+	mapannounce "arena_01","The Croix Army has won this round! +1 Croix. G("+.TvT_Guillaume+"-"+.TvT_Croix+")C",1,0xFF0000;
+	set $@TvT01_BG,2;
+    sleep 2000;
+	if(.TvT_Croix > 2)
+        donpcevent "TvT_BG::OnReward";
+    else
+        donpcevent "TvT_BG::OnChangeRound";
+	end;
+
+OnReward:
+    set $@TvT01_BG,3; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+	if( .TvT_Guillaume > .TvT_Croix )
+	{ // Guillaume Won
+		bg_reward $@TvTBG_id1,7828,50,0,0,"BG_TVT",1,4,0;
+		bg_getitem $@TvTBG_id1,7829,50;
+		bg_getitem $@TvTBG_id1,7773,30;
+		bg_reward $@TvTBG_id2,7828,35,0,0,"BG_TVT",1,4,2;
+		bg_getitem $@TvTBG_id2,7829,35;
+		bg_getitem $@TvTBG_id2,7773,25;
+		mapannounce "arena_01","The Guillaume army has won the Battle of Team vs Team!",1,0x0000FF;
+	}
+	else if( .TvT_Guillaume < .TvT_Croix )
+	{ // Croix Won
+		bg_reward $@TvTBG_id1,7828,35,0,0,"BG_TVT",1,4,2;
+		bg_getitem $@TvTBG_id1,7829,35;
+		bg_getitem $@TvTBG_id1,7773,35;
+		bg_reward $@TvTBG_id2,7828,50,0,0,"BG_TVT",1,4,0;
+		bg_getitem $@TvTBG_id2,7829,50;
+		bg_getitem $@TvTBG_id2,7773,50;
+		mapannounce "arena_01","The Croix army has won the Battle of Team vs Team!",1,0xFF0000;
+	}
+	else
+	{
+		bg_reward $@TvTBG_id1,7828,60,0,0,"BG_TVT",1,4,1;
+		bg_getitem $@TvTBG_id1,7829,60;
+		bg_getitem $@TvTBG_id1,7773,60;
+		bg_reward $@TvTBG_id2,7828,60,0,0,"BG_TVT",1,4,1;
+		bg_getitem $@TvTBG_id2,7829,60;
+		bg_getitem $@TvTBG_id2,7773,60;
+		mapannounce "arena_01","The battle is over. This is a Tie...!",1,0x808000;
+	}
+	donpcevent "TvT_BG::OnMatchEnd";
+	end;
+	
+OnRewardQuit: 
+    if( .TvT_Guillaume > .TvT_Croix )
+	{ // Guillaume Won
+		bg_reward $@TvTBG_id1,7828,20,0,0,"BG_TVT",1,4,0;
+		bg_getitem $@TvTBG_id1,7829,10;
+		bg_getitem $@TvTBG_id1,7773,10;
+		mapannounce "arena_01","There are not enough players to start the battle. Guillaume Won.",1,0x00BFFF;
+	}
+	else if( .TvT_Guillaume < .TvT_Croix )
+	{ // Croix Won
+		bg_reward $@TvTBG_id2,7828,10,0,0,"BG_TVT",1,4,0;
+		bg_getitem $@TvTBG_id2,7829,10;
+		bg_getitem $@TvTBG_id2,7773,10;
+		mapannounce "arena_01","There are not enough players to start the battle. Croix Won.",1,0x00BFFF;
+	}
+	donpcevent "TvT_BG::OnMatchEnd";
+	end;
+	
+OnMatchEnd:
+	stopnpctimer;
+	disablenpc "Therapist in battle#tvta";
+	disablenpc "Therapist in battle#tvtb";
+	callfunc("Cual_BG");
+	set .Guillaume_Score, 0;
+	set .Croix_Score, 0;
+	set .TvT_Guillaume, 0;
+	set .TvT_Croix, 0;
+	set .Ronda,1;
+	sleep 5000;
+	bg_warp $@TvTBG_id1,"arena_4",148,99;
+	bg_warp $@TvTBG_id2,"arena_4",148,99;
+	bg_destroy $@TvTBG_id1; set $@TvTBG_id1, 0;
+	bg_destroy $@TvTBG_id2; set $@TvTBG_id2, 0;
+	bg_updatescore "arena_01",.Guillaume_Score,.Croix_Score;
+	set $@TvT01_BG,0; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+	end;
+
+}
+
+// Battleground Therapist
+// *********************************************************************
+
+arena_01,52,129,5	script	Therapist in battle#tvta	95,7,7,{
+    getmapxy .@m$, .@x, .@y, 0;
+	if( !( .@m$ != "arena_01" || (.@x >= 52 && .@x <= 59 && .@y >= 122 && .@y <= 129)) )
+			end; // No se puede usar si no estas en el cementerio
+	percentheal 100,100;
+    sc_start 32,  250000, 10;  // Increase Agi
+    sc_start 30,  250000, 10;  // Blessing
+    repairall;
+    end;
+OnTouch:
+    percentheal 100,100;
+    sc_start 32,  250000, 10;  // Increase Agi
+    sc_start 30,  250000, 10;  // Blessing
+    repairall;
+    end;
+}
+
+arena_01,147,54,1	script	Therapist in battle#tvtb	95,7,7,{
+    getmapxy .@m$, .@x, .@y, 0;
+	if(!( .@m$ != "arena_01" || (.@x >= 140 && .@x <= 147 && .@y >= 54 && .@y <= 61) ) )
+			end; // No se puede usar si no estas en el cementerio
+	percentheal 100,100;
+    sc_start 32,  250000, 10;  // Increase Agi
+    sc_start 30,  250000, 10;  // Blessing
+    repairall;
+    end;
+OnTouch:
+    percentheal 100,100;
+    sc_start 32,  250000, 10;  // Increase Agi
+    sc_start 30,  250000, 10;  // Blessing
+    repairall;
+    end;
+}
+
+// MapFlags
+// *********************************************************************
+
+arena_01	mapflag	battleground	2
+arena_01	mapflag	nomemo
+arena_01	mapflag	nosave	SavePoint
+arena_01	mapflag	noteleport
+arena_01	mapflag	nowarp
+arena_01	mapflag	nowarpto
+arena_01	mapflag	noreturn
+arena_01	mapflag	nobranch
+arena_01	mapflag	nopenalty
+arena_01	mapflag	noemergencycall

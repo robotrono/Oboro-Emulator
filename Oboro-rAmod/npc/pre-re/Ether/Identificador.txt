@@ -1,0 +1,113 @@
+//===== eAthena Script =======================================
+//= Identificador
+//===== By: ==================================================
+//= Colundrum/ratalaika
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= Any eAthena Version
+//===== Description: =========================================
+//= Identifica Items.
+//===== Additional Comments: =================================
+//= No comments yet
+//============================================================
+
+
+prontera,147,171,6	script	Identificador#01::Identify	407,{
+
+
+// Precio
+// ========
+// Costo por identificar cada Item
+
+set @price, 40;
+
+
+// Nombre del NPC
+// ================
+// Nombre del NPC
+set @npcname$, "[ ^A13800Identificador^000000 ]";
+
+
+// Script General
+// =========================
+OnWhisperGlobal:
+mes @npcname$;
+mes "¡Hola joven aventurero!";
+mes "Yo puedo identificar los items que estén en el inventario y no puedas colocarte en el equipo.";
+next;
+
+mes @npcname$;
+mes "Entonces, ¿quieres que identifique tus items y puedas usarlos?";
+mes "Te costará ^A13800"+@price+"^000000 Zeny cada item.";
+next;
+menu "Sí, gracias.",-,"En otro momento.",L_NO;
+
+getinventorylist;
+set @identify, 0;
+for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+	if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+}
+
+if (@identify == 0) {
+	mes @npcname$;
+	mes "Lo siento, no tienes items para identificar.";
+	close;
+}
+
+
+
+if (@identify < 2) {
+	set @total,@identify;
+	mes @npcname$;
+	mes "Sólo tienes 1 item sin identificar en tu inventario.";
+	mes "Lo identificaré por "+@price+" Zeny.";
+} else {
+	mes @npcname$;
+	set @total,@identify * @price;
+	mes "Tienes "+@identify+" items sin identificar en tu inventario.";
+	mes "Los identificaré por "+@total+" Zeny.";
+}
+
+next;
+mes @npcname$;
+mes "Si tienes alguna ^00AA00Magnifier^000000, la cogeré en lugar del Zeny.";
+mes "¿Empiezo?";
+next;
+menu "Vale.",-,"Mejor no...",L_NO;
+
+if(Zeny < @total) {
+	mes @npcname$;
+	mes "Lo siento, no tienes suficiente Zeny.";
+	close;
+}
+
+getinventorylist;
+set @identified, 0;
+for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+	if (@inventorylist_identify[@i] == 0) {
+		if (countitem(611) > 0) {
+			delitem 611,1;
+		} else {
+			set Zeny, Zeny - @price;
+		}
+		delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+		getitem @inventorylist_id[@i],1;
+		set @identified, @identified + 1;
+	}
+}
+
+mes @npcname$;
+mes "Bien, ¡lo he identificado todo!";
+mes "He identificado un total de "+@identified+" items.";
+mes "Que pases un buen día en EasyRO, Bye~!";
+close;
+
+L_NO:
+	mes @npcname$;
+	mes "Ok, vuelve cuando quieras y que pases un buen día en EasyRO.";
+	close;
+
+}
+// Duplicado para el Dead Branch Room
+//1@dbroom,20,183,3	duplicate(Identify)	Identificador#02	407
