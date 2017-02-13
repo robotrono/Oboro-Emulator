@@ -1,8 +1,0 @@
-sec_in02,22,20,4	script	Tester	115,{
-	title("test");
-	
-	if ( MF_MVP("abbey02") > 0 )
-		mclose "no puedes viajar sin ticket mvp";
-	else
-		mclose "puedes viajar";
-}

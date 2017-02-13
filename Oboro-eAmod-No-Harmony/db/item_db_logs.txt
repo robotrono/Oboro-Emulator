@@ -1,3 +1,0 @@
-// Item DB with logs always enabled
-// Example: 1230,1 // Ice pick YES
-
