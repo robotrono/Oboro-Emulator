@@ -1,6 +1,0 @@
--	script	autoloot	-1,{
-
-OnPCLoginEvent:
-	atcommand "@autoloot";
-	end;
-}
