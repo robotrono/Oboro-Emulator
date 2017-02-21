@@ -1,0 +1,16 @@
+-	script	walls	-1,{
+	end;
+OnInit:
+	delwall "arena_0401";
+	delwall "arena_0402";
+	delwall "arena_0403";
+	delwall "queqaru01";
+	delwall "queqaru02";
+	setwall "arena_4",130,114,12,6,0,"arena_0401";
+	setwall "arena_4",154,114,14,6,0,"arena_0402";
+	setwall "arena_4",144,131,14,4,0,"arena_0403";
+	setwall "arena_4",151,131,14,4,0,"arena_0404";
+	setwall "que_qaru02",246,325,12,6,0,"queqaru01";
+	setwall "que_qaru02",257,325,14,6,0,"queqaru02";
+	end;
+}

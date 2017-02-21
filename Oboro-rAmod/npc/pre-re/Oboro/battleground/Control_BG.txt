@@ -1,0 +1,25 @@
+/**
+ * [Isaac] N & N (NanoSoft) - Oboro Control Panel & Emulator (c)
+ * https://www.facebook.com/NanosSoft/
+ **/
+
+function	script	bgwaittime	{
+	if ( !getd("#deserto" + getarg(3) + getcharid(3)) || getd("#deserto" + getarg(3) + getcharid(3)) <= gettimetick(2) ) 
+	{
+		warp getarg(0),getarg(1),getarg(2);
+		end;
+	} 
+	else
+	{
+		.@tiempo = getd("#deserto" + getarg(3) + getcharid(3)) - gettimetick(2);
+		mes "Tienes que esperar " + .@tiempo  + " segundos para volver a entrar."; 
+		close;
+	}
+	return;
+}
+
+function	script	bgsetwaittime	{
+	if (!getd("#deserto" + getarg(0) + getcharid(3)) || getd("#deserto" + getarg(0) + getcharid(3)) <= gettimetick(2))
+		setd "#deserto" + getarg(0) + getcharid(3) , gettimetick(2) + getarg(1);
+	return;
+}

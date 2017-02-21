@@ -268,6 +268,7 @@ struct map_session_data {
 		unsigned int spb : 1; // @spb / @partybuff [Oboro]
 		unsigned int restock : 1; // [Oboro]
 		unsigned int afk : 1; // [Oboro]
+		unsigned int oboro_showinfo : 1; // [Oboro]
 	} state;
 	struct {
 		unsigned char no_weapon_damage, no_magic_damage, no_misc_damage;

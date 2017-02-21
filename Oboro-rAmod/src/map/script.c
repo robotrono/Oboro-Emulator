@@ -24644,10 +24644,10 @@ BUILDIN_FUNC(getitem_map)
 	return SCRIPT_CMD_SUCCESS;
 }
 
-/* ================================================================
+/**
  * mapeventwarp("actual map", "to map",<x>,<y>,<var_name_check>,<value_winner>,<item_id>,<cantidad>);
  * Isaac MVP vs MVP
- * ================================================================*/
+ **/
 BUILDIN_FUNC(mapeventwarp)
 {
 	int x,y,m,var_value, item_id, cantidad=0;
@@ -24673,6 +24673,33 @@ BUILDIN_FUNC(mapeventwarp)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+/**
+ * ChangeBG();
+ * Isaac
+ **/
+BUILDIN_FUNC(ChangeBG)
+{
+	int next = 0;
+	char BG_Var[12];
+
+	next = mapreg_readreg(add_str("$CURRENTPOCBG"));
+	if (next > MAX_BG_ARRAY)
+		next = 1;
+	else
+		next++;
+
+	sprintf(BG_Var,"$NEXTBG_%d", next);
+	if (!mapreg_readreg(add_str(BG_Var)) || mapreg_readreg(add_str(BG_Var)) == 0)
+		next = 1;
+
+	sprintf(BG_Var,"$NEXTBG_%d", next);
+
+	mapreg_setreg(add_str("$CURRENTPOCBG"), next);
+	mapreg_setreg(add_str("$CURRENTBG"), mapreg_readreg(add_str(BG_Var)));
+	return 0;
+}
+
+
 // arg must follow the pattern: (v|s|i|r|l)*\?*\*?
 // 'v' - value (either string or int or reference)
 // 's' - string
@@ -24697,6 +24724,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(title,"?"),
 	BUILDIN_DEF(setr,"rv?"),
 	BUILDIN_DEF(mapeventwarp, "ssiisiii"),
+	BUILDIN_DEF(ChangeBG,""),
 
 	// NPC interaction
 	BUILDIN_DEF(mes,"s*"),

@@ -8520,6 +8520,7 @@ static const struct _battle_data {
 
 	{ "use_aegis_land_shower",              &battle_config.use_aegis_land_shower,			0,		0,		1,				},// [Oboro]
 	{ "min_guild",                        	&battle_config.min_guild,                     	0,      0,      INT_MAX,        },// [Oboro]
+	{ "oboro_enable",						&battle_config.oboro_enable,					1,		0,		INT_MAX,		},// [Oboro]
 
 	// Premium Account System
 	{ "premium_group_id",                   &battle_config.premium_group_id,                0,      0,      INT_MAX,        },

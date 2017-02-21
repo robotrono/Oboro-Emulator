@@ -590,8 +590,9 @@ extern struct Battle_Config
 	int mob_slave_adddrop;
 	int reflect_damage_fix;
 	int anti_mayapurple_hack;
-	int min_guild; // [Oboro
+	int min_guild; // [Oboro]
 	int use_aegis_land_shower; //[Oboro] arrow shower fix]
+	int oboro_enable; // [Oboro]
 
 	// rAthena
 	int max_third_parameter;

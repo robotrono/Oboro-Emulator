@@ -12024,7 +12024,7 @@
 30360,Invisible_Sunglasses,Invisible_Sunglasses,5,20,,100,,2,,1,0xFFFFFFFF,7,2,512,,10,1,1825,{},{},{}
 30361,condomhat,condomhat,5,20,,100,,2,,1,0xFFFFFFFF,7,2,256,,10,1,1826,{},{},{}
 30362,pulpo_arcoiris,pulpo_arcoiris,5,20,,100,,2,,1,0xFFFFFFFF,7,2,256,,10,1,1827,{ bonus bDex,4; bonus4 bAutoSpellWhenHit,"AL_DECAGI",1,30,1; bonus bVit,4; bonus bAspdRate,5;},{},{}
-30363,tiara_arcoiris,tiara_arcoiris,5,20,,100,,2,,1,0xFFFFFFFF,7,2,512,,10,1,1828,{},{},{}
+30363,Tiara_Arcoiris,Tiara_Arcoiris,5,20,,100,,2,,1,0xFFFFFFFF,7,2,512,,10,1,1828,{},{},{}
 
 30364,Chubby_Chick,Chubby_Chick,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1829,{},{},{}
 30365,Eremes_Scarf,Eremes_Scarf,5,20,,100,,2,,1,0xFFFFFFFF,7,2,4096,,10,1,1830,{},{},{}
@@ -12042,7 +12042,7 @@
 30376,Red_Trucker,Red_Trucker,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1840,{},{},{}
 30377,Silver_Trucker,Silver_Trucker,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1841,{},{},{}
 30378,White_Trucker,White_Trucker,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1842,{},{},{}
-30379,Yellow_Trucker,Yellow_Trucker,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1843,{},{},{}
+30379,Yellow_Trucker,Yellow Trucker,5,20,,100,,2,,1,0xFFFFFFFF,7,2,1024,,10,1,1843,{},{},{}
 
 
 18987,RWC13_Jormungandr_Hat,RWC13 Jormungandr Hat,4,20,,2500,,7,,1,0xFFFFFFFF,63,2,256,,1,0,1149,{ bonus bDelayrate,-5; bonus2 bSubRace,RC_DemiHuman,10; bonus2 bSubRace,RC_Player,10; if(getrefine()>6){ bonus2 bAddItemHealRate,11596,20; bonus bAspd,1; } if(getrefine()>9){ bonus bVariableCastrate,-5; bonus bDelayrate,-5; } bonus2 bAddItemHealRate,11596,150; },{ sc_end SC_SpeedUp0; },{}

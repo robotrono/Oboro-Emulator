@@ -1219,11 +1219,12 @@ ACMD_FUNC(heal)
 /*==========================================
  * @item command (usage: @item <itemdid1:itemid2:itemname:..> <quantity>) (modified by [Yor] for pet_egg)
  * @itembound command (usage: @itembound <name/id_of_item> <quantity> <bound_type>)
+ * eAmod CostumeItem Fix [Isaac] Oboro CP
  *------------------------------------------*/
 ACMD_FUNC(item)
 {
 	char item_name[100];
-	int number = 0, bound = BOUND_NONE;
+	int number = 0, bound = BOUND_NONE, costume = 0;
 	char flag = 0;
 	struct item item_tmp;
 	struct item_data *item_data[10];
@@ -1235,7 +1236,8 @@ ACMD_FUNC(item)
 
 	parent_cmd = atcommand_checkalias(command+1);
 
-	if (!strcmpi(parent_cmd,"itembound")) {
+	if (!strcmpi(parent_cmd,"itembound")) 
+	{
 		if (!message || !*message || (
 			sscanf(message, "\"%99[^\"]\" %11d %11d", item_name, &number, &bound) < 3 &&
 			sscanf(message, "%99s %11d %11d", item_name, &number, &bound) < 3))
@@ -1248,13 +1250,33 @@ ACMD_FUNC(item)
 			clif_displaymessage(fd, msg_txt(sd,298)); // Invalid bound type
 			return -1;
 		}
-	} else if (!message || !*message || (
+	}
+	else if( !strcmpi(parent_cmd,"costumeitem") )
+	{
+		if( !battle_config.costume_reserved_char_id )
+		{
+			clif_displaymessage(fd, "Costume convertion is disable. Set a value for costume_reserved_char_id on your eAmod.conf file.");
+			return -1;
+		}
+		
+		if (!message || !*message || (
+			sscanf(message, "\"%99[^\"]\" %11d", item_name, &number) < 1 &&
+			sscanf(message, "%99s %11d", item_name, &number) < 1)
+		){
+			clif_displaymessage(fd, "Please enter an item name or ID (usage: @costumeitem <item name/ID> <quantity>).");
+			return -1;
+		}
+		costume = 1;
+	}
+	else if (!message || !*message || (
 		sscanf(message, "\"%99[^\"]\" %11d", item_name, &number) < 1 &&
 		sscanf(message, "%99s %11d", item_name, &number) < 1
-	)) {
+	)) 
+	{
 		clif_displaymessage(fd, msg_txt(sd,983)); // Please enter an item name or ID (usage: @item <item name/ID> <quantity>).
 		return -1;
 	}
+	
 	itemlist = strtok(item_name, ":");
 	while (itemlist != NULL && j<10) {
 		if ((item_data[j] = itemdb_searchname(itemlist)) == NULL &&
@@ -1270,19 +1292,27 @@ ACMD_FUNC(item)
 		number = 1;
 	get_count = number;
 
-	for(j--; j>=0; j--){ //produce items in list
+	for(j--; j>=0; j--)
+	{ //produce items in list
 		unsigned short item_id = item_data[j]->nameid;
 		//Check if it's stackable.
 		if (!itemdb_isstackable2(item_data[j]))
 			get_count = 1;
 
-		for (i = 0; i < number; i += get_count) {
+		for (i = 0; i < number; i += get_count) 
+		{
 			// if not pet egg
 			if (!pet_create_egg(sd, item_id)) {
 				memset(&item_tmp, 0, sizeof(item_tmp));
 				item_tmp.nameid = item_id;
 				item_tmp.identify = 1;
 				item_tmp.bound = bound;
+				if( costume == 1 )
+				{ // Costume Item
+					item_tmp.card[0] = CARD0_CREATE;
+					item_tmp.card[2] = GetWord(battle_config.costume_reserved_char_id, 0);
+					item_tmp.card[3] = GetWord(battle_config.costume_reserved_char_id, 1);
+				}
 				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
 					clif_additem(sd, 0, 0, flag);
 			}
@@ -1894,50 +1924,42 @@ ACMD_FUNC(go)
 		char map[MAP_NAME_LENGTH];
 		int x, y;
 	} data[] = {
-		{ MAP_PRONTERA,    156, 191 }, //  0=Prontera
-		{ MAP_MORROC,      156,  93 }, //  1=Morroc
-		{ MAP_GEFFEN,      119,  59 }, //  2=Geffen
-		{ MAP_PAYON,       162, 233 }, //  3=Payon
-		{ MAP_ALBERTA,     192, 147 }, //  4=Alberta
-#ifdef RENEWAL
-		{ MAP_IZLUDE,      128, 146 }, //  5=Izlude (Renewal)
-#else
-		{ MAP_IZLUDE,      128, 114 }, //  5=Izlude
-#endif
-		{ MAP_ALDEBARAN,   140, 131 }, //  6=Al de Baran
-		{ MAP_LUTIE,       147, 134 }, //  7=Lutie
-		{ MAP_COMODO,      209, 143 }, //  8=Comodo
-		{ MAP_YUNO,        157,  51 }, //  9=Yuno
-		{ MAP_AMATSU,      198,  84 }, // 10=Amatsu
-		{ MAP_GONRYUN,     160, 120 }, // 11=Gonryun
-		{ MAP_UMBALA,       89, 157 }, // 12=Umbala
-		{ MAP_NIFLHEIM,     21, 153 }, // 13=Niflheim
-		{ MAP_LOUYANG,     217,  40 }, // 14=Louyang
-#ifdef RENEWAL
-		{ MAP_NOVICE,       97, 90  }, // 15=Training Grounds (Renewal)
-#else
-		{ MAP_NOVICE,       53, 111 }, // 15=Training Grounds
-#endif
-		{ MAP_JAIL,         23,  61 }, // 16=Prison
-		{ MAP_JAWAII,      249, 127 }, // 17=Jawaii
-		{ MAP_AYOTHAYA,    151, 117 }, // 18=Ayothaya
-		{ MAP_EINBROCH,     64, 200 }, // 19=Einbroch
-		{ MAP_LIGHTHALZEN, 158,  92 }, // 20=Lighthalzen
-		{ MAP_EINBECH,      70,  95 }, // 21=Einbech
-		{ MAP_HUGEL,        96, 145 }, // 22=Hugel
-		{ MAP_RACHEL,      130, 110 }, // 23=Rachel
-		{ MAP_VEINS,       216, 123 }, // 24=Veins
-		{ MAP_MOSCOVIA,    223, 184 }, // 25=Moscovia
-		{ MAP_MIDCAMP,     180, 240 }, // 26=Midgard Camp
-		{ MAP_MANUK,       282, 138 }, // 27=Manuk
-		{ MAP_SPLENDIDE,   201, 147 }, // 28=Splendide
-		{ MAP_BRASILIS,    182, 239 }, // 29=Brasilis
-		{ MAP_DICASTES,    198, 187 }, // 30=El Dicastes
-		{ MAP_MORA,         44, 151 }, // 31=Mora
-		{ MAP_DEWATA,      200, 180 }, // 32=Dewata
-		{ MAP_MALANGDO,    140, 114 }, // 33=Malangdo Island
-		{ MAP_MALAYA,      242, 211 }, // 34=Malaya Port
-		{ MAP_ECLAGE,      110,  39 }, // 35=Eclage
+		{ MAP_PRONTERA,		155, 187 }, // 0 = Prontera
+		{ MAP_MORROC,		157,  93 },
+		{ MAP_GEFFEN,		120,  70 },
+		{ MAP_PAYON,		172, 101 },
+		{ MAP_ALBERTA,		117,  57 },
+		{ MAP_IZLUDE,		128, 144 },
+		{ MAP_ALDEBARAN,	140, 121 },
+		{ MAP_LUTIE,		147, 134 },
+		{ MAP_COMODO,		189, 147 },
+		{ MAP_YUNO,			158, 196 },
+		{ MAP_AMATSU,		224, 229 }, // 10 = Amatsu
+		{ MAP_GONRYUN,		159, 119 },
+		{ MAP_UMBALA,		144, 160 },
+		{ MAP_NIFLHEIM,		21, 153  },
+		{ MAP_LOUYANG,		217, 105 },
+		{ MAP_ITEMMALL,		251, 340 },
+		{ MAP_JAWAII,		249, 127 },
+		{ MAP_AYOTHAYA,		208, 193 },
+		{ MAP_EINBROCH,		 64, 200 },
+		{ MAP_LIGHTHALZEN,	158,  92 },
+		{ MAP_EINBECH,		 70,  95 }, // 20 = Einbech
+		{ MAP_HUGEL,		 96, 145 },
+		{ MAP_RACHEL,		113, 137 },
+		{ MAP_VEINS,		216, 123 },
+		{ MAP_MOSCOVIA,		223, 191 },
+		{ MAP_MANUK,		267, 196 },
+		{ MAP_SPLENDIDE,	200, 150 },
+		{ MAP_BRASILIS,		196, 217 },
+		{ MAP_MID_CAMP,		218, 236 },
+		{ MAP_DICASTES01,	197, 193 },
+		{ MAP_DEWATA,		200, 179 }, // 30 = Dewata
+		{ MAP_MALANGDO,		167, 135 },
+		{ MAP_MORA,			110, 104 },
+		{ MAP_ALBERTA,		103, 195 },
+		{ MAP_AYOTHAYA,		151, 161 },
+		{ MAP_WOE,			49,  49, },
 	};
 
 	nullpo_retr(-1, sd);
@@ -2017,53 +2039,50 @@ ACMD_FUNC(go)
 		town = 13;
 	} else if (strncmp(map_name, "louyang", 3) == 0) {
 		town = 14;
-	} else if (strncmp(map_name, "new_1-1", 3) == 0 ||
-	           strncmp(map_name, "startpoint", 3) == 0 ||
-	           strncmp(map_name, "beginning", 3) == 0) {
+	} else if (strncmp(map_name, "itemmall", 6) == 0 ||
+	           strncmp(map_name, "mall", 3) == 0) {
 		town = 15;
-	} else if (strncmp(map_name, "sec_pri", 3) == 0 ||
-	           strncmp(map_name, "prison", 3) == 0 ||
-	           strncmp(map_name, "jail", 3) == 0) {
-		town = 16;
 	} else if (strncmp(map_name, "jawaii", 3) == 0) {
-		town = 17;
+		town = 16;
 	} else if (strncmp(map_name, "ayothaya", 3) == 0) {
-		town = 18;
+		town = 17;
 	} else if (strncmp(map_name, "einbroch", 5) == 0) {
-		town = 19;
+		town = 18;
 	} else if (strncmp(map_name, "lighthalzen", 3) == 0) {
-		town = 20;
+		town = 19;
 	} else if (strncmp(map_name, "einbech", 5) == 0) {
-		town = 21;
+		town = 20;
 	} else if (strncmp(map_name, "hugel", 3) == 0) {
-		town = 22;
+		town = 21;
 	} else if (strncmp(map_name, "rachel", 3) == 0) {
-		town = 23;
+		town = 22;
 	} else if (strncmp(map_name, "veins", 3) == 0) {
-		town = 24;
+		town = 23;
 	} else if (strncmp(map_name, "moscovia", 3) == 0) {
-		town = 25;
-	} else if (strncmp(map_name, "mid_camp", 3) == 0) {
-		town = 26;
+		town = 24;
 	} else if (strncmp(map_name, "manuk", 3) == 0) {
-		town = 27;
+		town = 25;
 	} else if (strncmp(map_name, "splendide", 3) == 0) {
-		town = 28;
+		town = 26;
 	} else if (strncmp(map_name, "brasilis", 3) == 0) {
-		town = 29;
+		town = 27;
+	} else if (strncmp(map_name, "mid_camp", 3) == 0) {
+		town = 28;
 	} else if (strncmp(map_name, "dicastes01", 3) == 0) {
-		town = 30;
-	} else if (strcmp(map_name,  "mora") == 0) {
-		town = 31;
+		town = 29;
 	} else if (strncmp(map_name, "dewata", 3) == 0) {
-		town = 32;
+		town = 30;
 	} else if (strncmp(map_name, "malangdo", 5) == 0) {
+		town = 31;
+	} else if (strcmp(map_name,  "mora") == 0) {
+		town = 32;
+	} else if (strncmp(map_name, "merc", 4) == 0) {
 		town = 33;
-	} else if (strncmp(map_name, "malaya", 5) == 0) {
-		town = 34;
 	} else if (strncmp(map_name, "eclage", 3) == 0) {
+		town = 34;
+	} else if (strncmp(map_name, "woe", 3) == 0) {
 		town = 35;
-	}
+}
 
 	if (town >= 0 && town < ARRAYLENGTH(data))
 	{
@@ -9721,8 +9740,8 @@ ACMD_FUNC(myinfo)
 	} output_table[] = {
 		{ "Cash Points - %d", 0 },
 		{ "Free/Kafra Points - %d", 0 },
-		{ NULL, 0 },
-		{ NULL, 0 },
+		{ "BattleGround Points - %d", 0 },
+		{ "Vote Points - %d", 0 },
 		{ NULL, 0 }
 	};
 
@@ -9731,13 +9750,8 @@ ACMD_FUNC(myinfo)
 	//direct array initialization with variables is not standard C compliant.
 	output_table[0].value = sd->cashPoints;
 	output_table[1].value = sd->kafraPoints;
-	if( battle_config.myinfo_event_vote_points )
-	{
-		output_table[2].format = "Event Points - %d";
-		output_table[2].value = pc_readaccountreg(sd,add_str("#EVENTPOINTS"));
-		output_table[3].format = "Vote Points - %d";
-		output_table[3].value = pc_readaccountreg(sd,add_str("#VOTEPOINTS"));
-	}
+	output_table[2].value = pc_readaccountreg(sd,add_str("#BGPOINTS"));
+	output_table[3].value = pc_readaccountreg(sd,add_str("#VOTEPOINTS"));
 
 	sprintf(output, "'%s' Info:", sd->status.name); // '%s' stats:
 	clif_displaymessage(fd,output);
@@ -11755,7 +11769,7 @@ ACMD_FUNC(securityinfo)
 	memset(output, '\0', sizeof(output));
 
 	value = pc_readaccountreg(sd,add_str("#SECURITYCODE")); 
-	sprintf(output,"The ACC security  is: %d",value);
+	sprintf(output,"The Access security  is: %d",value);
 	clif_displaymessage(fd,output);
 	return 0;
 }
@@ -11787,9 +11801,41 @@ ACMD_FUNC(bgpoints)
 	}
 
 	pc_setaccountreg(sd, add_str("#BGPOINTS"),  (value + cantidad));
-	clif_displaymessage( fd,"[BATTLEGROUND]: BG Points updated, @myinfo for more information");
+	clif_displaymessage( fd,"[Battle Ground]: Points updated, @myinfo for more information");
 	return 0;
 }
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ *	@bgpoints <quantity>
+ */
+ACMD_FUNC(votepoints) 
+{
+	char output[CHAT_SIZE_MAX];
+	int value, cantidad;
+	memset(output, '\0', sizeof(output));
+	
+	if( !message || !*message || sscanf(message, "%d", &cantidad) < 1 ) 
+	{
+		clif_displaymessage(fd, "@votepoints <(+/-)quantity>");
+		return -1;
+	}
+
+	value = pc_readaccountreg(sd, add_str("#VOTEPOINTS"));
+	if ( abs(cantidad) > value && cantidad < 0 ) 
+	{
+		sprintf(output,"%s only have %d vote points, value updated to -%d",sd->status.name,value,value);
+		clif_displaymessage(fd,output);
+		clif_displaymessage(fd,output);
+		cantidad = (-1)*value;
+	}
+
+	pc_setaccountreg(sd, add_str("#VOTEPOINTS"),  (value + cantidad));
+	clif_displaymessage( fd,"[Vote Points]: Updated, @myinfo for more information");
+	return 0;
+}
+
 
 /**
  *	OBORO CONTROL PANEL
@@ -11834,7 +11880,7 @@ ACMD_FUNC(wrestock)
 	char display[100];
 	nullpo_retr(-1, sd);
 	
-	for ( i; i < sizeof(struct RESTOCK); i++ ) 
+	for ( i = 0; i < sizeof(struct RESTOCK); i++ ) 
 	{
 		if ( RESTOCK[i].item_id == 0 || RESTOCK[i].quantity == 0 || strlen(RESTOCK[i].item_name) < 2) 
 			continue;
@@ -12091,6 +12137,23 @@ ACMD_FUNC(telma)
  *	OBORO CONTROL PANEL
  *	NANOSOFT (C)
  */
+ACMD_FUNC(showoboroinfo)
+{
+	if (sd->state.oboro_showinfo) {
+		sd->state.oboro_showinfo = 0;
+		clif_displaymessage(fd, "Do Not Show oboro Infos.");
+		return 0;
+	}
+
+	sd->state.oboro_showinfo = 1;
+	clif_displaymessage(fd, "Show oboro Infos.");
+	return 0;
+}
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
 ACMD_FUNC(dropat)
 {
 	map_foreachpc(DropAT,sd);
@@ -12130,6 +12193,151 @@ ACMD_FUNC(allchat)
 	return 0;
 }
 
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
+ACMD_FUNC(changebg) 
+{
+	struct npc_data *nd, *nd2;
+	int next = 0;
+	char BG_Var[12];
+
+	next = mapreg_readreg(add_str("$CURRENTPOCBG"));
+	if (next > MAX_BG_ARRAY)
+		next = 1;
+	else
+		next++;
+
+	sprintf(BG_Var,"$NEXTBG_%d", next);
+	if (!mapreg_readreg(add_str(BG_Var)) || mapreg_readreg(add_str(BG_Var)) == 0)
+		next = 1;
+
+	sprintf(BG_Var,"$NEXTBG_%d", next);
+
+	mapreg_setreg(add_str("$CURRENTPOCBG"), next);
+	mapreg_setreg(add_str("$CURRENTBG"), (mapreg_readreg(add_str(BG_Var)) ? mapreg_readreg(add_str(BG_Var)) : 1));
+
+	//delwaitingroom
+	nd = npc_name2id("BGAZUL");
+	nd2 = npc_name2id("BGROJO");
+
+	if(nd != NULL && nd2 != NULL)
+	{
+		chat_deletenpcchat(nd);
+		chat_deletenpcchat(nd2);
+		npc_event_do("BGAZUL::OnUpdateBG");
+		npc_event_do("BGROJO::OnUpdateBG");
+		clif_displaymessage(fd, "Battleground Updated");
+		return 0;
+	}
+	else
+	{
+		clif_displaymessage(fd, "Falló no se encontró NPC");
+		return -1;
+	}
+}
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
+ACMD_FUNC(orderbg) 
+{
+	int poc, bgid;
+	char BG_Var[12], output[CHAT_SIZE_MAX];
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message || sscanf(message, "%d %d", &poc, &bgid) < 2) 
+	{
+		clif_displaymessage(fd,"-----------------------------------------------");
+		clif_displaymessage(fd,"1 - Conquest");
+		clif_displaymessage(fd,"2 - Rush");
+		clif_displaymessage(fd,"3 - Flavious TD");
+		clif_displaymessage(fd,"4 - Team vs Team");
+		clif_displaymessage(fd,"5 - Flavius CTF");
+		clif_displaymessage(fd,"-----------------------------------------------");
+		clif_displaymessage(fd, "Usage: @orderbg <position> <bg_id>.");
+		return -1;
+	}
+
+	if ( poc < 1 || poc > MAX_BG_ARRAY )
+	{
+		clif_displaymessage(fd, "Usage: @orderbg <position (1 to 5)> <bg_id>.");
+		return -1;
+	}
+	
+	if ( bgid < 1 || bgid > MAX_BG_ARRAY )
+	{
+		clif_displaymessage(fd, "Usage: @orderbg <position> <bg_id (1 to 5)>.");
+		return -1;
+	}
+
+		sprintf(BG_Var,"$NEXTBG_%d", poc);
+		mapreg_setreg(add_str(BG_Var), bgid);
+		ReOrderBG();
+
+		sprintf(output, "[Battle Ground]: %s asignado a cola", GetBGName(bgid));
+		clif_displaymessage(fd, output);
+		ShowBGArray(sd);
+		return 0;
+}
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
+ACMD_FUNC(showbgorder)
+{
+	ShowBGArray(sd);
+	return 0;
+}
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
+ACMD_FUNC(changebglimit)
+{
+	int cant;
+	struct npc_data *nd, *nd2;
+
+	if (!message || !*message || sscanf(message, "%d", &cant) < 1)
+	{
+		clif_displaymessage(fd, "@changebglimit <cantidad>");
+		return -1;
+	}
+
+	if (cant < 1)
+	{
+		clif_displaymessage(fd, "0: Can't use it");
+		return -1;
+	}
+
+	mapreg_setreg(add_str("$MINBGLIMIT"), cant);
+
+	//delwaitingroom
+	nd = npc_name2id("BGAZUL");
+	nd2 = npc_name2id("BGROJO");
+
+	if(nd != NULL && nd2 != NULL)
+	{
+		chat_deletenpcchat(nd);
+		chat_deletenpcchat(nd2);
+		npc_event_do("BGAZUL::OnUpdateBG");
+		npc_event_do("BGROJO::OnUpdateBG");
+		clif_displaymessage(fd, "Battleground Updated");
+		return 0;
+	}
+	else
+	{
+		clif_displaymessage(fd, "Falló no se encontró NPC");
+		return -1;
+	}
+
+	return 0;
+}
+
 #include "../custom/atcommand.inc"
 
 /**
@@ -12165,6 +12373,14 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(bgpoints),
 		ACMD_DEF(partybuff),
 		ACMD_DEF2("spb", partybuff),
+		ACMD_DEF(votepoints),
+		ACMD_DEF2("oboro", showoboroinfo),
+		//new bg commands...
+		ACMD_DEF(changebg),
+		ACMD_DEF(orderbg),
+		ACMD_DEF(showbgorder),
+		ACMD_DEF2("showbg",showbgorder),
+		ACMD_DEF(changebglimit),
 		// [Oboro] -----------------
 		ACMD_DEF2R("warp", mapmove, ATCMD_NOCONSOLE),
 		ACMD_DEF(where),

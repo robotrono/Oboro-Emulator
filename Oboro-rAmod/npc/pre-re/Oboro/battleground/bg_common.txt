@@ -1,0 +1,277 @@
+/**
+ * [Isaac] N & N (NanoSoft) - Oboro Control Panel & Emulator (c)
+ * https://www.facebook.com/NanosSoft/
+ *	
+ *	1: Conquest
+ *	2: Rush		
+ *	3: Flavius TD
+ *	4: Team Vs Team
+ * 	5: Flavius CTF
+ **/
+
+
+-	script	walls	-1,{
+	end;
+	OnInit:
+		delwall "arena_0401";
+		delwall "arena_0402";
+		delwall "arena_0403";
+		setwall "arena_4",130,114,12,6,0,"arena_0401";
+		setwall "arena_4",154,114,14,6,0,"arena_0402";
+		setwall "arena_4",144,131,14,4,0,"arena_0403";
+		setwall "arena_4",151,131,14,4,0,"arena_0404";
+	end;
+}
+
+// MapFlags
+// *********************************************************************
+arena_4	mapflag	nomemo
+arena_4	mapflag	nowarpto
+arena_4	mapflag	nobranch
+arena_4	mapflag	nopenalty
+arena_4	mapflag	noteleport
+arena_4	mapflag	nosave	SavePoint
+arena_4	mapflag	allow_bg_items
+
+// BattleGround Warper - Entrance
+// *********************************************************************
+arena_4,141,109,4	script	Battleground Info Board	837,{
+	end;
+OnWhisperGlobal:
+	if ( getgmlevel() <= 60 ) end;
+ 		if (@whispervar0$ != "activar") end;
+OnInit:
+	donpcevent "Battleground Info Board::OnLoop";
+end;
+OnLoop:
+	do {
+                sleep 14000;
+                if( $@Conquest == 1 )
+                        set .@msg$ , "Conquest - (" + bg_get_data($@Conquest_id2, 0) + ") vs (" + bg_get_data($@Conquest_id1, 0) + ")";
+                else if($@TvT01_BG != 0)
+                    set .@msg$ , "TvT - (" + bg_get_data($@TvTBG_id1, 0) + ") vs (" + bg_get_data($@TvTBG_id2, 0) + ")";
+                else if( $@FlaviusTD == 1 )
+                        set .@msg$ , "TD - (" + bg_get_data($@FlaviusTD_id1, 0) + ") vs (" + bg_get_data($@FlaviusTD_id1, 0) + ")";
+                else
+                        set .@msg$ , "Battleground | Vacío";
+                delwaitingroom "Battleground Info Board";
+                waitingroom .@msg$ , 0;
+        } while(1);
+end;
+
+OnFri0600:
+	rankreset 1; // Ranking Reset
+	end;
+	
+OnClock1200:
+OnClock1700:
+OnClock2200:
+OnClock0400:
+        switch( gettime(4) )
+        {
+        case 0:
+        case 1:
+        case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+                if( 
+			( gettime(3) >= 12 && gettime(3) < 14 ) || 
+			( gettime(3) >= 17 && gettime(3) < 19 ) ||
+			( gettime(3) >= 22 && gettime(3) < 00 )
+
+
+		) {
+                        announce "-- Battleground Happy Hour has begun | Ranked Arena Mode --",0,0x00FF00;
+                        setbattleflag "bg_reward_rates",120; // +20% Reward Rates
+                        setbattleflag "bg_ranked_mode",1;
+                        end;
+                }
+ 
+                if( gettime(3) == 14 || gettime(3) == 19 || gettime(3) == 00 )
+                {
+                        announce "-- Battleground Happy Hour is over | Regular Arena Mode --",0,0x00BFFF;
+                        setbattleflag "bg_reward_rates",100; // Normal Rates
+                        setbattleflag "bg_ranked_mode",0;
+                        end;
+                }
+                break;
+        }
+        end;
+}
+
+arena_4,137,100,5	script	Blue Recruiter#1	418,{ callfunc("requisito",Upper,BaseLevel,JobLevel,Class,"BattleGround","arena_4",137,124 ); }
+arena_4,158,100,3	script	Red Recruiter#2	414,{ callfunc("requisito",Upper,BaseLevel,JobLevel,Class,"Conquest","arena_4",158,124 ); }
+
+function	script	requisito	{
+	title("Battleground");
+	setarray .Classes[0],Job_Novice,Job_Swordman,Job_Mage,Job_Archer,Job_Acolyte,Job_Merchant,Job_Thief,Job_Knight,Job_Priest,Job_Wizard,Job_Blacksmith,Job_Hunter,Job_Assassin,
+	Job_Crusader,Job_Monk,Job_Sage,Job_Rogue,Job_Alchem,Job_Bard,Job_Dancer,Job_Novice_High,Job_Swordman_High,Job_Mage_High,Job_Archer_High,Job_Acolyte_High,
+	Job_Merchant_High,Job_Thief_High,4023,4024,4025,4026,4027,4028,4030,4031,4032,4033,4034,4035,4037,4038,4039,4040,4041,4042,4045;
+
+
+	for( .@i = 0; .@i < getarraysize(.Classes); .@i++ ) 
+	{
+		if ( getarg(3) == .Classes[.@i] || getarg(1) < 98 || getarg(2) < 40 ) 
+		{
+			mes "Necesitas :"; 
+			mes "1 - Ser renacido";
+			mes "2 - Ser nivel 99 o más";
+			mes "3 - Ser job 50 o más"; 
+			mes "4 - No se permite la entrada de High Classes"; 
+			mes "5 - No se permite la entrada de Baby Job"; 
+			close; 
+		}
+	}
+
+	switch($Que_BattleGround)
+	{
+		case 1:
+		default:
+			.@nom$ = "Conquest"; 
+		break;
+		case 2: .@nom$ = "Rush"; break;
+		case 3: .@nom$ = "FlaviusTD"; break;
+		case 4: .@nom$ = "TeamVsTeam"; break;
+	}
+	
+	callfunc("bgwaittime",getarg(5),getarg(6),getarg(7),.@nom$);
+}
+
+// Exit from Registration
+// *********************************************************************
+// Castle Conquest
+arena_4,137,120,0	warp	bat17	1,1,arena_4,148,99
+arena_4,158,120,0	warp	bat18	1,1,arena_4,148,99
+
+// Telma By iSaaC 
+// *********************************************************************
+// new_telma
+
+arena_4,1,1,3	itemshop	BraveryExchanger	111,7828,13036:100,13411:100,1425:100,1632:100,1634:100,1543:100,1924:100,1978:100,1574:100,1824:100,1183:100,1380:100,13305:100,1279:100,1739:100,13108:100,13172:100,2538:50,2539:50,2540:50,2435:50,2436:50,2437:50,2376:80,2377:80,2378:80,2379:80,2380:80,2381:80,2382:80,2720:500,2721:500,2722:500,2723:500,2724:500,2725:500,2733:500
+arena_4,1,1,3	itemshop	ValorExchanger	111,7829,13037:100,13410:100,1633:100,1635:100,1542:100,1923:100,1977:100,1575:100,1823:100,1184:100,1482:100,1379:100,13306:100,1280:100,1738:100,13171:100,13173:100,13174:100,2538:50,2539:50,2540:50,2435:50,2436:50,2437:50,2376:80,2377:80,2378:80,2379:80,2380:80,2381:80,2382:80,2720:500,2721:500,2722:500,2723:500,2724:500,2725:500,2733:500
+arena_4,1,1,3	itemshop	HeroismExchanger	111,7773,1187:2000,1281:2000,1282:2000,1310:2000,1382:2000,1426:2000,1486:2000,1546:2000,1576:2000,1577:2000,1640:2000,1641:2000,1743:2000,1826:2000,1827:2000,1927:2000,1981:2000,2002:2000,13042:2000,13110:2000,13176:2000,13177:2000,13178:2000,13179:2000,13307:2000,13416:2000,13417:2000,13418:2000,2394:840,2395:170,2396:25,2444:580,2445:70,2446:15,2549:630,2772:1200,2773:280,2774:40
+
+arena_4,149,105,3	script	Erundek	109,{
+	title("Erundek");
+	mes "Bienvenido, valeroso guerrero.";
+	mes "¿Qué puedo hacer hoy por ti?";
+	next;
+	switch( select("Cambiar Bravery Badges","Cambiar Valor Badges","Cambiar Heroism Badges","Hm, nada.") )
+	{
+		case 4:
+			title("Erundek");
+			mes "Como tu desees.";
+			mes "Hasta luego.";
+			close;
+		case 1: // Bravery Badges
+			title("Erundek");
+			mes "Entonces tu quieres cambiar ^0000FFBravery Badges^000000 de las Battle of Tierra Valley.";
+			mes "Cierra esta ventana para abrir la tienda.";
+			close2;
+			callshop "BraveryExchanger",0;
+			end;
+		case 2: // Valor Badges
+			title("Erundek");
+			mes "Entonces tu quieres cambiar ^FF0000Valor Badges^000000 de las Battle of Flavius.";
+			mes "Cierra esta ventana para abrir la tienda.";
+			close2;
+			callshop "ValorExchanger",0;
+			end;
+		case 3: // Heroism Badges
+			title("Erundek");
+			mes "Entonces tu quieres cambiar ^FFA500Heroism Badges^000000 de las Battle of Kriger Von Midgard.";
+			mes "Cierra esta ventana para abrir la tienda.";
+			close2;
+			callshop "HeroismExchanger",0;
+			end;
+	}
+}
+
+arena_4,132,129,6	script	Registration::BGAZUL	418,{
+	end;
+OnInit:
+	delwaitingroom;
+OnUpdateBG:
+	switch($CURRENTBG) 
+	{
+		case 1: 
+		default:
+			waitingroom "Conquest",$MINBGLIMIT,"Conquest::OnGuillaumeJoin",1; break;
+		case 2: waitingroom "Rush",$MINBGLIMIT,"Rush::OnGuillaumeJoin",1; break;
+		case 3: waitingroom "Flavius TD",$MINBGLIMIT,"Flavius_TD::OnGuillaumeJoin",1; break;
+		case 4: waitingroom "Team vs Team",$MINBGLIMIT,"TvT_BG::OnGuillaumeJoin",1; break;
+		case 5: waitingroom "Flavius CTF",$MINBGLIMIT,"Flavius_CTF::OnGuillaumeJoin",1; break;
+	}
+end;
+
+
+OnEnterBG:
+	switch($CURRENTBG) 
+	{
+		case 1:
+		default: 
+			set $@Conquest_id1, waitingroom2bg(getvariableofnpc(.Castle$,"Conquest"),getvariableofnpc(.GX,"Conquest"),getvariableofnpc(.GY,"Conquest"),0,"Conquest::OnGuillaumeQuit","");
+		break;
+		case 2:
+			set $@Rush_id1, waitingroom2bg(getvariableofnpc(.Castle$,"Rush"),getvariableofnpc(.GX,"Rush"),getvariableofnpc(.GY,"Rush"),0,"Rush::OnGuillaumeQuit","");
+		break;
+		case 3:
+			set $@FlaviusTD_id1, waitingroom2bg("bat_b03",390,10,0,"Flavius_TD::OnGuillaumeQuit","Flavius_TD::OnGuillaumeDie");
+		break;
+		case 4:
+			set $@TvTBG_id1, waitingroom2bg("arena_01",53,128,0,"TvT_BG::OnGuillaumeQuit","TvT_BG::OnGuillaumeDie");
+		break;
+		case 5:
+			set $@FlaviusCTF_id1, waitingroom2bg("bat_b02",390,10,0,"Flavius_CTF::OnGuillaumeQuit","Flavius_CTF::OnGuillaumeDie");
+		break;
+	}
+end;
+	
+}
+
+arena_4,163,129,4	script	Registration::BGROJO	414,{
+	end;
+OnInit:
+	delwaitingroom;
+OnUpdateBG:
+	switch($CURRENTBG) 
+	{
+		case 1:
+		default:
+			waitingroom "Conquest",$MINBGLIMIT,"Conquest::OnCroixJoin",1; break;
+		case 2:	waitingroom "Rush",$MINBGLIMIT,"Rush::OnCroixJoin",1; break;
+		case 3: waitingroom "Flavius TD",$MINBGLIMIT,"Flavius_TD::OnCroixJoin",1; break;
+		case 4: waitingroom "Team vs Team",$MINBGLIMIT,"TvT_BG::OnCroixJoin",1; break;
+		case 5: waitingroom "Flavius CTF",$MINBGLIMIT,"Flavius_CTF::OnCroixJoin",1; break;
+	}
+end;
+
+OnEnterBG:
+	switch($CURRENTBG) 
+	{
+		case 1:
+		default:
+			set $@Conquest_id2, waitingroom2bg(getvariableofnpc(.Castle$,"Conquest"),getvariableofnpc(.CX,"Conquest"),getvariableofnpc(.CY,"Conquest"),1,"Conquest::OnCroixQuit","");
+		break;
+		case 2:
+			set $@Rush_id2, waitingroom2bg(getvariableofnpc(.Castle$,"Rush"),getvariableofnpc(.CX,"Rush"),getvariableofnpc(.CY,"Rush"),1,"Rush::OnCroixQuit","");
+		break;
+		case 3:
+			set $@FlaviusTD_id2, waitingroom2bg("bat_b03",10,290,1,"Flavius_TD::OnCroixQuit","Flavius_TD::OnCroixDie");
+		break;
+		case 4:
+			set $@TvTBG_id2, waitingroom2bg("arena_01",146,55,1,"TvT_BG::OnCroixQuit","TvT_BG::OnCroixDie");
+		break;
+		case 5: 
+			set $@FlaviusCTF_id2, waitingroom2bg("bat_b02",10,290,1,"Flavius_CTF::OnCroixQuit","Flavius_CTF::OnCroixDie");
+		break;
+	}
+end;
+}
+
+
+// Necesary..
+-	script	Guillaume camp#bat	973,{ end; }
+-	script	Croix camp#bat	974,{ end; }

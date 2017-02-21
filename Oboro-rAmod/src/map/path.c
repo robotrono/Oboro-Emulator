@@ -81,6 +81,7 @@ int path_blownpos(int16 m,int16 x0,int16 y0,int16 dx,int16 dy,int count)
 
 	if( !map[m].cell )
 		return -1;
+		
 	md = &map[m];
 
 	if( count>25 ){ //Cap to prevent too much processing...?

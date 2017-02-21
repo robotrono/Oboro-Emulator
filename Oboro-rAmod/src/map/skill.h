@@ -228,6 +228,8 @@ struct s_skill_db {
 		uint16 joballowed, req_opt;
 	} copyable;
 	bool blocked; // Allow this skill usage
+	
+	int oboro_delay; //oboro_delay
 };
 extern struct s_skill_db **skill_db;
 

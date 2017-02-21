@@ -11259,7 +11259,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, intptr_t data)
 	struct unit_data *ud;
 	struct status_change *sc = NULL;
 	int flag = 0;
-	//unsigned int before_fixed = 0, oboro_fixed = 0; //isaac rAthena seens to fix nodelay
+	unsigned int before_fixed = 0, oboro_fixed = 0; //isaac (nvm) needs hard delays
+	char message[256];
 
 	src = map_id2bl(id);
 	if( src == NULL )
@@ -11430,6 +11431,32 @@ int skill_castend_id(int tid, unsigned int tick, int id, intptr_t data)
 			int cooldown = pc_get_skillcooldown(sd,ud->skill_id, ud->skill_lv); // Increases/Decreases cooldown of a skill by item/card bonuses.
 			if(cooldown) skill_blockpc_start(sd, ud->skill_id, cooldown);
 		}
+		
+		// [ISAAC] OBORO DELAYS START
+		if (sd && ud->skill_id && battle_config.oboro_enable > 0 &&
+			(
+				map[sd->bl.m].flag.battleground || 
+				map[sd->bl.m].flag.gvg || 
+				map[sd->bl.m].flag.gvg_castle || 
+				map[sd->bl.m].flag.woe_set ||
+				map[sd->bl.m].flag.blocked
+			)
+		)
+		{
+			before_fixed = ud->canact_tick;
+			if (Oboro_FixedDelays(sd, ud->skill_id) != 0)
+				oboro_fixed = ud->canact_tick + Oboro_FixedDelays(sd, ud->skill_id);
+			else
+				oboro_fixed = ud->canact_tick + 70;
+			
+			ud->canact_tick = max(ud->canact_tick, oboro_fixed);
+			if (sd->state.oboro_showinfo)
+			{
+				sprintf(message, "TICK:%03d OBORO:%d FIXD:%03d  SLCT: %03d", before_fixed, Oboro_FixedDelays(sd, ud->skill_id), oboro_fixed, ud->canact_tick);
+				clif_disp_overhead(&sd->bl, message);
+			}
+		}
+		
 		if( battle_config.display_status_timers && sd )
 			clif_status_change(src, SI_ACTIONDELAY, 1, skill_delayfix(src, ud->skill_id, ud->skill_lv), 0, 0, 0);
 		if( sd && sd->skillitem != ud->skill_id )
@@ -11578,7 +11605,9 @@ int skill_castend_pos(int tid, unsigned int tick, int id, intptr_t data)
 	struct map_session_data *sd;
 	struct unit_data *ud = unit_bl2ud(src);
 	struct mob_data *md;
-
+	unsigned int before_fixed = 0, oboro_fixed = 0; //isaac Oboro CP
+	char message[256];
+	
 	nullpo_ret(ud);
 
 	sd = BL_CAST(BL_PC , src);
@@ -11681,6 +11710,32 @@ int skill_castend_pos(int tid, unsigned int tick, int id, intptr_t data)
 			int cooldown = pc_get_skillcooldown(sd,ud->skill_id, ud->skill_lv);
 			if(cooldown) skill_blockpc_start(sd, ud->skill_id, cooldown);
 		}
+		
+		// [ISAAC] OBORO DELAYS START
+		if (sd && ud->skill_id && battle_config.oboro_enable > 0 &&
+			(
+				map[sd->bl.m].flag.battleground || 
+				map[sd->bl.m].flag.gvg || 
+				map[sd->bl.m].flag.gvg_castle || 
+				map[sd->bl.m].flag.woe_set ||
+				map[sd->bl.m].flag.blocked
+			)
+		)
+		{
+			before_fixed = ud->canact_tick;
+			if (Oboro_FixedDelays(sd, ud->skill_id) != 0)
+				oboro_fixed = ud->canact_tick + Oboro_FixedDelays(sd, ud->skill_id);
+			else
+				oboro_fixed = ud->canact_tick + 70;
+			
+			ud->canact_tick = max(ud->canact_tick, oboro_fixed);
+			if (sd->state.oboro_showinfo)
+			{
+				sprintf(message, "TICK:%03d OBORO:%d FIXD:%03d  SLCT: %03d", before_fixed, Oboro_FixedDelays(sd, ud->skill_id), oboro_fixed, ud->canact_tick);
+				clif_disp_overhead(&sd->bl, message);
+			}
+		}
+		
 		if( battle_config.display_status_timers && sd )
 			clif_status_change(src, SI_ACTIONDELAY, 1, skill_delayfix(src, ud->skill_id, ud->skill_lv), 0, 0, 0);
 		if( sd && sd->skillitem != ud->skill_id )
@@ -18837,7 +18892,7 @@ int skill_unit_move_sub(struct block_list* bl, va_list ap)
 int skill_unit_move(struct block_list *bl, unsigned int tick, int flag)
 {
 	nullpo_ret(bl);
-
+	
 	if( bl->prev == NULL )
 		return 0;
 
