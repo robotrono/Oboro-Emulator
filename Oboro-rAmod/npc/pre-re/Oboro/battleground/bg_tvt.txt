@@ -298,56 +298,41 @@ OnCroixWin:
 
 OnReward:
     set $@TvT01_BG,3; // 0 = No hay juego activo, 1 = juego activo, 2 = cambiando de ronda, 3 = termino.
+
+	// =======================================================
+	// Team Rewards
+	// =======================================================
+	
 	if( .TvT_Guillaume > .TvT_Croix )
-	{ // Guillaume Won
-		bg_reward $@TvTBG_id1,7828,50,0,0,"BG_TVT",1,4,0;
-		bg_getitem $@TvTBG_id1,7829,50;
-		bg_getitem $@TvTBG_id1,7773,30;
-		bg_reward $@TvTBG_id2,7828,35,0,0,"BG_TVT",1,4,2;
-		bg_getitem $@TvTBG_id2,7829,35;
-		bg_getitem $@TvTBG_id2,7773,25;
+	{ 
+		// Guillaume Won
+		bg_item($@TvTBG_id1, 1);
+		bg_item($@TvTBG_id2, 0);
 		mapannounce "arena_01","The Guillaume army has won the Battle of Team vs Team!",1,0x0000FF;
 	}
 	else if( .TvT_Guillaume < .TvT_Croix )
-	{ // Croix Won
-		bg_reward $@TvTBG_id1,7828,35,0,0,"BG_TVT",1,4,2;
-		bg_getitem $@TvTBG_id1,7829,35;
-		bg_getitem $@TvTBG_id1,7773,35;
-		bg_reward $@TvTBG_id2,7828,50,0,0,"BG_TVT",1,4,0;
-		bg_getitem $@TvTBG_id2,7829,50;
-		bg_getitem $@TvTBG_id2,7773,50;
+	{ 
+		// Croix Won
+		bg_item($@TvTBG_id1, 0);
+		bg_item($@TvTBG_id2, 1);
 		mapannounce "arena_01","The Croix army has won the Battle of Team vs Team!",1,0xFF0000;
 	}
 	else
 	{
-		bg_reward $@TvTBG_id1,7828,60,0,0,"BG_TVT",1,4,1;
-		bg_getitem $@TvTBG_id1,7829,60;
-		bg_getitem $@TvTBG_id1,7773,60;
-		bg_reward $@TvTBG_id2,7828,60,0,0,"BG_TVT",1,4,1;
-		bg_getitem $@TvTBG_id2,7829,60;
-		bg_getitem $@TvTBG_id2,7773,60;
+		//Empate
+		bg_item($@TvTBG_id1, 0);
+		bg_item($@TvTBG_id2, 0);
 		mapannounce "arena_01","The battle is over. This is a Tie...!",1,0x808000;
 	}
 	donpcevent "TvT_BG::OnMatchEnd";
-	end;
+end;
 	
 OnRewardQuit: 
-    if( .TvT_Guillaume > .TvT_Croix )
-	{ // Guillaume Won
-		bg_reward $@TvTBG_id1,7828,20,0,0,"BG_TVT",1,4,0;
-		bg_getitem $@TvTBG_id1,7829,10;
-		bg_getitem $@TvTBG_id1,7773,10;
-		mapannounce "arena_01","There are not enough players to start the battle. Guillaume Won.",1,0x00BFFF;
-	}
-	else if( .TvT_Guillaume < .TvT_Croix )
-	{ // Croix Won
-		bg_reward $@TvTBG_id2,7828,10,0,0,"BG_TVT",1,4,0;
-		bg_getitem $@TvTBG_id2,7829,10;
-		bg_getitem $@TvTBG_id2,7773,10;
-		mapannounce "arena_01","There are not enough players to start the battle. Croix Won.",1,0x00BFFF;
-	}
+	bg_item($@TvTBG_id1, 0);
+	bg_item($@TvTBG_id2, 0);
+	mapannounce "arena_01","There are not enough players to start the battle. No one Won.",1,0x00BFFF;
 	donpcevent "TvT_BG::OnMatchEnd";
-	end;
+end;
 	
 OnMatchEnd:
 	stopnpctimer;

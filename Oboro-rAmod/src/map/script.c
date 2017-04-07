@@ -21146,48 +21146,6 @@ BUILDIN_FUNC(bg_rankpoints_area)
 	return SCRIPT_CMD_SUCCESS;
 }
 
-BUILDIN_FUNC(bg_getitem)
-{
-	int bg_id, nameid, amount;
-
-	bg_id = script_getnum(st,2);
-	nameid = script_getnum(st,3);
-	amount = script_getnum(st,4);
-
-	bg_team_getitem(bg_id, nameid, amount);
-	return 0;
-}
-
-BUILDIN_FUNC(bg_getkafrapoints)
-{
-	int bg_id, amount;
-
-	bg_id = script_getnum(st,2);
-	amount = script_getnum(st,3);
-
-	bg_team_get_kafrapoints(bg_id, amount);
-	return 0;
-}
-
-BUILDIN_FUNC(bg_reward)
-{
-	int bg_id, nameid, amount, kafrapoints, quest_id, add_value, bg_arena, bg_result;
-	const char *var;
-
-	bg_id = script_getnum(st,2);
-	nameid = script_getnum(st,3);
-	amount = script_getnum(st,4);
-	kafrapoints = script_getnum(st,5);
-	quest_id = script_getnum(st,6);
-	var = script_getstr(st,7);
-	add_value = script_getnum(st,8);
-	bg_arena = script_getnum(st,9);
-	bg_result = script_getnum(st,10);
-
-	bg_team_rewards(bg_id, nameid, amount, kafrapoints, quest_id, var, add_value, bg_arena, bg_result);
-	return 0;
-}
-
 /*==========================================
  * Instancing System
  *------------------------------------------*/
@@ -24646,7 +24604,7 @@ BUILDIN_FUNC(getitem_map)
 
 /**
  * mapeventwarp("actual map", "to map",<x>,<y>,<var_name_check>,<value_winner>,<item_id>,<cantidad>);
- * Isaac MVP vs MVP
+ * [Oboro] Isaac MVP vs MVP
  **/
 BUILDIN_FUNC(mapeventwarp)
 {
@@ -24675,7 +24633,7 @@ BUILDIN_FUNC(mapeventwarp)
 
 /**
  * ChangeBG();
- * Isaac
+ * [Oboro] Isaac
  **/
 BUILDIN_FUNC(ChangeBG)
 {
@@ -24696,6 +24654,19 @@ BUILDIN_FUNC(ChangeBG)
 
 	mapreg_setreg(add_str("$CURRENTPOCBG"), next);
 	mapreg_setreg(add_str("$CURRENTBG"), mapreg_readreg(add_str(BG_Var)));
+	return 0;
+}
+
+/**
+ * bg_item(<bg_id>, <ganador/perdedor>);
+ * Isaac
+ **/
+BUILDIN_FUNC(bg_item)
+{
+	int bg_id, winlost;
+	bg_id = script_getnum(st,2);
+	winlost = script_getnum(st,3);
+	bg_team_getitem(bg_id, winlost);
 	return 0;
 }
 
@@ -24725,6 +24696,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setr,"rv?"),
 	BUILDIN_DEF(mapeventwarp, "ssiisiii"),
 	BUILDIN_DEF(ChangeBG,""),
+	BUILDIN_DEF(bg_item,"ii"),
 
 	// NPC interaction
 	BUILDIN_DEF(mes,"s*"),
@@ -25214,9 +25186,6 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(bg_updatescore,"sii"),
 	BUILDIN_DEF(bg_team_updatescore,"ii"),
 	BUILDIN_DEF(bg_team_guildid,"i"),
-	BUILDIN_DEF(bg_getitem,"iii"),
-	BUILDIN_DEF(bg_getkafrapoints,"ii"),
-	BUILDIN_DEF(bg_reward,"iiiiisiii"),
 	BUILDIN_DEF(bgannounce,"s?????"),
 
 	// Instancing

@@ -667,256 +667,64 @@ void bg_guild_build_data(void)
 	strncpy(bg_guild[2].position[1].name, "Green Team", NAME_LENGTH);
 }
 
-void bg_team_getitem(int bg_id, int nameid, int amount)
+//[Oboro Control Panel]
+void bg_team_getitem(int bg_id, int winlost)
 {
 	struct battleground_data *bg;
 	struct map_session_data *sd;
-	struct item_data *id;
 	struct item it;
-	int get_amount, i, j, flag, rank = 0;
-
-	if( amount < 1 || (bg = bg_team_search(bg_id)) == NULL || (id = itemdb_exists(nameid)) == NULL )
+	int amount, battle_amount, i, j, flag, value;
+	int nameid[3] = {7829, 7828, 7773};
+	
+	if((bg = bg_team_search(bg_id)) == NULL)
 		return;
-	if( nameid != 7828 && nameid != 7829 && nameid != 7773 )
+	
+	//Medallas por defecto
+	amount = battle_config.bg_badges;
+	battle_amount = battle_config.bg_battle_badges;
+	
+	//Evento HH
+	if(battle_config.bg_event_extra_badges > 0)
+	{
+		amount += battle_config.bg_event_extra_badges;
+		battle_amount += battle_config.bg_event_extra_badges;
+	}
+	
+	//Un poco más de medallas al ganador
+	if (winlost == 1)
+	{
+		amount += battle_config.bg_win_badges;
+		battle_amount += battle_config.bg_win_badges;		
+	}
+	
+	if (amount < 1 || battle_amount < 1)
+	{
+		ShowError("[Oboro]: bg_team_getitem, Negative or 0 value");
 		return;
-	if( battle_config.bg_reward_rates != 100 )
-		amount = amount * battle_config.bg_reward_rates / 100;
-
-	memset(&it, 0, sizeof(it));
-	it.nameid = nameid;
-	it.identify = 1;
-
+	}
+	
 	for( j = 0; j < MAX_BG_MEMBERS; j++ )
 	{
 		if( (sd = bg->members[j].sd) == NULL )
 			continue;
-		if( battle_config.bg_ranking_bonus )
+	
+		for (i = 0; i < 3; i++)
 		{
-			rank = 0;
-			ARR_FIND(0,MAX_FAME_LIST,i,bgrank_fame_list[i].id == sd->status.char_id);
-			if( i < MAX_FAME_LIST )
-				rank = 1;
-			else
-			{
-				ARR_FIND(0,MAX_FAME_LIST,i,bg_fame_list[i].id == sd->status.char_id);
-				if( i < MAX_FAME_LIST )
-					rank = 1;
-			}
-		}
-
-		get_amount = amount;
-		if( rank ) get_amount += battle_config.bg_ranking_bonus * get_amount / 100;
-
-		if( (flag = pc_additem(sd,&it,get_amount,LOG_TYPE_SCRIPT)) )
-			clif_additem(sd,0,0,flag);
-	}
-}
-
-void bg_team_get_kafrapoints(int bg_id, int amount)
-{
-	struct battleground_data *bg;
-	struct map_session_data *sd;
-	int i, j, get_amount, rank = 0;
-
-	if( (bg = bg_team_search(bg_id)) == NULL )
-		return;
-
-	if( battle_config.bg_reward_rates != 100 )
-		amount = amount * battle_config.bg_reward_rates / 100;
-
-	for( i = 0; i < MAX_BG_MEMBERS; i++ )
-	{
-		if( (sd = bg->members[i].sd) == NULL )
-			continue;
-		if( battle_config.bg_ranking_bonus )
-		{
-			rank = 0;
-			ARR_FIND(0,MAX_FAME_LIST,j,bgrank_fame_list[j].id == sd->status.char_id);
-			if( j < MAX_FAME_LIST )
-				rank = 1;
-			else
-			{
-				ARR_FIND(0,MAX_FAME_LIST,j,bg_fame_list[j].id == sd->status.char_id);
-				if( j < MAX_FAME_LIST )
-					rank = 1;
-			}
-		}
-
-		get_amount = amount;
-		if( rank ) get_amount += battle_config.bg_ranking_bonus * get_amount / 100;
-		pc_getcash(sd,0,get_amount,LOG_TYPE_NPC);
-	}
-}
-
-/* ==============================================================
-   bg_arena (0 EoS | 1 Boss | 2 TI | 3 CTF | 4 TD | 5 SC | 6 CON | 7 RUSH | 8 DOM)
-   bg_result (0 Won | 1 Tie | 2 Lost)
-   ============================================================== */
-void bg_team_rewards(int bg_id, int nameid, int amount, int kafrapoints, int quest_id, const char *var, int add_value, int bg_arena, int bg_result)
-{
-	struct battleground_data *bg;
-	struct map_session_data *sd;
-	struct item_data *id;
-	struct item it;
-	int i, j, flag, fame, get_amount, rank = 0, type;
-
-	if( amount < 1 || (bg = bg_team_search(bg_id)) == NULL || (id = itemdb_exists(nameid)) == NULL )
-		return;
-
-	if( battle_config.bg_reward_rates != 100 )
-	{ // BG Reward Rates
-		amount = amount * battle_config.bg_reward_rates / 100;
-		kafrapoints = kafrapoints * battle_config.bg_reward_rates / 100;
-	}
-
-	bg_result = cap_value(bg_result,0,2);
-	memset(&it,0,sizeof(it));
-	if( nameid == 7828 || nameid == 7829 || nameid == 7773 )
-	{
-		it.nameid = nameid;
-		it.identify = 1;
-	}
-	else nameid = 0;
-
-	for( j = 0; j < MAX_BG_MEMBERS; j++ )
-	{
-		if( (sd = bg->members[j].sd) == NULL )
-			continue;
-
-		if( battle_config.bg_ranking_bonus )
-		{
-			rank = 0;
-			ARR_FIND(0,MAX_FAME_LIST,i,bgrank_fame_list[i].id == sd->status.char_id);
-			if( i < MAX_FAME_LIST )
-				rank = 1;
-			else
-			{
-				ARR_FIND(0,MAX_FAME_LIST,i,bg_fame_list[i].id == sd->status.char_id);
-				if( i < MAX_FAME_LIST )
-					rank = 1;
-			}
-		}
-
-		if( quest_id ) quest_add(sd,quest_id);
-		pc_setglobalreg(sd,add_str(var),pc_readglobalreg(sd,add_str(var)) + add_value);
-
-		if( kafrapoints > 0 )
-		{
-			get_amount = kafrapoints;
-			if( rank ) get_amount += battle_config.bg_ranking_bonus * get_amount / 100;
-			pc_getcash(sd,0,get_amount,LOG_TYPE_NPC);
-		}
-
-		if( nameid && amount > 0 )
-		{
-			get_amount = amount;
-			if( rank ) get_amount += battle_config.bg_ranking_bonus * get_amount / 100;
-
-			if( (flag = pc_additem(sd,&it,get_amount,LOG_TYPE_SCRIPT)) )
+			memset(&it, 0, sizeof(it));
+			it.nameid = nameid[i];
+			it.identify = 1;
+			if( (flag = pc_additem(sd,&it,(i != 2?amount:battle_amount),LOG_TYPE_SCRIPT)) )
 				clif_additem(sd,0,0,flag);
 		}
-
-		type = bg->members[j].ranked ? 2 : 3; // Where to Add Fame
-
-		switch( bg_result )
-		{
-		case 0: // Won
-			add2limit(sd->status.bgstats.win,1,USHRT_MAX);
-			achievement_validate_bg(sd,ATB_VICTORY,1);
-			fame = 100;
-			if( sd->bmaster_flag )
-			{
-				add2limit(sd->status.bgstats.leader_win,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_LEADER_VICTORY,1);
-				fame += 25;
-			}
-			pc_addfame(sd,fame,type);
-			switch( bg_arena )
-			{
-			case 0:
-				add2limit(sd->status.bgstats.eos_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_EOS_VICTORY,1);
-				break;
-			case 1:
-				add2limit(sd->status.bgstats.boss_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_BOSS_VICTORY,1);
-				break;
-			case 2:
-				add2limit(sd->status.bgstats.ti_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_TI_VICTORY,1);
-				break;
-			case 3:
-				add2limit(sd->status.bgstats.ctf_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_CTF_VICTORY,1);
-				break;
-			case 4:
-				add2limit(sd->status.bgstats.td_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_TDM_VICTORY,1);
-				break;
-			case 5:
-				add2limit(sd->status.bgstats.sc_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_SC_VICTORY,1);
-				break;
-			case 6:
-				add2limit(sd->status.bgstats.cq_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_CON_VICTORY,1);
-				break;
-			case 7:
-				add2limit(sd->status.bgstats.ru_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_RU_VICTORY,1);
-				break;
-			case 8:
-				add2limit(sd->status.bgstats.dom_wins,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_DOM_VICTORY,1);
-				break;
-			}
-			break;
-		case 1: // Tie
-			add2limit(sd->status.bgstats.tie,1,USHRT_MAX);
-			fame = 75;
-			if( sd->bmaster_flag )
-			{
-				add2limit(sd->status.bgstats.leader_tie,1,USHRT_MAX);
-				fame += 10;
-			}
-			pc_addfame(sd,fame,type);
-			switch( bg_arena )
-			{
-			case 0: add2limit(sd->status.bgstats.eos_tie,1,USHRT_MAX); break;
-			case 1: add2limit(sd->status.bgstats.boss_tie,1,USHRT_MAX); break;
-			case 2: add2limit(sd->status.bgstats.ti_tie,1,USHRT_MAX); break;
-			case 3: add2limit(sd->status.bgstats.ctf_tie,1,USHRT_MAX); break;
-			case 4: add2limit(sd->status.bgstats.td_tie,1,USHRT_MAX); break;
-			case 5: add2limit(sd->status.bgstats.sc_tie,1,USHRT_MAX); break;
-			// No Tie for Conquest or Rush
-			case 8: add2limit(sd->status.bgstats.dom_tie,1,USHRT_MAX); break;
-			}
-			break;
-		case 2: // Lost
-			add2limit(sd->status.bgstats.lost,1,USHRT_MAX);
-			achievement_validate_bg(sd,ATB_DEFEAT,1);
-			fame = 50;
-			if( sd->bmaster_flag )
-			{
-				add2limit(sd->status.bgstats.leader_lost,1,USHRT_MAX);
-				achievement_validate_bg(sd,ATB_LEADER_DEFEAT,1);
-			}
-			pc_addfame(sd,fame,type);
-			switch( bg_arena )
-			{
-			case 0: add2limit(sd->status.bgstats.eos_lost,1,USHRT_MAX); break;
-			case 1: add2limit(sd->status.bgstats.boss_lost,1,USHRT_MAX); break;
-			case 2: add2limit(sd->status.bgstats.ti_lost,1,USHRT_MAX); break;
-			case 3: add2limit(sd->status.bgstats.ctf_lost,1,USHRT_MAX); break;
-			case 4: add2limit(sd->status.bgstats.td_lost,1,USHRT_MAX); break;
-			case 5: add2limit(sd->status.bgstats.sc_lost,1,USHRT_MAX); break;
-			case 6: add2limit(sd->status.bgstats.cq_lost,1,USHRT_MAX); break;
-			case 7: add2limit(sd->status.bgstats.ru_lost,1,USHRT_MAX); break;
-			case 8: add2limit(sd->status.bgstats.dom_lost,1,USHRT_MAX); break;
-			}
-			break;
-		}
+		
+		value = pc_readaccountreg(sd,add_str("#BGPOINTS"));
+		pc_setaccountreg(sd,add_str("#BGPOINTS"), (value + 1));
+	
+		//KafraPoints al ganador
+		if( battle_config.bg_kafrapoints > 0 )
+			pc_getcash(sd, 0, battle_config.bg_kafrapoints, LOG_CASH_TYPE_KAFRA);
 	}
+	return;
 }
 
 // ====================================================================

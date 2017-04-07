@@ -115,7 +115,9 @@ unsigned short mapindex_name2idx(const char* name, const char *func) {
 	if( (i = strdb_iget(mapindex_db, map_name)) )
 		return i;
 
-	ShowDebug("(%s) mapindex_name2id: Map \"%s\" not found in index list!\n", func, map_name);
+	//[Isaac] may be is just a mistake, if doesn't have map_name is imposible to know where is the non-impact error
+	if (strlen(map_name) != 0)
+		ShowDebug("(%s) mapindex_name2id: Map \"%s\" not found in index list!\n", func, map_name);
 	return 0;
 }
 

@@ -774,7 +774,6 @@ bat_c05
 bat_c06
 bat_c07
 bat_c08
-
 moc_para01
 job3_arch01
 job3_arch02
@@ -1417,7 +1416,6 @@ aev_fild01
 cell_game
 new_reborn
 core
-ball2
 xromvp
 xromvp2
 xromvp3

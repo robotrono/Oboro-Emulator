@@ -76,6 +76,7 @@ int unit_walktoxy_sub(struct block_list *bl)
 	struct unit_data *ud = NULL;
 
 	nullpo_retr(1, bl);
+		
 	ud = unit_bl2ud(bl);
 	if(ud == NULL) return 0;
 
@@ -2211,7 +2212,7 @@ int unit_attack(struct block_list *src,int target_id,int continuous)
 	int range;
 
 	nullpo_ret(ud = unit_bl2ud(src));
-
+	
 	target = map_id2bl(target_id);
 	if( target == NULL || status_isdead(target) ) {
 		unit_unattackable(src);
@@ -2276,6 +2277,7 @@ int unit_attack(struct block_list *src,int target_id,int continuous)
 }
 
 /** 
+ * Cancels an ongoing combo, resets attackable time, and restarts the
  * Cancels an ongoing combo, resets attackable time, and restarts the
  * attack timer to resume attack after amotion time
  * @author [Skotlex]

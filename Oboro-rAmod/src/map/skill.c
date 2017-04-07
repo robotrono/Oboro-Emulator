@@ -631,6 +631,7 @@ static int8 skill_isCopyable(struct map_session_data *sd, uint16 skill_idx) {
  * @param sd: Player who casted
  * @return true: Skill cannot be used, false: otherwise
  * @author [MouseJstr]
+ * [Isaac] Oboro CP @hold
  */
 bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 {
@@ -638,7 +639,7 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 	nullpo_retr(1,sd);
 	m = sd->bl.m;
 	idx = skill_get_index(skill_id);
-
+	
 	if (idx == 0)
 		return true; // invalid skill id
 
@@ -650,7 +651,7 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 
 	if (map[m].flag.noskill)
 		return true;
-
+	
 	// Epoque:
 	// This code will compare the player's attack motion value which is influenced by ASPD before
 	// allowing a skill to be cast. This is to prevent no-delay ACT files from spamming skills such as
@@ -4410,7 +4411,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	struct status_change *sc, *tsc;
 
 	if (skill_id > 0 && !skill_lv) return 0;
-
+	
 	nullpo_retr(1, src);
 	nullpo_retr(1, bl);
 

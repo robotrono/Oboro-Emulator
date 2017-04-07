@@ -247,30 +247,21 @@ OnTimer420000:
 OnMatchEnd:
 	stopnpctimer;
 	stopnpctimer "Rush_Respawn";
-	//set $@Conquest, 1; // BG Status esto es estrano parfavar
 	set $@Rush, 2; // BG Status
+	
+	//[Oboro] Rotacion de BG
 	ChangeBG();
+	
 	killmonster .Castle$,"Rush::OnEmperium";
 	bg_updatescore .Castle$,.Guillaume_Score,.Croix_Score;
+	
 	// =======================================================
 	// Team Rewards
 	// =======================================================
-	set .@Reward, 20 + (.Guillaume_Score * 2);
-	if( .Guillaume_Score > .Croix_Score )
-		set .@Won,0;
-	else
-		set .@Won,2;
-
-	bg_reward $@Rush_id1,7773,.@Reward,0,8510,"BG_RUSH",1,7,.@Won;
-	// =======================================================
-	set .@Reward, 20 + (.Croix_Score * 2);
-	if( .Croix_Score > .Guillaume_Score )
-		set .@Won,0;
-	else
-		set .@Won,2;
-
-	bg_reward $@Rush_id2,7773,.@Reward,0,8510,"BG_RUSH",1,7,.@Won;
-	// =======================================================
+	
+	bg_item($@Rush_id1, (.Guillaume_Score > .Croix_Score ? 1 : 0 ));
+	bg_item($@Rush_id2, (.Guillaume_Score < .Croix_Score ? 0 : 1));
+	
 	mapannounce .Castle$,"Battle of Rush will start 15 in seconds!",1,0xDDA0DD;
 	sleep 2000;
 	bg_destroy $@Rush_id1;

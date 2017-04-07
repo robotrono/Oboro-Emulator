@@ -12338,6 +12338,37 @@ ACMD_FUNC(changebglimit)
 	return 0;
 }
 
+ACMD_FUNC(peco) 
+{
+	if( &sd->sc && sd->sc.option&(OPTION_WUGRIDER|OPTION_RIDING|OPTION_DRAGON|OPTION_MADOGEAR) )
+		clif_displaymessage(sd->fd, "can't mount with one of these");
+	else
+	{
+		if( &sd->sc && sd->sc.data[SC_ALL_RIDING] )
+			status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
+		else
+			sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INVALID_TIMER); //mount
+	}
+	return 0;
+}
+
+/**
+ *	OBORO CONTROL PANEL
+ *	NANOSOFT (C)
+ */
+ACMD_FUNC(hold) 
+{
+	char output[CHAT_SIZE_MAX];
+	if ( !sd->state.hold ) 
+		sd->state.hold = 1;
+	else
+		sd->state.hold = 0;
+	strcpy(output ,(sd->state.hold? "Hold activated":"Hold disabled"));
+	clif_displaymessage(fd,output);
+	return 0;
+}
+
+
 #include "../custom/atcommand.inc"
 
 /**
@@ -12381,6 +12412,8 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(showbgorder),
 		ACMD_DEF2("showbg",showbgorder),
 		ACMD_DEF(changebglimit),
+		ACMD_DEF(peco),
+		ACMD_DEF(hold),
 		// [Oboro] -----------------
 		ACMD_DEF2R("warp", mapmove, ATCMD_NOCONSOLE),
 		ACMD_DEF(where),

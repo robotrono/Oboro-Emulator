@@ -1,20 +1,19 @@
-/* ====================================== 
-
-		ISAACHJK
-	    HappyHour 2016
-        j-isaac10@hotmail.com
-
-   ====================================== */ 
+/**
+ *	Isaac [Oboro Control Panel] (C)
+ *	HappyHour 2017
+ *	j-isaac10@hotmail.com
+ *	Realmente no se por qué este módulo no lo he hecho en C
+ *	Solo compatible con Oboro-rAmod
+ **/ 
 -	script	HH	-1,{
 	end;
 
 OnWhisperGlobal:
 	if ( getgmlevel() < 90 ) end; 
 OnInit:
-	bindatcmd("ha", strnpcinfo(3)+"::OnHHStart");
-	bindatcmd("hd", strnpcinfo(3)+"::OnHHStop");
-	bindatcmd("he", strnpcinfo(3)+"::OnHHStatus");
-	bindatcmd("hp", strnpcinfo(3)+"::OnHHAumentar");
+	bindatcmd("hhstart", strnpcinfo(3)+"::OnHHStart");
+	bindatcmd("hhstop", strnpcinfo(3)+"::OnHHStop");
+	bindatcmd("hhstatus", strnpcinfo(3)+"::OnHHStatus");
 end;
 
 
@@ -22,37 +21,43 @@ OnHHStart:
 	if ( getgmlevel() < 90 ) end;
 
 	title("Happy Hour");
-	mes " Dijite % de medallas a dar.";
-	mes " ejemplo: ^4CF39F 80 ^000000";
-	input .porciento;
+	mes "Number of \"Extra\" Badges.";
+	input .badges;
 	next;
 
 	title("Happy Hour");
-	mes " Dijite Hora de finalizar , en hora militar ejemplo : 22 ";
-	mes " ejemplo: ^4CF39F 22 ^000000";
+	atcommand "@time";
+	mes "End Event Hour (22)";
 	input .fin;
 	next;
+	
+	if (.fin > 23)
+	{
+		.fin = 0;
+		.badges = 0;
+		title("Happy Hour");
+		mclose "00 -> 23 Hours";
+	}
 
-	announce " [ Happy Hour ]: El evento ha comenzado, apartir de este momento battleground dará "+.porciento+" %  mas en medallas ",0,0x00BFFF;
-
-	set .porcientoreal , .porciento + 100; // el 100 es el regular si se pone 20 en .@porciento se sumara al 100 normal haciendo 120 .
-	setbattleflag "bg_reward_rates",.porcientoreal;
-	setbattleflag "bg_ranked_mode",1;
+	announce "[Happy Hour]: has begun, ("+.badges+") Extra badges, and finish At: "+.fin+":00 hours (@time)",0,0x00BFFF;
+	setbattleflag "bg_event_extra_badges",.badges;
 	close;
 end;
 
 OnHHStop:
-	if ( getgmlevel() < 90 ) end;
+	if ( getgmlevel() < 90 ) 
+		end;
 
-	announce " [ Happy Hour ]: El evento ha terminado, gracias a todos por participar. ",0,0x00BFFF;
+	if (.badges <= 0)
+	{
+		dispbottom "No event ongoing";
+		end;
+	}
 
-	setbattleflag "bg_reward_rates",100; // Normal Rates
-	setbattleflag "bg_ranked_mode",0;
-	set .porcientoreal, 0;
-	set .porciento, 0;
-	set .porciento_aumento, 0;
-
-
+	announce "[Happy Hour]: is over, no more extra badges.",0,0x00BFFF;
+	setbattleflag "bg_event_extra_badges", 0;
+	.fin = 0;
+	.badges = 0;
 end;
 
 OnHHStatus:
@@ -60,22 +65,6 @@ OnHHStatus:
 		dispbottom "[ Happy Hour]: actualmente estamos a " + .porciento + "%";
 	else
 		dispbottom "[ Happy Hour]: actualmente no hay Custom de HH";		
-end;
-
-OnHHAumentar:
-	title("Happy Hour");
-	mes " Dijite % a aumentar.";
-	input .porciento_aumento;
-	next;
-
-	set .porciento, .porciento + .porciento_aumento;
-	set .porcientoreal, .porciento + 100;
-
-	announce " [ Happy Hour ]: Gracias por sus votos, HH aumenta a "+.porciento+" %  mas en medallas ",0,0x00BFFF;
-
-	setbattleflag "bg_reward_rates",.porcientoreal;
-	setbattleflag "bg_ranked_mode",1;
-	close;
 end;
 
 
@@ -103,12 +92,13 @@ OnClock2000:
 OnClock2100:
 OnClock2200:
 OnClock2300:
-	if( gettime(3) != .fin )
+	if(gettime(3) != .fin)
 		end;
 
-	announce " [ Happy Hour ]: El evento ha terminado, gracias a todos por participar. ",0,0x00BFFF;
-	setbattleflag "bg_reward_rates",100; // Normal Rates
-	setbattleflag "bg_ranked_mode",0;
+	announce "[Happy Hour]: is over, no more extra badges.",0,0x00BFFF;
+	setbattleflag "bg_event_extra_badges", 0;
+	.fin = 0;
+	.badges = 0;
 end;
 
 }

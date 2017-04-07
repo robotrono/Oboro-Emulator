@@ -386,38 +386,32 @@ OnMatchEnd:
 	donpcevent "#guictf_respawn::OnBGStop";
 	donpcevent "#croctf_respawn::OnBGStop";
 	set $@FlaviusCTF, 2; //bg_status
+	
+	//[Oboro] Rotacion de BG
 	ChangeBG();
+	
 	// =======================================================
 	// Team Rewards
 	// =======================================================
 	if( .Guillaume_Score > .Croix_Score )
 	{
-		bg_reward $@FlaviusCTF_id1,7829,32 + .Guillaume_Score,0,8504,"BG_CTF",1,3,0;
-		bg_getitem $@FlaviusCTF_id1,7828,32 + .Guillaume_Score;
-		bg_getitem $@FlaviusCTF_id1,7773,32 + .Guillaume_Score;
-		bg_reward $@FlaviusCTF_id2,7829,19 + .Croix_Score,0,8504,"BG_CTF",1,3,2;
-		bg_getitem $@FlaviusCTF_id2,7828,19 + .Croix_Score;
-		bg_getitem $@FlaviusCTF_id2,7773,19 + .Croix_Score;
+		// Ganó Guillaume
+		bg_item($@FlaviusCTF_id1, 1);
+		bg_item($@FlaviusCTF_id2, 0);
 	}
 	else if( .Croix_Score > .Guillaume_Score )
 	{
-		bg_reward $@FlaviusCTF_id1,7829,19 + .Guillaume_Score,0,8504,"BG_CTF",1,3,2;
-		bg_getitem $@FlaviusCTF_id1,7828,19 + .Guillaume_Score;
-		bg_getitem $@FlaviusCTF_id1,7773,19 + .Guillaume_Score;
-		bg_reward $@FlaviusCTF_id2,7829,32 + .Croix_Score,0,8504,"BG_CTF",1,3,0;
-		bg_getitem $@FlaviusCTF_id2,7828,32 + .Croix_Score;
-		bg_getitem $@FlaviusCTF_id2,7773,32 + .Croix_Score;
+		// Ganó Croix
+		bg_item($@FlaviusCTF_id1, 0);
+		bg_item($@FlaviusCTF_id2, 1);
 	}
 	else
 	{
-		bg_reward $@FlaviusCTF_id1,7829,19 + .Guillaume_Score,0,8504,"BG_CTF",1,3,1;
-		bg_getitem $@FlaviusCTF_id1,7828,19 + .Guillaume_Score;
-		bg_getitem $@FlaviusCTF_id1,7773,19 + .Guillaume_Score;
-		bg_reward $@FlaviusCTF_id2,7829,19 + .Croix_Score,0,8504,"BG_CTF",1,3,1;
-		bg_getitem $@FlaviusCTF_id2,7828,19 + .Croix_Score;
-		bg_getitem $@FlaviusCTF_id2,7773,19 + .Croix_Score;
+		// Empate, perdida ambos por default
+		bg_item($@FlaviusCTF_id1, 0);
+		bg_item($@FlaviusCTF_id2, 0);
 	}
-	// =======================================================
+
 	mapannounce "bat_b02","Battle of Flavius CTF will start in 0 seconds!",1,0xA0522D;
 	sleep 2000;
 	bg_destroy $@FlaviusCTF_id1;

@@ -134,39 +134,38 @@ OnValidateScore:
 	set .@Guillaume, bg_get_data($@FlaviusTD_id1, 0);
 	set .@Croix, bg_get_data($@FlaviusTD_id2, 0);
 
+	// =======================================================
+	// Team Rewards
+	// =======================================================
+	
 	if( .Croix_Score <= 0 )
-	{ // Guillaume Won
-		bg_reward $@FlaviusTD_id1,7829,32,0,8505,"BG_TDM",1,4,0;
-		bg_getitem $@FlaviusTD_id1,7828,32;
-		bg_getitem $@FlaviusTD_id1,7773,32;
-		bg_reward $@FlaviusTD_id2,7829,19,0,8505,"BG_TDM",1,4,2;
-		bg_getitem $@FlaviusTD_id2,7828,19;
-		bg_getitem $@FlaviusTD_id2,7773,19;
+	{ 
+		// Guillaume Won
+		bg_item($@FlaviusTD_id1, 1);
+		bg_item($@FlaviusTD_id2, 0);
 		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
 	}
 	else if( .Guillaume_Score <= 0 )
-	{ // Croix Won
-		bg_reward $@FlaviusTD_id1,7829,19,0,8505,"BG_TDM",1,4,2;
-		bg_getitem $@FlaviusTD_id1,7828,19;
-		bg_getitem $@FlaviusTD_id1,7773,19;
-		bg_reward $@FlaviusTD_id2,7829,32,0,8505,"BG_TDM",1,4,0;
-		bg_getitem $@FlaviusTD_id2,7828,32;
-		bg_getitem $@FlaviusTD_id2,7773,32;
+	{ 
+		// Croix Won
+		bg_item($@FlaviusTD_id1, 0);
+		bg_item($@FlaviusTD_id2, 1);
 		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
 	}
 	else if( .@Croix == 0 )
-	{ // All Croix Players quit
-		set .@Rate, 99 - .Croix_Score;
-		bg_reward $@FlaviusTD_id1,7829,27 * .@Rate / 99,0,8505,"BG_TDM",1,4,0;
+	{ 
+		// All Croix Players quit
+		bg_item($@FlaviusTD_id1, 0);
 		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
 	}
 	else if( .@Guillaume == 0 )
-	{ // All Guillaume Players quit
-		set .@Rate, 99 - .Guillaume_Score;
-		bg_reward $@FlaviusTD_id2,7829,27 * .@Rate / 99,0,8505,"BG_TDM",1,4,0;
+	{ 
+		// All Guillaume Players quit, so they win a little...
+		bg_item($@FlaviusTD_id2, 0);
 		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
 	}
-	else end;
+	else 
+		end;
 	donpcevent "Flavius_TD::OnMatchEnd";
 	end;
 
@@ -179,34 +178,24 @@ OnTimer840000:
 	end;
 
 OnTimer900000:
-	if( .Guillaume_Score > .Croix_Score )
-	{ // Guillaume Won
-		bg_reward $@FlaviusTD_id1,7829,32,0,8505,"BG_TDM",1,4,0;
-		bg_getitem $@FlaviusTD_id1,7828,32;
-		bg_getitem $@FlaviusTD_id1,7773,32;
-		bg_reward $@FlaviusTD_id2,7829,19,0,8505,"BG_TDM",1,4,2;
-		bg_getitem $@FlaviusTD_id2,7828,19;
-		bg_getitem $@FlaviusTD_id2,7773,19;
+	if(.Guillaume_Score > .Croix_Score)
+	{ 
+		// Guillaume Won
+		bg_item($@FlaviusTD_id1, 1);
+		bg_item($@FlaviusTD_id2, 0);
 		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
 	}
 	else if( .Guillaume_Score < .Croix_Score )
-	{ // Croix Won
-		bg_reward $@FlaviusTD_id1,7829,19,0,8505,"BG_TDM",1,4,2;
-		bg_getitem $@FlaviusTD_id1,7828,19;
-		bg_getitem $@FlaviusTD_id1,7773,19;
-		bg_reward $@FlaviusTD_id2,7829,32,0,8505,"BG_TDM",1,4,0;
-		bg_getitem $@FlaviusTD_id2,7828,32;
-		bg_getitem $@FlaviusTD_id2,7773,32;
+	{
+		// Croix Won
+		bg_item($@FlaviusTD_id1, 0);
+		bg_item($@FlaviusTD_id2, 1);
 		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
 	}
 	else
 	{
-		bg_reward $@FlaviusTD_id1,7829,19,0,8505,"BG_TDM",1,4,1;
-		bg_getitem $@FlaviusTD_id1,7828,19;
-		bg_getitem $@FlaviusTD_id1,7773,19;
-		bg_reward $@FlaviusTD_id2,7829,19,0,8505,"BG_TDM",1,4,1;
-		bg_getitem $@FlaviusTD_id2,7828,19;
-		bg_getitem $@FlaviusTD_id2,7773,19;
+		bg_item($@FlaviusTD_id1, 0);
+		bg_item($@FlaviusTD_id2, 0);
 		mapannounce "bat_b03","The battle is over. This is a Tie...!",1,0x808000;
 	}
 	donpcevent "Flavius_TD::OnMatchEnd";
@@ -217,7 +206,10 @@ OnMatchEnd:
 	donpcevent "#guitd_respawn::OnBGStop";
 	donpcevent "#crotd_respawn::OnBGStop";
 	set $@FlaviusTD, 2;
+	
+	//[Oboro] Rotacion de BG
 	ChangeBG();
+	
 	sleep 3000;
 	mapannounce "bat_b03","Battle of Flavius TD will start in 0 seconds!",1,0x808000;
 	set .Guillaume_Score, 99;

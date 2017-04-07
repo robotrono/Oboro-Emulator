@@ -2148,7 +2148,7 @@ void pc_reg_received(struct map_session_data *sd)
 	}
 	else
 		clif_displaymessage(sd->fd, "Item Security System DISABLE : Use @security for more options.");
-
+	
 	if( pc_isPremium(sd) )
 	{
 		int tick = sd->Premium_Tick - (int)time(NULL), day, hour, minute, second;
@@ -2163,10 +2163,9 @@ void pc_reg_received(struct map_session_data *sd)
 		clif_disp_onlyself(sd, output, strlen(output));
 	}
 
-	if( battle_config.bg_reward_rates != 100 )
+	if( battle_config.bg_event_extra_badges > 0 )
 	{
-		int erate = battle_config.bg_reward_rates - 100;
-		sprintf(output, "Battleground Happy Hour. Rates at + %d %%", erate);
+		sprintf(output, "[Event]: Battleground Happy Hour. Giving + %d Badges", battle_config.bg_event_extra_badges);
 		clif_displaymessage(sd->fd, output);
 	}
 

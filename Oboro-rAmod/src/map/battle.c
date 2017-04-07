@@ -8462,7 +8462,6 @@ static const struct _battle_data {
 	{ "bg_reserved_char_id",                &battle_config.bg_reserved_char_id,             999996, 0,      INT_MAX,        },
 	{ "bg_items_on_pvp",                    &battle_config.bg_items_on_pvp,                 1,      0,      1,              },
 	{ "bg_reward_rates",                    &battle_config.bg_reward_rates,                 100,    0,      INT_MAX,        },
-	{ "bg_ranking_bonus",                   &battle_config.bg_ranking_bonus,                0,      0,      100,            },
 	{ "bg_ranked_mode",                     &battle_config.bg_ranked_mode,                  0,      0,      1,              },
 	{ "bg_ranked_max_games",                &battle_config.bg_ranked_max_games,             50,     10,     100,            },
 	{ "bg_reportafk_leaderonly",            &battle_config.bg_reportafk_leaderonly,         1,      0,      1,              },
@@ -8470,6 +8469,12 @@ static const struct _battle_data {
 	{ "bg_logincount_check",                &battle_config.bg_logincount_check,             1,      0,      1,              },
 	{ "bg_queue_onlytowns",                 &battle_config.bg_queue_onlytowns,              1,      0,      1,              },
 	{ "bg_eAmod_mode",                      &battle_config.bg_eAmod_mode,                   1,      0,      1,              },
+	{ "bg_badges",                   		&battle_config.bg_badges,           		    0,      0,      INT_MAX,        }, //[Oboro]
+	{ "bg_battle_badges",                  	&battle_config.bg_battle_badges,      		    0,      0,      INT_MAX,        }, //[Oboro]
+	{ "bg_kafrapoints",                 	&battle_config.bg_kafrapoints,      		    0,      0,      INT_MAX,        }, //[Oboro]
+	{ "bg_event_extra_badges", 	            &battle_config.bg_event_extra_badges,      		0,      0,      INT_MAX,        }, //[Oboro]
+	{ "bg_win_badges", 	     		        &battle_config.bg_win_badges,      			    0,      0,      INT_MAX,        }, //[Oboro]
+
 // Faction System
 	{ "faction_allow_party",                &battle_config.faction_allow_party,             1,      0,      1,              },
 	{ "faction_allow_guild",                &battle_config.faction_allow_guild,             1,      0,      1,              },

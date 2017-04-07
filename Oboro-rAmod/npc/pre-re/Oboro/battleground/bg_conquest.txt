@@ -511,7 +511,10 @@ OnMatchEnd:
 	stopnpctimer;
 	stopnpctimer "Conquest_Respawn";
 	set $@Conquest, 2; // BG Status
+	
+	//[Oboro] Rotacion de BG
 	ChangeBG();
+	
 	killmonster .Castle$,"Conquest::OnBarricade0";
 	killmonster .Castle$,"Conquest::OnBarricade1";
 	killmonster .Castle$,"Conquest::OnBarricade2";
@@ -519,35 +522,14 @@ OnMatchEnd:
 	killmonster .Castle$,"Conquest::OnGuardianStone1";
 	killmonster .Castle$,"Conquest::OnGuardianStone2";
 	killmonster .Castle$,"Conquest::OnEmperium";
+	
 	// =======================================================
 	// Team Rewards
 	// =======================================================
-	
-	.@Base_Reward = 25;
-	.@Won = .@Base_Reward + 12;
 
-	// Ganó quien ataca
-	if( .Score >= 6 )
-	{		
-		bg_reward .Atacker,7773,.@Won,0,0,"BG_CON",1,6,.@Won;
-		bg_getitem .Atacker,7829,.@Won;
-		bg_getitem .Atacker,7828,.@Won;
-		
-		bg_reward .Defender,7773,.@Base_Reward,0,0,"BG_CON",1,6,.@Won;
-		bg_getitem .Defender,7829,.@Base_Reward;
-		bg_getitem .Defender,7828,.@Base_Reward;
-	} else {
-		//gano quien defiende
-		bg_reward .Atacker,7773,.@Base_Reward,0,0,"BG_CON",1,6,.@Won;
-		bg_getitem .Atacker,7829,.@Base_Reward;
-		bg_getitem .Atacker,7828,.@Base_Reward;
-		
-		bg_reward .Defender,7773,.@Won,0,0,"BG_CON",1,6,.@Won;
-		bg_getitem .Defender,7829,.@Won;
-		bg_getitem .Defender,7828,.@Won;
-	}
+	bg_item(.Atacker, 	(.Score >= 6 ? 1 : 0)); // Ganó Ataque
+	bg_item(.Defender,	(.Score >= 6 ? 0 : 1)); // Ganó Defender
 
-	// =======================================================
 	mapannounce .Castle$,"Battle of Conquest is over!",1,0xFFA500;
 	sleep 2000;
 	bg_destroy $@Conquest_id1;

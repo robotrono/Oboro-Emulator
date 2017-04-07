@@ -11519,7 +11519,7 @@ void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action_type, 
 		clif_clearunit_area(&sd->bl, CLR_DEAD);
 		return;
 	}
-
+	
 	// Statuses that don't let the player sit / attack / talk with NPCs(targeted)
 	// (not all are included in pc_can_attack)
 	if (sd->sc.count &&
@@ -12600,7 +12600,7 @@ void clif_parse_UseSkillToId(int fd, struct map_session_data *sd)
 	int inf,target_id;
 	unsigned int tick = gettick();
 	struct s_packet_db* info = &packet_db[sd->packet_ver][RFIFOW(fd,0)];
-
+	
 	skill_lv = RFIFOW(fd,info->pos[0]);
 	skill_id = RFIFOW(fd,info->pos[1]);
 	target_id = RFIFOL(fd,info->pos[2]);
@@ -12741,7 +12741,7 @@ void clif_parse_UseSkillToId(int fd, struct map_session_data *sd)
 static void clif_parse_UseSkillToPosSub(int fd, struct map_session_data *sd, uint16 skill_lv, uint16 skill_id, short x, short y, int skillmoreinfo)
 {
 	unsigned int tick = gettick();
-
+	
 	if( !(skill_get_inf(skill_id)&INF_GROUND_SKILL) )
 		return; //Using a target skill on the ground? WRONG.
 

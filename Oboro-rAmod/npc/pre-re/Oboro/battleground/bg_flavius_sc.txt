@@ -151,27 +151,36 @@ OnTimer840000:
 OnTimer900000:
 OnMatchEnd:
 	set $@FlaviusSC, 2; //bg_status
+	
+	//[Oboro] Rotacion de BG
 	ChangeBG();
-	// Rewards =====================================
+	
+	// =======================================================
+	// Team Rewards
+	// =======================================================
+
 	if( .Guillaume_Score > .Croix_Score )
-	{ // Guillaume Won
-		bg_reward $@FlaviusSC_id1,7829,30,0,8507,"BG_SC",1,5,0;
-		bg_reward $@FlaviusSC_id2,7829,15,0,8507,"BG_SC",1,5,2;
+	{
+		// Ganó Guillaume
+		bg_item($@FlaviusSC_id1, 1);
+		bg_item($@FlaviusSC_id2, 0);
 		mapannounce "bat_b04","The Guillaume army has won the Battle of Flavius SC!",1,0x0000FF;
 	}
-	else if( .Guillaume_Score < .Croix_Score )
-	{ // Croix Won
-		bg_reward $@FlaviusSC_id1,7829,15,0,8507,"BG_SC",1,5,2;
-		bg_reward $@FlaviusSC_id2,7829,30,0,8507,"BG_SC",1,5,0;
+	else if( .Croix_Score > .Guillaume_Score )
+	{
+		// Ganó Croix
+		bg_item($@FlaviusSC_id1, 0);
+		bg_item($@FlaviusSC_id2, 1);
 		mapannounce "bat_b04","The Croix army has won the Battle of Flavius SC!",1,0xFF0000;
 	}
 	else
 	{
-		bg_reward $@FlaviusSC_id1,7829,15,0,8507,"BG_SC",1,5,1;
-		bg_reward $@FlaviusSC_id2,7829,15,0,8507,"BG_SC",1,5,1;
+		// Empate, perdida ambos por default
+		bg_item($@FlaviusSC_id1, 0);
+		bg_item($@FlaviusSC_id2, 0);
 		mapannounce "bat_b04","The battle is over. This is a Tie...!",1,0x9ACD32;
 	}
-	// =============================================
+	
 	stopnpctimer;
 	donpcevent "#guisc_respawn::OnBGStop";
 	donpcevent "#crosc_respawn::OnBGStop";
