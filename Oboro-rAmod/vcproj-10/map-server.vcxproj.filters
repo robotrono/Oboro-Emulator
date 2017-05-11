@@ -465,6 +465,9 @@
     <ClInclude Include="..\src\map\oboro.h">
       <Filter>map</Filter>
     </ClInclude>
+    <ClInclude Include="oboronocheats.h">
+      <Filter>map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">

@@ -1,5 +1,5 @@
-﻿Build started 23/01/2017 12:10:18 p.m..
-     1>Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\mapcache.vcxproj" on node 5 (build target(s)).
+﻿Build started 10/05/2017 08:43:08 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\mapcache.vcxproj" on node 5 (build target(s)).
      1>InitializeBuildStatus:
          Creating "mapcache\Release\mapcache.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -23,14 +23,14 @@
          mapcache\Release\mapcache.obj
          Generating code
          Finished generating code
-         mapcache.vcxproj -> C:\Users\Rafita\Desktop\rAmod\vcproj-10\..\mapcache.exe
+         mapcache.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\..\mapcache.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\mapcache.exe;#1" /manifest mapcache\Release\mapcache.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "mapcache\Release\mapcache.unsuccessfulbuild".
          Touching "mapcache\Release\mapcache.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\mapcache.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\mapcache.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.63
+Time Elapsed 00:00:02.70

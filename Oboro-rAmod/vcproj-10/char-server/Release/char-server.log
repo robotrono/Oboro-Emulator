@@ -1,5 +1,5 @@
-﻿Build started 23/01/2017 12:10:18 p.m..
-     1>Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\char-server.vcxproj" on node 4 (build target(s)).
+﻿Build started 10/05/2017 08:43:09 p.m..
+     1>Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\char-server.vcxproj" on node 4 (build target(s)).
      1>InitializeBuildStatus:
          Creating "char-server\Release\char-server.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -93,14 +93,14 @@
          "char-server\Release\inter.obj"
          Generating code
          Finished generating code
-         char-server.vcxproj -> C:\Users\Rafita\Desktop\rAmod\vcproj-10\..\char-server.exe
+         char-server.vcxproj -> C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\..\char-server.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\char-server.exe;#1" /manifest "char-server\Release\char-server.exe.intermediate.manifest"
        FinalizeBuildStatus:
          Deleting file "char-server\Release\char-server.unsuccessfulbuild".
          Touching "char-server\Release\char-server.lastbuildstate".
-     1>Done Building Project "C:\Users\Rafita\Desktop\rAmod\vcproj-10\char-server.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Rafita\Desktop\COSAS\COSAS RAGNAROK\Oboro\Oboro-rAmod\vcproj-10\char-server.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:06.29
+Time Elapsed 00:00:05.85
