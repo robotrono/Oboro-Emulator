@@ -7321,14 +7321,16 @@ ACMD_FUNC(mobinfo)
 		clif_displaymessage(fd, msg_txt(sd,1245)); //  Drops:
 		strcpy(atcmd_output, " ");
 		j = 0;
-		for (i = 0; i < MAX_MOB_DROP; i++) {
+		for (i = 0; i < MAX_MOB_DROP; i++) 
+		{
 			int droprate;
 			if (mob->dropitem[i].nameid <= 0 || mob->dropitem[i].p < 1 || (item_data = itemdb_exists(mob->dropitem[i].nameid)) == NULL)
 				continue;
 			droprate = mob->dropitem[i].p;
 
 #ifdef RENEWAL_DROP
-			if( battle_config.atcommand_mobinfo_type ) {
+			if( battle_config.atcommand_mobinfo_type ) 
+			{
 				droprate = droprate * pc_level_penalty_mod(mob->lv - sd->status.base_level, mob->status.class_, mob->status.mode, 2) / 100;
 				if (droprate <= 0 && !battle_config.drop_rate0item)
 					droprate = 1;
@@ -7346,6 +7348,7 @@ ACMD_FUNC(mobinfo)
 				strcpy(atcmd_output, " ");
 			}
 		}
+
 		if (j == 0)
 			clif_displaymessage(fd, msg_txt(sd,1246)); // This monster has no drops.
 		else if (j % 3 != 0)
